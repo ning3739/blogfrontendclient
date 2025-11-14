@@ -1,0 +1,382 @@
+{
+  "common": {
+    "loading": "加载中...",
+    "loadFailed": "加载失败",
+    "loadFailedMessage": "无法加载数据，请稍后重试",
+    "notFound": "未找到",
+    "notFoundMessage": "您查找的数据不存在",
+    "submit": "提交",
+    "submitting": "提交中...",
+    "update": "更新",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "status": "状态",
+    "actions": "操作",
+    "previewMode": "预览",
+    "content": "内容",
+    "published": "已发布",
+    "draft": "草稿",
+    "close": "关闭",
+    "noDescription": "暂无描述",
+    "updatedAt": "更新于",
+    "createdAt": "创建于",
+    "back": "返回",
+    "summary": "摘要",
+    "noMoreContent": "没有更多内容",
+    "share": {
+      "shareButton": "分享",
+      "download": "下载卡片",
+      "shareDescription": "分享此文章"
+    }
+  },
+  "home": {
+    "common": {
+      "and": "和",
+      "dot": "。"
+    },
+    "roles": {
+      "developer": "<开发者/>",
+      "designer": "设计师",
+      "detailOriented": "细节控",
+      "perfectionist": "强迫症"
+    },
+    "intro": {
+      "hi": "嗨，我是",
+      "name": "小李",
+      "site": "这里是我的个人博客，记录",
+      "tech": "技术探索",
+      "design": "设计思考",
+      "life": "生活感悟"
+    },
+    "second": {
+      "iLovePrefix": "我热爱",
+      "coding": "编程",
+      "design": "设计",
+      "believePrefix": "，相信好的产品源于对",
+      "details": "细节"
+    },
+    "welcome": {
+      "prefix": "欢迎你的到来，希望这里的文字能给你带来一些",
+      "inspire": "启发",
+      "resonate": "共鸣"
+    },
+    "recentPosts": "最近文章",
+    "subscribeTitle": "订阅",
+    "subscribeDescription": "如果你喜欢我的内容，不妨订阅支持一下 🫶 每月一封，随时可以取消订阅。",
+    "subscribeInputPlaceholder": "输入您的邮箱",
+    "subscribeValidationErrorMessage": "请输入有效的邮箱地址",
+    "subscribeError": "订阅失败，请稍后重试",
+    "subscribeLoading": "订阅中...",
+    "alreadySubscribed": "已订阅",
+    "subscribeNotification": "我们会在有新内容时通知您",
+    "followTitle": "关注我"
+  },
+
+  "languageSwitcher": {
+    "switcher": "语言",
+    "english": "英语",
+    "chinese": "中文"
+  },
+  "header": {
+    "dashboard": "管理账户",
+    "login": "登录",
+    "logout": "退出登录"
+  },
+  "footer": {
+    "about": "关于",
+    "content": "内容",
+    "copyright": "版权声明",
+    "privacyPolicy": "隐私政策",
+    "siteMap": "网站地图",
+    "tags": "标签",
+    "archive": "归档",
+    "description": "记录生活点滴，分享技术与随笔。在这里，每一个瞬间都值得被记录，每一份思考都值得被分享。",
+    "china": "中国",
+    "since": "始于 2024"
+  },
+  "auth": {
+    "placeholder": {
+      "email": "m@example.com",
+      "username": "用户名",
+      "code": "请输入验证码",
+      "password": "************"
+    },
+    "login": {
+      "title": "欢迎回来",
+      "description": "请登录您的账户继续使用",
+      "email": "邮箱",
+      "password": "密码",
+      "login": "登录",
+      "forgotPassword": "忘记密码？",
+      "orContinueWith": "或者继续使用",
+      "loginwithgithub": "使用 GitHub 登录",
+      "loginwithgoogle": "使用 Google 登录",
+      "donthaveaccount": "还没有账户？ ",
+      "signup": "立即注册"
+    },
+    "register": {
+      "title": "创建账户",
+      "description": "请创建账户继续使用",
+      "username": "用户名",
+      "email": "邮箱",
+      "code": "验证码",
+      "sendCode": "发送验证码",
+      "password": "密码",
+      "register": "注册",
+      "registerSuccess": "注册成功！欢迎加入！",
+      "alreadyhaveaccount": "已经有账户？ ",
+      "signin": "立即登录"
+    },
+    "resetPassword": {
+      "title": "重置密码",
+      "description": "请重置您的密码继续使用",
+      "email": "邮箱",
+      "code": "验证码",
+      "sendCode": "发送验证码",
+      "password": "新密码",
+      "resetPassword": "重置密码",
+      "rememberPassword": "想起密码了？ ",
+      "signin": "立即登录"
+    },
+    "validation": {
+      "emailRequired": "请输入邮箱地址",
+      "emailInvalid": "请输入有效的邮箱地址",
+      "usernameRequired": "请输入用户名",
+      "usernameTooShort": "用户名至少需要3个字符",
+      "codeRequired": "请输入验证码",
+      "passwordRequired": "请输入密码",
+      "passwordTooShort": "密码至少需要{minLength}位"
+    }
+  },
+  "comment": {
+    "inputPlaceholder": "愣着干嘛，快写下你的评论...",
+    "submit": "提交",
+    "update": "更新",
+    "submitting": "提交中...",
+    "commentRequired": "请输入评论内容",
+    "commentTooLong": "评论不能超过500个字符",
+    "submitError": "提交失败，请重试",
+    "noComments": "还没有评论，来抢沙发吧!",
+    "reply": "回复",
+    "replies": "{count} 条回复",
+    "edit": "编辑",
+    "delete": "删除",
+    "cancel": "取消",
+    "loading": "加载中...",
+    "loadFailed": "加载失败",
+    "loadFailedMessage": "无法加载评论列表，请稍后重试",
+    "beFirstToComment": "成为第一个发表评论的人吧！",
+    "loadMoreComments": "加载更多评论...",
+    "updatedAt": "更新于",
+    "loginRequired": "请先登录后再发表评论"
+  },
+  "blog": {
+    "action": {
+      "summarySubtitle": "生成博客摘要",
+      "audio": {
+        "play": "播放",
+        "pause": "暂停",
+        "resume": "继续",
+        "playDescription": "播放博客内容",
+        "pauseDescription": "暂停博客内容",
+        "resumeDescription": "继续博客内容"
+      }
+    }
+  },
+  "forum": {
+    "inputPlaceholder": "想对我说的话,或是你的建议,或是你的想法...",
+    "submit": "提交",
+    "update": "更新",
+    "submitting": "提交中...",
+    "commentRequired": "请输入评论内容",
+    "commentTooLong": "评论不能超过500个字符",
+    "submitError": "提交失败，请重试",
+    "noComments": "还没有留言，来抢沙发吧!",
+    "reply": "回复",
+    "replies": "{count} 条回复",
+    "edit": "编辑",
+    "delete": "删除",
+    "cancel": "取消",
+    "loading": "加载中...",
+    "loadFailed": "加载失败",
+    "loadFailedMessage": "无法加载论坛详情，请稍后重试",
+    "forumNotFound": "未找到论坛",
+    "forumNotFoundMessage": "该论坛不存在或已被删除",
+    "loadCommentsFailed": "加载评论失败",
+    "loadCommentsFailedMessage": "无法加载评论列表，请稍后重试",
+    "beFirstToComment": "成为第一个发表评论的人吧！",
+    "loadMoreComments": "加载更多评论...",
+    "updatedAt": "更新于",
+    "loginRequired": "请先登录后再发表评论"
+  },
+  "friend": {
+    "sitename": "请输入您的网站名称",
+    "siteurl": "请输入您的网站URL",
+    "sitelogourl": "请输入您的网站Logo URL",
+    "sitedescription": "请输入您的网站描述",
+    "pleaselogin": "请先登录后再提交您的网站",
+    "sitenameRequired": "请输入您的网站名称",
+    "siteurlRequired": "请输入您的网站URL",
+    "sitelogourlRequired": "请输入您的网站Logo URL",
+    "sitedescriptionRequired": "请输入您的网站描述",
+    "sitedescriptionTooLong": "网站描述不能超过100个字符",
+    "noFriendsYet": "还没有友链，来抢沙发吧!",
+    "beFirstToAddFriend": "成为第一个添加友链的人吧!",
+    "featuredFriends": "精选友链",
+    "normalFriends": "普通友链",
+    "loadMoreFriends": "加载更多友链..."
+  },
+  "project": {
+    "ProjectList": {
+      "title": "项目",
+      "description": "我曾开发与参与的项目合集，涵盖 Web、移动端与开源方向。"
+    },
+    "pagination": {
+      "show": "显示第 {start} - {end} 条，共 {total} 条",
+      "total": "共 {total} 条",
+      "previous": "上一页",
+      "next": "下一页"
+    },
+    "price": "价格",
+    "free": "免费",
+    "buy": "购买",
+    "purchased": "已购买",
+    "attachmentId": "附件ID",
+    "attachment": "附件",
+    "available": "已上传",
+    "none": "未上传",
+    "download": "下载",
+    "loginToPurchase": "请登录后购买",
+    "wantToKnowMore": "想要了解更详细的内容吗？请购买后下载附件。"
+  },
+  "payment": {
+    "success": {
+      "title": "支付成功！",
+      "description": "感谢您的购买，您的订单已成功处理",
+      "orderInfo": "订单信息",
+      "orderNumber": "订单号",
+      "paymentTime": "支付时间",
+      "paymentMethod": "支付方式",
+      "purchasedProduct": "购买的产品",
+      "category": "分类",
+      "productPrice": "产品价格",
+      "total": "总计",
+      "buyerInfo": "购买者信息",
+      "name": "姓名",
+      "email": "邮箱",
+      "backToHome": "返回首页",
+      "viewProjectDetails": "查看项目详情",
+      "loadingDetails": "正在加载支付详情...",
+      "missingPaymentIntent": "缺少支付意图ID",
+      "paymentNotSucceeded": "支付未成功",
+      "loadDetailsFailed": "获取支付详情失败"
+    }
+  },
+  "content": {
+    "toc": "目录",
+    "copy": "复制",
+    "copied": "已复制",
+    "failedCopy": "复制失败，请手动复制",
+    "collapse": "收起",
+    "expand": "展开"
+  },
+  "tag": {
+    "title": "标签",
+    "description": "博客文章中使用的标签集合。",
+    "countOfArticles": "{count} 篇文章"
+  },
+  "archive": {
+    "title": "归档",
+    "description": "博客文章的归档集合。",
+    "loadMore": "加载更多..."
+  },
+  "user": {
+    "userTitle": "用户详情",
+    "userDescription": "查看用户个人信息",
+    "savedBlogTitle": "用户收藏"
+  },
+  "dashboard": {
+    "menu": {
+      "quickLinks": "快捷链接",
+      "myProfile": "个人资料",
+      "mySaved": "我的收藏",
+      "myPayments": "支付记录"
+    },
+    "quickLinks": {
+      "title": "仪表板",
+      "description": "选择下面的快捷操作来快速开始"
+    },
+    "myProfile": {
+      "title": "个人资料",
+      "description": "查看和管理您的个人信息",
+      "accountStatus": "账户状态",
+      "registeredAt": "注册时间",
+      "lastLogin": "最后登录",
+      "active": "活跃",
+      "deleted": "已删除",
+      "unknown": "未知",
+      "bio": "个人简介",
+      "editBio": "编辑个人简介",
+      "bioPlaceholder": "介绍一下你自己...",
+      "bioTooLong": "个人简介不能超过500个字符",
+      "bioTooShort": "个人简介不能少于10个字符",
+      "bioRequired": "请输入个人简介",
+      "bioDescription": "简短描述有助于他人了解你",
+      "bioRemaining": "字符剩余",
+      "location": {
+        "title": "位置信息",
+        "city": "城市",
+        "coordinates": "坐标",
+        "ipAddress": "IP 地址",
+        "unknown": "未知"
+      },
+      "changeAvatar": "更换头像",
+      "dragImageHere": "拖拽图片到此处或点击选择文件",
+      "supportedFormats": "支持 JPG、PNG 格式，大小不超过 5MB",
+      "selectFile": "选择文件",
+      "selectedFile": "已选择: {name}",
+      "reselect": "重新选择",
+      "uploading": "上传中...",
+      "uploadAvatar": "上传头像",
+      "zoom": "缩放调整",
+      "selectImage": "请选择图片",
+      "imageTooLarge": "图片大小不能超过 5MB"
+    },
+    "mySaved": {
+      "title": "我的收藏",
+      "description": "查看和管理您保存的博客文章。",
+      "total": "收藏总数",
+      "newItemsThisMonth": "本月新增",
+      "blogTitle": "博客标题",
+      "savedAt": "收藏时间",
+      "noSaved": "暂无收藏",
+      "noSavedDescription": "您还没有收藏任何博客文章"
+    },
+    "payments": {
+      "title": "支付记录",
+      "description": "查看和管理您的支付记录。",
+      "total": "支付记录总数",
+      "newItemsThisMonth": "本月新增",
+      "totalAmountThisMonth": "本月总金额",
+      "orderNumber": "订单号",
+      "paymentType": "支付方式",
+      "amount": "金额",
+      "paymentStatus": "支付状态",
+      "paymentTime": "支付时间",
+      "paymentMethod": "支付方式",
+      "paymentDetails": "支付详情",
+      "orderInfo": "订单信息",
+      "paymentSuccess": "成功",
+      "paymentFailed": "失败",
+      "paymentCanceled": "取消",
+      "projectInfo": "项目信息",
+      "projectTitle": "项目名称",
+      "noPayments": "暂无支付记录",
+      "noPaymentsDescription": "您还没有任何支付记录"
+    },
+    "copyright": {
+      "notice": "转载须注明出处与链接，遵循 {licenseText} 协议。"
+    }
+  }
+}

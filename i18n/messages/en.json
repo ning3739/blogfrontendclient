@@ -1,0 +1,382 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "loadFailed": "Load Failed",
+    "loadFailedMessage": "Unable to load data, please try again later",
+    "notFound": "Not Found",
+    "notFoundMessage": "The data you are looking for does not exist",
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "update": "Update",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "status": "Status",
+    "actions": "Actions",
+    "previewMode": "Preview Mode",
+    "content": "Content",
+    "published": "Published",
+    "draft": "Draft",
+    "close": "Close",
+    "noDescription": "No description",
+    "updatedAt": "Updated at",
+    "createdAt": "Created at",
+    "back": "Back",
+    "summary": "Summary",
+    "noMoreContent": "No more content",
+    "share": {
+      "shareButton": "Share",
+      "download": "Download Card",
+      "shareDescription": "Share this article"
+    }
+  },
+  "home": {
+    "common": {
+      "and": "and",
+      "dot": "."
+    },
+    "roles": {
+      "developer": "<Developer/>",
+      "designer": "Designer",
+      "detailOriented": "Detail-oriented",
+      "perfectionist": "Perfectionist"
+    },
+    "intro": {
+      "hi": "Hi, I'm",
+      "name": "XIAO LI",
+      "site": "This is my personal blog, documenting",
+      "tech": "Tech Exploration",
+      "design": "Design Thinking",
+      "life": "Life Insights"
+    },
+    "second": {
+      "iLovePrefix": "I love",
+      "coding": "coding",
+      "design": "design",
+      "believePrefix": ", and I believe great products come from an obsession with",
+      "details": "details"
+    },
+    "welcome": {
+      "prefix": "Welcome! I hope the words here bring you some",
+      "inspire": "inspiration",
+      "resonate": "resonance"
+    },
+    "recentPosts": "Recent Posts",
+    "subscribeTitle": "Subscribe",
+    "subscribeDescription": "If you like my content, please subscribe to support me 🫶",
+    "subscribeInputPlaceholder": "Enter your email address",
+    "subscribeValidationErrorMessage": "Please enter a valid email address",
+    "subscribeError": "Failed to subscribe, please try again later",
+    "subscribeLoading": "Subscribing...",
+    "alreadySubscribed": "subscribed",
+    "subscribeNotification": "We will notify you when there is new content",
+    "followTitle": "Follow Me"
+  },
+  "languageSwitcher": {
+    "switcher": "Language",
+    "english": "English",
+    "chinese": "Chinese"
+  },
+  "header": {
+    "dashboard": "Dashboard",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "footer": {
+    "about": "About",
+    "content": "Content",
+    "copyright": "Copyright",
+    "privacyPolicy": "Privacy Policy",
+    "siteMap": "Site Map",
+    "tags": "Tags",
+    "archive": "Archive",
+    "description": "Documenting life moments, sharing tech and essays. Here, every moment is worth recording, and every thought is worth sharing.",
+    "china": "China",
+    "since": "Since 2024"
+  },
+  "auth": {
+    "placeholder": {
+      "email": "m@example.com",
+      "username": "Username",
+      "code": "Enter verification code",
+      "password": "************"
+    },
+    "login": {
+      "title": "Welcome back",
+      "description": "Please login to your account to continue",
+      "username": "Username",
+      "email": "Email",
+      "password": "Password",
+      "login": "Login",
+      "forgotPassword": "Forgot password?",
+      "orContinueWith": "Or continue with",
+      "loginwithgithub": "Login with GitHub",
+      "loginwithgoogle": "Login with Google",
+      "donthaveaccount": "Don't have an account? ",
+      "signup": "Sign up"
+    },
+    "register": {
+      "title": "Create an account",
+      "description": "Please create an account to continue",
+      "username": "Username",
+      "email": "Email",
+      "code": "Verification Code",
+      "sendCode": "Send Code",
+      "password": "Password",
+      "register": "Register",
+      "registerSuccess": "Registration successful! Welcome aboard!",
+      "alreadyhaveaccount": "Already have an account? ",
+      "signin": "Sign in"
+    },
+    "resetPassword": {
+      "title": "Reset Password",
+      "description": "Please reset your password to continue",
+      "email": "Email",
+      "code": "Verification Code",
+      "sendCode": "Send Code",
+      "password": "Password",
+      "resetPassword": "Reset Password",
+      "rememberPassword": "Remember your password? ",
+      "signin": "Sign in"
+    },
+    "validation": {
+      "emailRequired": "Please enter your email address",
+      "emailInvalid": "Please enter a valid email address",
+      "usernameRequired": "Please enter your username",
+      "usernameTooShort": "Username must be at least 3 characters",
+      "codeRequired": "Please enter verification code",
+      "passwordRequired": "Please enter your password",
+      "passwordTooShort": "Password must be at least {minLength} characters"
+    }
+  },
+  "comment": {
+    "inputPlaceholder": "Write your comment...",
+    "submit": "Submit",
+    "update": "Update",
+    "submitting": "Submitting...",
+    "commentRequired": "Please enter a comment",
+    "commentTooLong": "Comment cannot exceed 500 characters",
+    "submitError": "Failed to submit, please try again",
+    "noComments": "No comments yet, come and grab the sofa!",
+    "reply": "Reply",
+    "replies": "{count} replies",
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "loadFailed": "Load Failed",
+    "loadFailedMessage": "Unable to load comment list, please try again later",
+    "beFirstToComment": "Be the first to comment!",
+    "loadMoreComments": "Load More Comments...",
+    "updatedAt": "Updated at",
+    "loginRequired": "Please login to post a comment"
+  },
+  "blog": {
+    "action": {
+      "summarySubtitle": "Generate summary",
+      "audio": {
+        "play": "Play",
+        "pause": "Pause",
+        "resume": "Resume",
+        "playDescription": "Play blog content",
+        "pauseDescription": "Pause blog content",
+        "resumeDescription": "Resume blog content"
+      }
+    }
+  },
+  "forum": {
+    "inputPlaceholder": "What do you want to say, or your suggestion, or your idea...",
+    "submit": "Submit",
+    "update": "Update",
+    "submitting": "Submitting...",
+    "commentRequired": "Please enter a comment",
+    "commentTooLong": "Comment cannot exceed 500 characters",
+    "submitError": "Failed to submit, please try again",
+    "noComments": "No comments yet, come and grab the sofa!",
+    "reply": "Reply",
+    "replies": "{count} replies",
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "loadFailed": "Load Failed",
+    "loadFailedMessage": "Unable to load forum details, please try again later",
+    "forumNotFound": "Forum Not Found",
+    "forumNotFoundMessage": "This forum does not exist or has been deleted",
+    "loadCommentsFailed": "Failed to Load Comments",
+    "loadCommentsFailedMessage": "Unable to load comment list, please try again later",
+    "beFirstToComment": "Be the first to comment!",
+    "loadMoreComments": "Load More Comments...",
+    "updatedAt": "Updated at",
+    "loginRequired": "Please login to post a comment"
+  },
+  "friend": {
+    "sitename": "Please enter your site name",
+    "siteurl": "Please enter your site url",
+    "sitelogourl": "Please enter your site logo url",
+    "sitedescription": "Please enter your site description",
+    "pleaselogin": "Please login to submit your site",
+    "sitenameRequired": "Please enter your site name",
+    "siteurlRequired": "Please enter your site url",
+    "sitelogourlRequired": "Please enter your site logo url",
+    "sitedescriptionRequired": "Please enter your site description",
+    "sitedescriptionTooLong": "Site description cannot exceed 100 characters",
+    "noFriendsYet": "No friends yet, come and grab the sofa!",
+    "beFirstToAddFriend": "Be the first to add a friend!",
+    "featuredFriends": "Featured Friends",
+    "normalFriends": "Normal Friends",
+    "loadMoreFriends": "Load More Friends..."
+  },
+  "project": {
+    "ProjectList": {
+      "title": "Projects",
+      "description": "A curated collection of web, mobile, and open-source projects I've worked on."
+    },
+    "pagination": {
+      "show": "Showing {start} - {end} of {total} projects",
+      "total": "Total {total} projects",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "price": "Price",
+    "free": "Free",
+    "buy": "Buy",
+    "purchased": "Purchased",
+    "attachmentId": "Attachment ID",
+    "attachment": "Attachment",
+    "available": "Available",
+    "none": "None",
+    "download": "Download",
+    "loginToPurchase": "Please login to purchase",
+    "wantToKnowMore": "Want to know more? Please purchase and download the attachment."
+  },
+  "payment": {
+    "success": {
+      "title": "Payment Successful!",
+      "description": "Thank you for your purchase, your order has been processed successfully",
+      "orderInfo": "Order Information",
+      "orderNumber": "Order Number",
+      "paymentTime": "Payment Time",
+      "paymentMethod": "Payment Method",
+      "purchasedProduct": "Purchased Product",
+      "category": "Category",
+      "productPrice": "Product Price",
+      "total": "Total",
+      "buyerInfo": "Buyer Information",
+      "name": "Name",
+      "email": "Email",
+      "backToHome": "Back to Home",
+      "viewProjectDetails": "View Project Details",
+      "loadingDetails": "Loading payment details...",
+      "missingPaymentIntent": "Missing payment intent ID",
+      "paymentNotSucceeded": "Payment not succeeded",
+      "loadDetailsFailed": "Failed to load payment details"
+    }
+  },
+  "content": {
+    "toc": "Table of Contents",
+    "copy": "Copy",
+    "copied": "Copied",
+    "failedCopy": "Failed to copy, please copy manually",
+    "collapse": "Collapse",
+    "expand": "Expand"
+  },
+  "tag": {
+    "title": "Tags",
+    "description": "A collection of tags used in the blog articles.",
+    "countOfArticles": "{count} articles"
+  },
+  "archive": {
+    "title": "Archive",
+    "description": "A collection of archive of the blog articles.",
+    "loadMore": "Load More..."
+  },
+  "user": {
+    "userTitle": "User Details",
+    "userDescription": "View user personal information",
+    "savedBlogTitle": "Saved Blogs"
+  },
+  "dashboard": {
+    "menu": {
+      "quickLinks": "Quick Links",
+      "myProfile": "My Profile",
+      "mySaved": "My Saved",
+      "myPayments": "My Payments"
+    },
+    "quickLinks": {
+      "title": "Quick Links",
+      "description": "Select the quick actions below to get started"
+    },
+    "myProfile": {
+      "title": "My Profile",
+      "description": "View and manage your personal information",
+      "accountStatus": "Account Status",
+      "registeredAt": "Registered At",
+      "lastLogin": "Last Login",
+      "active": "Active",
+      "deleted": "Deleted",
+      "unknown": "Unknown",
+      "bio": "Bio",
+      "editBio": "Edit Bio",
+      "bioPlaceholder": "Tell us about yourself...",
+      "bioTooLong": "Bio cannot exceed 500 characters",
+      "bioTooShort": "Bio cannot be less than 10 characters",
+      "bioRequired": "Please enter your bio",
+      "bioDescription": "A short description helps others understand you",
+      "bioRemaining": "characters remaining",
+      "location": {
+        "title": "Location",
+        "city": "City",
+        "coordinates": "Coordinates",
+        "ipAddress": "IP Address",
+        "unknown": "Unknown"
+      },
+      "changeAvatar": "Change Avatar",
+      "dragImageHere": "Drag and drop an image here or select a file",
+      "supportedFormats": "Supported formats: JPG, PNG, max 5MB",
+      "selectFile": "Select File",
+      "selectedFile": "Selected: {name}",
+      "reselect": "Re-select",
+      "uploading": "Uploading...",
+      "uploadAvatar": "Upload Avatar",
+      "zoom": "Zoom Adjustment",
+      "selectImage": "Please select an image",
+      "imageTooLarge": "Image size cannot exceed 5MB"
+    },
+    "mySaved": {
+      "title": "My Saved",
+      "description": "View and manage your saved blog articles.",
+      "total": "Total Saved",
+      "newItemsThisMonth": "New Items This Month",
+      "blogTitle": "Blog Title",
+      "savedAt": "Saved At",
+      "noSaved": "No Saved",
+      "noSavedDescription": "You have not saved any blog articles"
+    },
+    "payments": {
+      "title": "Payments",
+      "description": "View and manage your payment records.",
+      "total": "Total Payments",
+      "newItemsThisMonth": "New Items This Month",
+      "totalAmountThisMonth": "Total Amount This Month",
+      "orderNumber": "Order Number",
+      "paymentType": "Payment Type",
+      "amount": "Amount",
+      "paymentStatus": "Payment Status",
+      "paymentTime": "Payment Time",
+      "paymentMethod": "Payment Method",
+      "paymentDetails": "Payment Details",
+      "orderInfo": "Order Information",
+      "paymentSuccess": "Success",
+      "paymentFailed": "Failed",
+      "paymentCanceled": "Canceled",
+      "projectInfo": "Project Info",
+      "projectTitle": "Project Title",
+      "noPayments": "No Payments",
+      "noPaymentsDescription": "You don't have any payment records yet"
+    },
+    "copyright": {
+      "notice": "Reproduction must indicate the source and link, and comply with the {licenseText} agreement."
+    }
+  }
+}

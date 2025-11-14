@@ -1,0 +1,284 @@
+/* Tailwind 导入 */
+@import "tailwindcss";
+
+/* Mapbox GL CSS */
+@import "mapbox-gl/dist/mapbox-gl.css";
+
+/* 隐藏滚动条 */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+/* Light theme variables - 优雅灰蓝系 */
+@theme {
+  --color-background-50: #f8fafc; /* 最浅背景 */
+  --color-background-100: #f1f5f9; /* 主要背景 */
+  --color-background-200: #e2e8f0; /* 卡片背景 */
+  --color-background-300: #cbd5e1; /* 悬停背景 */
+  --color-background-400: #94a3b8;
+  --color-background-500: #64748b;
+
+  --color-foreground-50: #0f172a; /* 最深色，用于标题 */
+  --color-foreground-100: #1e293b; /* 深色，用于副标题 */
+  --color-foreground-200: #334155; /* 中深色 */
+  --color-foreground-300: #475569; /* 中色 */
+  --color-foreground-400: #64748b; /* 中浅色 */
+  --color-foreground-500: #94a3b8; /* 浅色，用于次要文本 */
+  --color-foreground-600: #cbd5e1; /* 最浅色 */
+
+  --color-card-50: #f8fafc;
+  --color-card-100: #f1f5f9;
+  --color-card-200: #e2e8f0;
+
+  --color-border-50: #e2e8f0;
+  --color-border-100: #cbd5e1;
+  --color-border-200: #94a3b8;
+  --color-border-300: #64748b;
+
+  --color-primary-50: #f0f9ff; /* 优雅蓝系 */
+  --color-primary-100: #e0f2fe;
+  --color-primary-200: #bae6fd;
+  --color-primary-300: #7dd3fc;
+  --color-primary-400: #38bdf8;
+  --color-primary-500: #0ea5e9;
+  --color-primary-600: #0284c7;
+  --color-primary-700: #0369a1;
+
+  --color-success-50: #f0fdf4;
+  --color-success-100: #dcfce7;
+  --color-success-400: #22c55e;
+  --color-success-500: #16a34a;
+
+  --color-warning-50: #fff9f0;
+  --color-warning-100: #fff1d6;
+  --color-warning-400: #f59e0b;
+  --color-warning-500: #d97706;
+
+  --color-error-50: #fff2f2;
+  --color-error-100: #ffdede;
+  --color-error-400: #ef4444;
+  --color-error-500: #dc2626;
+
+  --color-info-50: #f0f8ff;
+  --color-info-100: #dbeafe;
+  --color-info-400: #3b82f6;
+  --color-info-500: #2563eb;
+
+  --gradient-primary: linear-gradient(135deg, #0ea5e9, #0284c7);
+  --gradient-warm: linear-gradient(135deg, #f8fafc, #e2e8f0);
+  --gradient-subtle: linear-gradient(180deg, #f8fafc, #f1f5f9);
+
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.1),
+    0 2px 4px -1px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.1),
+    0 4px 6px -2px rgba(15, 23, 42, 0.05);
+}
+
+/* Dark theme variables - 深色灰蓝系 */
+.dark {
+  --color-background-50: #0f172a; /* 最深背景 */
+  --color-background-100: #1e293b; /* 主要背景 */
+  --color-background-200: #334155; /* 卡片背景 */
+  --color-background-300: #475569; /* 悬停背景 */
+  --color-background-400: #64748b;
+  --color-background-500: #94a3b8;
+
+  --color-foreground-50: #f8fafc; /* 最浅色，用于标题 */
+  --color-foreground-100: #f1f5f9; /* 浅色，用于副标题 */
+  --color-foreground-200: #e2e8f0; /* 中浅色 */
+  --color-foreground-300: #cbd5e1; /* 中色 */
+  --color-foreground-400: #94a3b8; /* 中深色 */
+  --color-foreground-500: #64748b; /* 深色，用于次要文本 */
+  --color-foreground-600: #475569; /* 最深色 */
+
+  --color-card-50: #1e293b;
+  --color-card-100: #334155;
+  --color-card-200: #475569;
+
+  --color-border-50: #334155;
+  --color-border-100: #475569;
+  --color-border-200: #64748b;
+  --color-border-300: #94a3b8;
+
+  --color-primary-50: #f0f9ff;
+  --color-primary-100: #e0f2fe;
+  --color-primary-200: #bae6fd;
+  --color-primary-300: #7dd3fc;
+  --color-primary-400: #38bdf8;
+  --color-primary-500: #0ea5e9;
+  --color-primary-600: #0284c7;
+  --color-primary-700: #0369a1;
+
+  --color-success-50: #14532d;
+  --color-success-100: #166534;
+  --color-success-400: #22c55e;
+  --color-success-500: #4ade80;
+
+  --color-warning-50: #5a3e10;
+  --color-warning-100: #7b5114;
+  --color-warning-400: #f59e0b;
+  --color-warning-500: #fbbf24;
+
+  --color-error-50: #5a1b1b;
+  --color-error-100: #7b1c1c;
+  --color-error-400: #ef4444;
+  --color-error-500: #f87171;
+
+  --color-info-50: #1e3a8a;
+  --color-info-100: #1e40af;
+  --color-info-400: #3b82f6;
+  --color-info-500: #60a5fa;
+
+  --gradient-primary: linear-gradient(135deg, #38bdf8, #0ea5e9);
+  --gradient-warm: linear-gradient(135deg, #1e293b, #334155);
+  --gradient-subtle: linear-gradient(180deg, #1e293b, #334155);
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4),
+    0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4),
+    0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
+
+/* 系统跟随深色模式 - 灰蓝系 */
+@media (prefers-color-scheme: dark) {
+  html:not(.light) {
+    /* 变量与 .dark 一致 */
+    --color-background-50: #0f172a; /* 最深背景 */
+    --color-background-100: #1e293b; /* 主要背景 */
+    --color-background-200: #334155; /* 卡片背景 */
+    --color-background-300: #475569; /* 悬停背景 */
+    --color-background-400: #64748b;
+    --color-background-500: #94a3b8;
+
+    --color-foreground-50: #f8fafc; /* 最浅色，用于标题 */
+    --color-foreground-100: #f1f5f9; /* 浅色，用于副标题 */
+    --color-foreground-200: #e2e8f0; /* 中浅色 */
+    --color-foreground-300: #cbd5e1; /* 中色 */
+    --color-foreground-400: #94a3b8; /* 中深色 */
+    --color-foreground-500: #64748b; /* 深色，用于次要文本 */
+    --color-foreground-600: #475569; /* 最深色 */
+
+    --color-card-50: #1e293b;
+    --color-card-100: #334155;
+    --color-card-200: #475569;
+
+    --color-border-50: #334155;
+    --color-border-100: #475569;
+    --color-border-200: #64748b;
+    --color-border-300: #94a3b8;
+
+    --color-primary-50: #f0f9ff;
+    --color-primary-100: #e0f2fe;
+    --color-primary-200: #bae6fd;
+    --color-primary-300: #7dd3fc;
+    --color-primary-400: #38bdf8;
+    --color-primary-500: #0ea5e9;
+    --color-primary-600: #0284c7;
+    --color-primary-700: #0369a1;
+
+    --color-success-50: #14532d;
+    --color-success-100: #166534;
+    --color-success-400: #22c55e;
+    --color-success-500: #4ade80;
+
+    --color-warning-50: #5a3e10;
+    --color-warning-100: #7b5114;
+    --color-warning-400: #f59e0b;
+    --color-warning-500: #fbbf24;
+
+    --color-error-50: #5a1b1b;
+    --color-error-100: #7b1c1c;
+    --color-error-400: #ef4444;
+    --color-error-500: #f87171;
+
+    --color-info-50: #1e3a8a;
+    --color-info-100: #1e40af;
+    --color-info-400: #3b82f6;
+    --color-info-500: #60a5fa;
+
+    --gradient-primary: linear-gradient(135deg, #38bdf8, #0ea5e9);
+    --gradient-warm: linear-gradient(135deg, #1e293b, #334155);
+    --gradient-subtle: linear-gradient(180deg, #1e293b, #334155);
+
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4),
+      0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4),
+      0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* 字体变量定义 */
+:root {
+  --font-sans: var(--font-crimson-pro);
+  --font-mono: var(--font-jetbrains-mono);
+  --font-chinese-sans: var(--font-noto-sans-sc);
+  --font-chinese-serif: var(--font-noto-serif-sc);
+
+  /* 标题字体 - 衬线字体优先，更有层次感 */
+  --font-heading: var(--font-chinese-serif), var(--font-sans), -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, serif;
+
+  /* 正文字体 - 无衬线字体优先，阅读体验更好 */
+  --font-body: var(--font-chinese-sans), var(--font-sans), -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* 代码字体 */
+  --font-code: var(--font-mono), "SF Mono", "Monaco", "Inconsolata",
+    "Roboto Mono", monospace;
+}
+
+/* Base styles */
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  line-height: 1.6;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  font-family: var(--font-body);
+}
+
+/* 标题字体 */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
+
+/* 段落字体 */
+p {
+  font-family: var(--font-body);
+}
+
+/* 代码字体 */
+code,
+pre {
+  font-family: var(--font-code);
+}
+
+/* 英文环境下，英文字体优先 */
+body[data-locale="en"],
+[lang="en"] {
+  --font-heading: var(--font-sans), var(--font-chinese-serif), -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, serif;
+  --font-body: var(--font-sans), var(--font-chinese-sans), -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* 中文环境下，中文字体优先 */
+body[data-locale="zh"],
+[lang="zh"] {
+  --font-heading: var(--font-chinese-serif), var(--font-sans), -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, serif;
+  --font-body: var(--font-chinese-sans), var(--font-sans), -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}

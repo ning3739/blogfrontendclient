@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://heyxiaoli.com
+
+# Sitemaps
+Sitemap: https://heyxiaoli.com/sitemap.xml
