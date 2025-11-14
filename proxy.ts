@@ -82,14 +82,14 @@ import { type NextRequest, NextResponse } from "next/server";
 
 const AUTH_PAGES = ["/login", "/register", "/reset-password"];
 
-export default async function middleware(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   const isAuthPage = AUTH_PAGES.some((page) => pathname.startsWith(page));
 
   if (isAuthPage) {
     try {
-      const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/check-login-status`;
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/check-auth-token`;
 
       const headers = new Headers(request.headers);
 
@@ -115,5 +115,5 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/login", "/register", "/forgot-password"],
+  matcher: ["/login", "/register", "/reset-password"],
 };
