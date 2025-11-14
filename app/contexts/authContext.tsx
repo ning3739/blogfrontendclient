@@ -139,10 +139,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const response = await authService.checkAuthToken();
       if (response.status === 200 && "data" in response) {
-        // 检查是否有有效的access_token或refresh_token
-        const hasValidToken =
-          response.data.access_token || response.data.refresh_token;
-        setIsAuthenticated(hasValidToken);
+        // 只检查 access_token：如果 access_token 有效，说明用户已登录且 token 未过期
+        // 如果 access_token 过期，应该通过自动刷新机制获取新的，而不是在这里判断
+        setIsAuthenticated(response.data.access_token === true);
       }
     } catch (error) {
       // 检查失败，设置为未认证状态

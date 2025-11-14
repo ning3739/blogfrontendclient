@@ -34,9 +34,12 @@ export default async function proxy(request: NextRequest) {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        // 检查是否有有效的 access_token 和 refresh_token
-        if (data.access_token === true && data.refresh_token === true) {
+        const result = await response.json();
+        // 后端返回格式: { status: 200, message: "...", data: { access_token: true/false, refresh_token: true/false } }
+        const data = result.data || result;
+        // 只检查 access_token：如果 access_token 有效，说明用户已登录且 token 未过期，应该重定向
+        // 如果 access_token 过期，应该通过自动刷新机制获取新的，而不是停留在登录页
+        if (data && data.access_token === true) {
           return NextResponse.redirect(new URL("/", request.url));
         }
       }
