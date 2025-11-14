@@ -51,7 +51,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           // 后端返回 data: true 表示登录成功
           setIsAuthenticated(response.data);
           console.log(response.data);
-          router.push("/");
+
+          // 检查 URL 中的 redirect 参数
+          if (typeof window !== "undefined") {
+            const searchParams = new URLSearchParams(window.location.search);
+            const redirectPath = searchParams.get("redirect");
+
+            // 如果有 redirect 参数且是有效路径，重定向到该页面，否则重定向到首页
+            const targetPath =
+              redirectPath && redirectPath.startsWith("/") ? redirectPath : "/";
+            router.push(targetPath);
+          } else {
+            router.push("/");
+          }
         }
       } catch (error: any) {
         const errorMessage = error.error || "登录失败，请重试";

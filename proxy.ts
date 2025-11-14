@@ -45,11 +45,16 @@ export default async function proxy(request: NextRequest) {
   const isProtected = isProtectedRoute(pathname);
   const cookieHeader = request.headers.get("cookie");
 
-  // 处理认证页面：如果已登录，重定向到首页
+  // 处理认证页面：如果已登录，重定向到首页或 redirect 参数指定的页面
   if (isAuthPage) {
     const authStatus = await checkAuthStatus(cookieHeader);
     if (authStatus.hasToken) {
-      return NextResponse.redirect(new URL("/", request.url));
+      // 检查是否有 redirect 参数
+      const redirectParam = request.nextUrl.searchParams.get("redirect");
+      const redirectPath = redirectParam && redirectParam.startsWith("/")
+        ? redirectParam
+        : "/";
+      return NextResponse.redirect(new URL(redirectPath, request.url));
     }
     // 如果未登录，允许访问认证页面
     return NextResponse.next();
