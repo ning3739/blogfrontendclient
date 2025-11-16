@@ -43,11 +43,34 @@ const MediaUploadModal = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const getFileIcon = (file: File) => {
-    const type = file.type;
-    if (type.startsWith("image/")) return ImageIcon;
-    if (type.startsWith("video/")) return Video;
-    if (type.startsWith("audio/")) return FileAudio;
-    if (type.includes("pdf") || type.includes("document")) return FileText;
+    const name = file.name.toLowerCase();
+    const extension = name.split(".").pop() || "";
+
+    // 图片格式：jpg, jpeg, png, gif
+    if (["jpg", "jpeg", "png", "gif"].includes(extension)) {
+      return ImageIcon;
+    }
+
+    // 视频格式：mp4, avi, mov, mkv
+    if (["mp4", "avi", "mov", "mkv"].includes(extension)) {
+      return Video;
+    }
+
+    // 音频格式：mp3, wav, aac
+    if (["mp3", "wav", "aac"].includes(extension)) {
+      return FileAudio;
+    }
+
+    // 文档格式：pdf, docx, xlsx, ppt, pptx, txt
+    if (["pdf", "docx", "xlsx", "ppt", "pptx", "txt"].includes(extension)) {
+      return FileText;
+    }
+
+    // 其他格式：zip, gz
+    if (["zip", "gz"].includes(extension)) {
+      return Folder;
+    }
+
     return Folder;
   };
 
@@ -249,7 +272,7 @@ const MediaUploadModal = ({
         <Upload className="w-12 h-12 text-foreground-300 mx-auto mb-4" />
         <p className="text-foreground-200 mb-2">拖拽文件到此处或点击选择文件</p>
         <p className="text-sm text-foreground-300 mb-4">
-          支持图片、视频、音频、文档等格式
+          支持格式：图片(jpg/png/gif)、视频(mp4/avi/mov/mkv)、音频(mp3/wav/aac)、文档(pdf/docx/xlsx/ppt/pptx/txt)、压缩包(zip/gz)
         </p>
         <Button
           onClick={() => fileInputRef.current?.click()}
@@ -265,7 +288,7 @@ const MediaUploadModal = ({
           multiple
           onChange={handleFileInput}
           className="hidden"
-          accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt"
+          accept=".jpg,.jpeg,.png,.gif,.mp4,.avi,.mov,.mkv,.mp3,.wav,.aac,.pdf,.docx,.xlsx,.ppt,.pptx,.txt,.zip,.gz"
         />
       </div>
 
