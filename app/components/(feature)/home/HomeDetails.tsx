@@ -307,7 +307,7 @@ const HomeDetails = () => {
       </div>
 
       {/* 社交图标 */}
-      <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4 md:gap-6">
+      <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4 md:gap-6 mt-6 sm:mt-8 md:mt-10">
         {socialLinks.map((social) => {
           const Icon = social.icon;
           return (
@@ -334,38 +334,67 @@ const HomeDetails = () => {
       />
 
       {/* 热门博客列表 */}
-      <div className="space-y-4 sm:space-y-6">
-        <h2 className="text-xl sm:text-2xl font-bold text-foreground-50 text-center">
-          {homeT("recentPosts")}
-        </h2>
+      <div className="space-y-6 sm:space-y-8">
+        {/* 标题区域 - 与整体设计语言保持一致 */}
+        <motion.div
+          className="text-left"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.3 }}
+        >
+          <motion.h2
+            className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground-50 mb-2"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.4 }}
+          >
+            {homeT("popularPosts")}
+          </motion.h2>
+        </motion.div>
 
         {!blogLists || blogLists.length === 0 ? (
-          <EmptyState
-            icon={FileText}
-            title={commonT("notFound")}
-            description={commonT("notFoundMessage")}
-          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4, delay: 1.5 }}
+          >
+            <EmptyState
+              icon={FileText}
+              title={commonT("notFound")}
+              description={commonT("notFoundMessage")}
+            />
+          </motion.div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {blogLists.map((blog) => (
-              <ContentCard
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+            {blogLists.map((blog, index) => (
+              <motion.div
                 key={blog.blog_id}
-                content={{
-                  id: blog.blog_id,
-                  title: blog.blog_title,
-                  description: blog.blog_description,
-                  cover_url: blog.cover_url,
-                  tags: blog.blog_tags?.map((tag) => ({
-                    id: tag.tag_id,
-                    title: tag.tag_title,
-                  })),
-                  stats: blog.blog_stats,
-                  created_at: blog.created_at,
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.5,
+                  delay: 1.5 + index * 0.1,
+                  ease: "easeOut",
                 }}
-                onClick={() => {
-                  router.push(`/${blog.section_slug}/${blog.blog_slug}`);
-                }}
-              />
+              >
+                <ContentCard
+                  content={{
+                    id: blog.blog_id,
+                    title: blog.blog_title,
+                    description: blog.blog_description,
+                    cover_url: blog.cover_url,
+                    tags: blog.blog_tags?.map((tag) => ({
+                      id: tag.tag_id,
+                      title: tag.tag_title,
+                    })),
+                    stats: blog.blog_stats,
+                    created_at: blog.created_at,
+                  }}
+                  onClick={() => {
+                    router.push(`/${blog.section_slug}/${blog.blog_slug}`);
+                  }}
+                />
+              </motion.div>
             ))}
           </div>
         )}
