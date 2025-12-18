@@ -13,6 +13,7 @@ import CopyRight from "@/app/components/ui/copyright/CopyRight";
 import EmptyState from "@/app/components/ui/error/EmptyState";
 import ErrorDisplay from "@/app/components/ui/error/ErrorDisplay";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
+import Subscribe from "@/app/components/(feature)/home/Subscribe";
 import Share from "@/app/components/ui/share/Share";
 import { useAuth } from "@/app/contexts/hooks/useAuth";
 import { handleDateFormat } from "@/app/lib/utils/handleDateFormat";
@@ -45,8 +46,11 @@ const BlogDetails: React.FC<BlogDetailsProps> = ({ blogSlug }) => {
     error,
   } = useSWR<GetBlogDetailsResponse>(
     isAuthenticated && user?.user_id
-      ? [`/blog/get-blog-details/${blogSlug}?is_editor=false&user_id=${user.user_id}`, locale]
-      : [`/blog/get-blog-details/${blogSlug}?is_editor=false`, locale],
+      ? [
+          `/blog/get-blog-details/${blogSlug}?is_editor=false&user_id=${user.user_id}`,
+          locale,
+        ]
+      : [`/blog/get-blog-details/${blogSlug}?is_editor=false`, locale]
   );
 
   const handleTagClick = (tagSlug: string) => {
@@ -55,7 +59,12 @@ const BlogDetails: React.FC<BlogDetailsProps> = ({ blogSlug }) => {
 
   if (isLoading) {
     return (
-      <LoadingSpinner variant="wave" size="lg" message={commonT("loading")} fullScreen={true} />
+      <LoadingSpinner
+        variant="wave"
+        size="lg"
+        message={commonT("loading")}
+        fullScreen={true}
+      />
     );
   }
 
@@ -176,7 +185,10 @@ const BlogDetails: React.FC<BlogDetailsProps> = ({ blogSlug }) => {
                         {commonT("updatedAt")}:
                       </span>
                       <span className="text-foreground-200 font-semibold text-sm">
-                        {handleDateFormat(blogDetails?.updated_at || "", format)}
+                        {handleDateFormat(
+                          blogDetails?.updated_at || "",
+                          format
+                        )}
                       </span>
                     </div>
                   </>
@@ -250,7 +262,7 @@ const BlogDetails: React.FC<BlogDetailsProps> = ({ blogSlug }) => {
                 title={blogDetails?.blog_name || ""}
                 createdAtText={`${commonT("createdAt")}: ${handleDateFormat(
                   blogDetails?.created_at || "",
-                  format,
+                  format
                 )}`}
               />
             </motion.div>
@@ -280,6 +292,8 @@ const BlogDetails: React.FC<BlogDetailsProps> = ({ blogSlug }) => {
               animate={{ opacity: 1, scaleX: 1 }}
               transition={{ duration: 0.5, delay: 1.1 }}
             />
+            {/* 订阅区域 */}
+            {!isAuthenticated && <Subscribe />}
 
             {/* 评论区域 */}
             <motion.div

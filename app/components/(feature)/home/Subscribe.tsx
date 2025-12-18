@@ -29,11 +29,15 @@ const Subscribe = () => {
     try {
       const response = await subscriberService.createSubscriber({ email });
       if (response.status === 200) {
-        toast.success("message" in response ? response.message : "Subscribed successfully");
+        toast.success(
+          "message" in response ? response.message : "Subscribed successfully"
+        );
         setIsSubscribed(true);
         setEmail("");
       } else {
-        toast.error("error" in response ? response.error : "Failed to subscribe");
+        toast.error(
+          "error" in response ? response.error : "Failed to subscribe"
+        );
       }
     } catch (error) {
       console.error(homeT("subscribeError"), error);
@@ -50,12 +54,17 @@ const Subscribe = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full h-full flex flex-col bg-background-100 border border-border-100 rounded-sm p-6 shadow-sm"
+        className="sm:w-full md:w-2/3 mx-auto h-full flex flex-col bg-background-100 border border-border-100 rounded-sm p-6 shadow-sm"
       >
         {/* 邮箱订阅 */}
         <div className="flex-1 flex flex-col">
-          <p className="text-sm text-foreground-300 mb-3">{homeT("subscribeDescription")}</p>
-          <form onSubmit={handleEmailSubscribe} className="space-y-3 flex-1 flex flex-col">
+          <p className="text-sm text-foreground-300 mb-3">
+            {homeT("subscribeDescription")}
+          </p>
+          <form
+            onSubmit={handleEmailSubscribe}
+            className="space-y-3 flex-1 flex flex-col"
+          >
             <InputField
               type="email"
               id="email-subscribe"
@@ -99,6 +108,14 @@ const Subscribe = () => {
           </motion.p>
         )}
       </motion.div>
+
+      {/* 分隔线 */}
+      <motion.div
+        className="w-full h-px bg-border-100 mx-auto my-16"
+        initial={{ opacity: 0, scaleX: 0 }}
+        animate={{ opacity: 1, scaleX: 1 }}
+        transition={{ duration: 0.5, delay: 1.1 }}
+      />
     </div>
   );
 };
