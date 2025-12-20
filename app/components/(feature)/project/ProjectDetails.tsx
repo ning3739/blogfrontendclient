@@ -56,7 +56,7 @@ function ProjectDetails({ projectSlug }: { projectSlug: string }) {
 
   const handleDownloadProject = async (attachmentId: number) => {
     await MediaService.downloadMedia({
-      media_ids: attachmentId,
+      media_id: attachmentId,
     });
   };
 

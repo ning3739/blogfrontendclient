@@ -69,10 +69,16 @@ const MEDIA_TYPE_CONFIG = {
   },
 } as const;
 
-const MediaLists = ({ mediaItems, pagination, setCurrentPage, onDataChange }: MediaListsProps) => {
+const MediaLists = ({
+  mediaItems,
+  pagination,
+  setCurrentPage,
+  onDataChange,
+}: MediaListsProps) => {
   const _locale = useLocale();
   const format = useFormatter();
-  const [optimisticMedia, setOptimisticMedia] = useState<MediaItem[]>(mediaItems);
+  const [optimisticMedia, setOptimisticMedia] =
+    useState<MediaItem[]>(mediaItems);
   const [previewImage, setPreviewImage] = useState<{
     url: string;
     alt: string;
@@ -84,7 +90,8 @@ const MediaLists = ({ mediaItems, pagination, setCurrentPage, onDataChange }: Me
 
   // 获取媒体类型的中文标签
   const getMediaTypeLabel = (mediaType: string) => {
-    const config = MEDIA_TYPE_CONFIG[mediaType as keyof typeof MEDIA_TYPE_CONFIG];
+    const config =
+      MEDIA_TYPE_CONFIG[mediaType as keyof typeof MEDIA_TYPE_CONFIG];
     return config?.label || mediaType;
   };
 
@@ -105,14 +112,16 @@ const MediaLists = ({ mediaItems, pagination, setCurrentPage, onDataChange }: Me
       handleMediaPreview(media);
     } else if (action === "download") {
       try {
-        await MediaService.downloadMedia({ media_ids: mediaId });
+        await MediaService.downloadMedia({ media_id: mediaId });
       } catch (error) {
         console.error("Failed to download media:", error);
       }
     } else if (action === "delete") {
       try {
         // Optimistic update - immediately remove from UI
-        setOptimisticMedia((prevMedia) => prevMedia.filter((m) => m.media_id !== mediaId));
+        setOptimisticMedia((prevMedia) =>
+          prevMedia.filter((m) => m.media_id !== mediaId)
+        );
 
         // Call API in background
         const response = await MediaService.deleteMedia({
@@ -120,13 +129,17 @@ const MediaLists = ({ mediaItems, pagination, setCurrentPage, onDataChange }: Me
         });
 
         if (response.status === 200) {
-          toast.success("message" in response ? response.message : "Media deleted");
+          toast.success(
+            "message" in response ? response.message : "Media deleted"
+          );
           // Refresh list after successful deletion
           if (onDataChange) {
             onDataChange();
           }
         } else {
-          toast.error("error" in response ? response.error : "Failed to delete media");
+          toast.error(
+            "error" in response ? response.error : "Failed to delete media"
+          );
           setOptimisticMedia(mediaItems);
         }
       } catch (error) {
@@ -148,7 +161,8 @@ const MediaLists = ({ mediaItems, pagination, setCurrentPage, onDataChange }: Me
 
   const handleMediaPreview = (media: MediaItem) => {
     if (media.media_type === "image") {
-      const imageUrl = media.thumbnail_filepath_url || media.original_filepath_url;
+      const imageUrl =
+        media.thumbnail_filepath_url || media.original_filepath_url;
       if (imageUrl) {
         setPreviewImage({
           url: imageUrl,
@@ -156,7 +170,8 @@ const MediaLists = ({ mediaItems, pagination, setCurrentPage, onDataChange }: Me
         });
       }
     } else if (media.media_type === "video") {
-      const videoUrl = media.thumbnail_filepath_url || media.original_filepath_url;
+      const videoUrl =
+        media.thumbnail_filepath_url || media.original_filepath_url;
       if (videoUrl) {
         setPreviewVideo({
           url: videoUrl,
@@ -167,7 +182,8 @@ const MediaLists = ({ mediaItems, pagination, setCurrentPage, onDataChange }: Me
   };
 
   const renderMediaPreview = (media: MediaItem) => {
-    const config = MEDIA_TYPE_CONFIG[media.media_type as keyof typeof MEDIA_TYPE_CONFIG];
+    const config =
+      MEDIA_TYPE_CONFIG[media.media_type as keyof typeof MEDIA_TYPE_CONFIG];
     if (!config) return null;
 
     const IconComponent = config.icon;
@@ -182,7 +198,9 @@ const MediaLists = ({ mediaItems, pagination, setCurrentPage, onDataChange }: Me
           loop
         />
       ) : (
-        <div className={`w-full h-full ${config.bgColor} flex items-center justify-center`}>
+        <div
+          className={`w-full h-full ${config.bgColor} flex items-center justify-center`}
+        >
           <IconComponent className={`w-8 h-8 ${config.color}`} />
         </div>
       );
@@ -199,7 +217,9 @@ const MediaLists = ({ mediaItems, pagination, setCurrentPage, onDataChange }: Me
           className="w-full h-full object-cover"
         />
       ) : (
-        <div className={`w-full h-full ${config.bgColor} flex items-center justify-center`}>
+        <div
+          className={`w-full h-full ${config.bgColor} flex items-center justify-center`}
+        >
           <IconComponent className={`w-8 h-8 ${config.color}`} />
         </div>
       );
@@ -207,7 +227,9 @@ const MediaLists = ({ mediaItems, pagination, setCurrentPage, onDataChange }: Me
 
     // 其他类型统一使用图标
     return (
-      <div className={`w-full h-full ${config.bgColor} flex items-center justify-center`}>
+      <div
+        className={`w-full h-full ${config.bgColor} flex items-center justify-center`}
+      >
         <IconComponent className={`w-8 h-8 ${config.color}`} />
       </div>
     );
@@ -256,7 +278,9 @@ const MediaLists = ({ mediaItems, pagination, setCurrentPage, onDataChange }: Me
                         <p className="text-xs lg:text-sm font-medium text-foreground-50 truncate">
                           {media.file_name}
                         </p>
-                        <p className="text-xs text-foreground-300 truncate">{media.media_uuid}</p>
+                        <p className="text-xs text-foreground-300 truncate">
+                          {media.media_uuid}
+                        </p>
                       </div>
                     </div>
                   </td>
@@ -279,11 +303,14 @@ const MediaLists = ({ mediaItems, pagination, setCurrentPage, onDataChange }: Me
                   </td>
                   <td className="py-3 lg:py-4 px-3 lg:px-4">
                     <div className="flex justify-end space-x-1 lg:space-x-2">
-                      {(media.media_type === "image" || media.media_type === "video") && (
+                      {(media.media_type === "image" ||
+                        media.media_type === "video") && (
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                          onClick={() => handleActionClick("preview", media.media_id)}
+                          onClick={() =>
+                            handleActionClick("preview", media.media_id)
+                          }
                           className="p-1.5 lg:p-2 bg-blue-50 text-blue-500 rounded-sm hover:bg-blue-100 transition-colors"
                           title="预览"
                         >
@@ -294,7 +321,9 @@ const MediaLists = ({ mediaItems, pagination, setCurrentPage, onDataChange }: Me
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => handleActionClick("download", media.media_id)}
+                        onClick={() =>
+                          handleActionClick("download", media.media_id)
+                        }
                         className="p-1.5 lg:p-2 bg-primary-50 text-primary-500 rounded-sm hover:bg-primary-100 transition-colors"
                         title="下载"
                       >
@@ -304,7 +333,9 @@ const MediaLists = ({ mediaItems, pagination, setCurrentPage, onDataChange }: Me
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => handleActionClick("delete", media.media_id)}
+                        onClick={() =>
+                          handleActionClick("delete", media.media_id)
+                        }
                         className="p-1.5 lg:p-2 bg-error-50 text-error-400 rounded-sm hover:bg-error-100 transition-colors"
                         title="删除"
                       >
@@ -354,11 +385,14 @@ const MediaLists = ({ mediaItems, pagination, setCurrentPage, onDataChange }: Me
                 </div>
 
                 <div className="flex space-x-1">
-                  {(media.media_type === "image" || media.media_type === "video") && (
+                  {(media.media_type === "image" ||
+                    media.media_type === "video") && (
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => handleActionClick("preview", media.media_id)}
+                      onClick={() =>
+                        handleActionClick("preview", media.media_id)
+                      }
                       className="p-1.5 bg-blue-50 text-blue-500 rounded-sm hover:bg-blue-100 transition-colors"
                       title="预览"
                     >
@@ -368,7 +402,9 @@ const MediaLists = ({ mediaItems, pagination, setCurrentPage, onDataChange }: Me
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => handleActionClick("download", media.media_id)}
+                    onClick={() =>
+                      handleActionClick("download", media.media_id)
+                    }
                     className="p-1.5 bg-primary-50 text-primary-500 rounded-sm hover:bg-primary-100 transition-colors"
                     title="下载"
                   >
@@ -435,11 +471,14 @@ const MediaLists = ({ mediaItems, pagination, setCurrentPage, onDataChange }: Me
                 {/* Actions Row */}
                 <div className="flex items-center justify-center space-x-1">
                   {/* Preview button - for images and videos */}
-                  {(media.media_type === "image" || media.media_type === "video") && (
+                  {(media.media_type === "image" ||
+                    media.media_type === "video") && (
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => handleActionClick("preview", media.media_id)}
+                      onClick={() =>
+                        handleActionClick("preview", media.media_id)
+                      }
                       className="px-3 py-1.5 rounded-sm transition-colors text-xs font-medium bg-blue-50 text-blue-500 hover:bg-blue-100"
                       title="预览"
                     >
@@ -451,7 +490,9 @@ const MediaLists = ({ mediaItems, pagination, setCurrentPage, onDataChange }: Me
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => handleActionClick("download", media.media_id)}
+                    onClick={() =>
+                      handleActionClick("download", media.media_id)
+                    }
                     className="px-3 py-1.5 rounded-sm transition-colors text-xs font-medium bg-primary-50 text-primary-500 hover:bg-primary-100"
                     title="下载"
                   >

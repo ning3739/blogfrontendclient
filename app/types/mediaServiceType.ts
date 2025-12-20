@@ -7,7 +7,7 @@ export interface UploadMediaRequest extends Files {}
 
 // 后端支持单个 ID 或 ID 数组
 export interface DownloadMediaRequest {
-  media_ids: number | number[];
+  media_id: number;
 }
 
 // 后端支持单个 ID 或 ID 数组
