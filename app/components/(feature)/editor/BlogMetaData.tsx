@@ -87,31 +87,37 @@ export const BlogMetaData = ({
   const seoDropdownRef = useRef<HTMLDivElement>(null);
   const tagDropdownRef = useRef<HTMLDivElement>(null);
   const sectionDropdownRef = useRef<HTMLDivElement>(null);
+  const initialDataLoadedRef = useRef<boolean>(false);
+  const prevInitialDataRef = useRef<string | null>(null);
 
-  // 当 initialData 更新时，更新所有状态
+  // 当 initialData 更新时，更新所有状态（仅在初始加载或数据真正变化时）
   useEffect(() => {
     if (initialData) {
-      setSelectedSeoId(initialData.selectedSeoId ?? null);
-      setSelectedCoverImageId(initialData.selectedCoverImageId ?? null);
-      setSelectedCoverImageUrl(initialData.selectedCoverImageUrl ?? null);
-      setSelectedSectionId(initialData.selectedSectionId ?? null);
-      setTitle(initialData.title ?? "");
-      setDescription(initialData.description ?? "");
+      // 使用 JSON.stringify 比较数据是否真正变化
+      const currentDataString = JSON.stringify({
+        seoId: initialData.selectedSeoId,
+        coverImageId: initialData.selectedCoverImageId,
+        coverImageUrl: initialData.selectedCoverImageUrl,
+        sectionId: initialData.selectedSectionId,
+        title: initialData.title,
+        description: initialData.description,
+        tags: initialData.selectedTags,
+      });
 
-      // 设置 selectedTags
-      setSelectedTags(initialData.selectedTags ?? []);
+      // 只有在数据真正变化时才更新状态
+      if (prevInitialDataRef.current !== currentDataString) {
+        prevInitialDataRef.current = currentDataString;
+        setSelectedSeoId(initialData.selectedSeoId ?? null);
+        setSelectedCoverImageId(initialData.selectedCoverImageId ?? null);
+        setSelectedCoverImageUrl(initialData.selectedCoverImageUrl ?? null);
+        setSelectedSectionId(initialData.selectedSectionId ?? null);
+        setTitle(initialData.title ?? "");
+        setDescription(initialData.description ?? "");
+        setSelectedTags(initialData.selectedTags ?? []);
+        initialDataLoadedRef.current = true;
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    initialData?.selectedSeoId,
-    initialData?.selectedCoverImageId,
-    initialData?.selectedCoverImageUrl,
-    initialData?.selectedSectionId,
-    initialData?.title,
-    initialData?.description,
-    initialData?.selectedTags?.length,
-    initialData,
-  ]);
+  }, [initialData]);
   const handleLoadMoreTag = () => {
     setCurrentTagPage((prev) => prev + 1);
   };

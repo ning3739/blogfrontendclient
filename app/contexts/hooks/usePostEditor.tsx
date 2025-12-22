@@ -7,7 +7,6 @@ import useSWR from "swr";
 import blogService from "@/app/lib/services/blogService";
 import type { GetBlogEditorDetailsResponse } from "@/app/types/blogServiceType";
 import type { BlogMetaData, UsePostEditorProps, UsePostEditorReturn } from "@/app/types/editorType";
-import type { TiptapContent } from "@/app/types/tiptapType";
 
 // 重新导出类型供其他组件使用
 export type { BlogMetaData, UsePostEditorProps, UsePostEditorReturn };
@@ -54,23 +53,16 @@ export const usePostEditor = ({
     return { isValid: missingFields.length === 0, missingFields };
   };
 
-  // 解析 JSON 内容的通用函数
-  const parseContent = (content: TiptapContent): JSONContent | null => {
-    if (!content) return null;
-
-    try {
-      return content as JSONContent;
-    } catch (error) {
-      console.error("Failed to parse content:", error);
-      return null;
-    }
-  };
-
   // 当博客数据加载完成时，预填充表单
   useEffect(() => {
     if (blogDetails && type === "update") {
       const blogData = blogDetails;
-      setContent(parseContent(blogData.chinese_content));
+      
+      // 解析并设置内容
+      const parsedContent = blogData.chinese_content
+        ? (blogData.chinese_content as JSONContent)
+        : null;
+      setContent(parsedContent);
 
       // 设置博客元数据
       setBlogMetaData({
@@ -83,8 +75,7 @@ export const usePostEditor = ({
         description: blogData.chinese_description || "",
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [blogDetails, type, parseContent, setContent]);
+  }, [blogDetails, type, setContent]);
 
   const handleBlogMetaDataSave = (data: BlogMetaData) => {
     setBlogMetaData(data);
