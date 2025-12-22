@@ -340,7 +340,7 @@ export default function AnalyticsPage() {
               transition={{ delay: 1.25 }}
             >
               <DistributionChart
-                title="博客分区分布"
+                title="博客栏目分布"
                 data={
                   blogStats
                     ? blogStats.section_distribution.map((item) => ({
@@ -425,7 +425,7 @@ export default function AnalyticsPage() {
               transition={{ delay: 1.5 }}
             >
               <DistributionChart
-                title="项目分区分布"
+                title="项目栏目分布"
                 data={
                   projectStats
                     ? projectStats.section_distribution.map((item) => ({
@@ -440,86 +440,83 @@ export default function AnalyticsPage() {
             </motion.div>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.55 }}
-          >
-            <RevenueProjectList
-              projects={revenueProjects}
-              isLoading={revenueProjectsLoading}
-              error={revenueProjectsError}
-            />
-          </motion.div>
+          {/* 只在有收入项目数据时显示 */}
+          {revenueProjects && revenueProjects.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.55 }}
+            >
+              <RevenueProjectList
+                projects={revenueProjects}
+                isLoading={revenueProjectsLoading}
+                error={revenueProjectsError}
+              />
+            </motion.div>
+          )}
         </div>
 
-        {/* Payment Analytics Section */}
-        <div className="px-4 sm:px-6 pb-4 sm:pb-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.6 }}
-            className="mb-4"
-          >
-            <h2 className="text-xl sm:text-2xl font-semibold text-foreground-50 mb-1">支付分析</h2>
-            <p className="text-sm text-foreground-300">
-              支付方式与状态统计
-              {paymentStats && (
+        {/* Payment Analytics Section - 只在有支付数据时显示 */}
+        {paymentStats && paymentStats.total_payments > 0 && (
+          <div className="px-4 sm:px-6 pb-4 sm:pb-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.6 }}
+              className="mb-4"
+            >
+              <h2 className="text-xl sm:text-2xl font-semibold text-foreground-50 mb-1">
+                支付分析
+              </h2>
+              <p className="text-sm text-foreground-300">
+                支付方式与状态统计
                 <span className="ml-2 text-foreground-200">
                   (总支付: {paymentStats.total_payments} | 成功支付:{" "}
                   {paymentStats.successful_payments} | 总税费:{" "}
                   {formatCurrency(paymentStats.total_tax, format, "NZD")})
                 </span>
-              )}
-            </p>
-          </motion.div>
+              </p>
+            </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.65 }}
-            >
-              <DistributionChart
-                title="支付方式分布"
-                data={
-                  paymentStats
-                    ? Object.entries(paymentStats.payment_type_distribution).map(
-                        ([name, value]) => ({
-                          name,
-                          value,
-                        }),
-                      )
-                    : undefined
-                }
-                isLoading={paymentStatsLoading}
-                error={paymentStatsError}
-              />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.7 }}
-            >
-              <DistributionChart
-                title="支付状态分布"
-                data={
-                  paymentStats
-                    ? Object.entries(paymentStats.payment_status_distribution).map(
-                        ([name, value]) => ({
-                          name: name === "success" ? "成功" : name === "failed" ? "失败" : "取消",
-                          value,
-                        }),
-                      )
-                    : undefined
-                }
-                colors={["#10B981", "#EF4444", "#F59E0B"]}
-                isLoading={paymentStatsLoading}
-                error={paymentStatsError}
-              />
-            </motion.div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.65 }}
+              >
+                <DistributionChart
+                  title="支付方式分布"
+                  data={Object.entries(paymentStats.payment_type_distribution).map(
+                    ([name, value]) => ({
+                      name,
+                      value,
+                    }),
+                  )}
+                  isLoading={paymentStatsLoading}
+                  error={paymentStatsError}
+                />
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.7 }}
+              >
+                <DistributionChart
+                  title="支付状态分布"
+                  data={Object.entries(paymentStats.payment_status_distribution).map(
+                    ([name, value]) => ({
+                      name: name === "success" ? "成功" : name === "failed" ? "失败" : "取消",
+                      value,
+                    }),
+                  )}
+                  colors={["#10B981", "#EF4444", "#F59E0B"]}
+                  isLoading={paymentStatsLoading}
+                  error={paymentStatsError}
+                />
+              </motion.div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
