@@ -56,7 +56,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.2 }}
-        className="text-xl font-semibold text-foreground-50 mb-2"
+        className="text-xl font-semibold text-foreground-50 mb-2 text-center px-4 max-w-2xl"
       >
         {title}
       </motion.h3>
@@ -66,7 +66,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
-          className="text-foreground-400 text-center"
+          className="text-foreground-400 text-center px-4 max-w-xl"
         >
           {description}
         </motion.p>
