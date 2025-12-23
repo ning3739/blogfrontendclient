@@ -381,14 +381,6 @@ npm run lint
 4. Create pages in `app/(pages)/`
 5. Add translations in `i18n/messages/`
 
-## Testing
-
-<!-- Add frontend testing instructions here. Example: Jest, React Testing Library, Cypress, etc. -->
-
-## FAQ
-
-<!-- Add common frontend issues and solutions here. Example: build errors, environment setup, browser compatibility, etc. -->
-
 ## Contributing
 
 Contributions are welcome! Please follow these steps:
