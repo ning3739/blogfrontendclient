@@ -30,11 +30,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // 只有在认证状态下才获取用户信息
-  // keepPreviousData: true 可以在重新验证时保留之前的数据，避免闪烁
-  const { data: user, isLoading: userLoading } = useSWR(
+  const { data: user, isValidating: userLoading } = useSWR(
     isAuthenticated ? "/user/me/get-my-profile" : null,
     {
-      keepPreviousData: true,
       revalidateOnMount: true,
     }
   );

@@ -11,7 +11,6 @@ export const swrConfig: SWRConfiguration = {
   errorRetryInterval: 1000,
   dedupingInterval: 500, // 减少去重间隔，加快数据更新
   shouldRetryOnError: (error) => error?.status !== 401,
-  keepPreviousData: true, // 全局启用保留之前数据，避免闪烁
 };
 
 // 添加语言变化监听，自动重新验证所有数据
