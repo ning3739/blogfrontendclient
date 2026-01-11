@@ -112,7 +112,7 @@ const Header = () => {
         y: isHeaderVisible ? 0 : -100,
       }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="md:backdrop-blur-sm md:border-b md:border-border-50 fixed top-0 left-0 right-0 z-50"
+      className="backdrop-blur-sm border-b border-border-50 bg-background-50/80 fixed top-0 left-0 right-0 z-50"
     >
       <div className="container lg:max-w-6xl md:max-w-5xl sm:max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 border-x border-border-50">
         <div className="flex justify-between items-center h-16">
