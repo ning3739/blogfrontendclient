@@ -209,19 +209,23 @@ function ProjectDetails({ projectSlug }: { projectSlug: string }) {
             </motion.div>
 
             {/* 分割线 */}
-            {projectDetails?.project_price && projectDetails.project_price > 0 && (
-              <motion.div
-                className="max-full h-px bg-border-100 mx-auto mb-16"
-                initial={{ opacity: 0, scaleX: 0 }}
-                animate={{ opacity: 1, scaleX: 1 }}
-                transition={{ duration: 0.5, delay: 1.3 }}
-              />
-            )}
+            {projectDetails?.project_price !== undefined &&
+              projectDetails?.project_price !== null &&
+              projectDetails.project_price > 0 && (
+                <motion.div
+                  className="max-full h-px bg-border-100 mx-auto mb-16"
+                  initial={{ opacity: 0, scaleX: 0 }}
+                  animate={{ opacity: 1, scaleX: 1 }}
+                  transition={{ duration: 0.5, delay: 1.3 }}
+                />
+              )}
 
             {!isAuthenticated && <Subscribe />}
 
             {/* 项目价格和操作区域 */}
-            {projectDetails?.project_price && projectDetails.project_price > 0 && (
+            {projectDetails?.project_price !== undefined &&
+              projectDetails?.project_price !== null &&
+              projectDetails.project_price > 0 && (
               <>
                 {/* 未购买时显示提示文字 */}
                 {!isAuthenticated && (
