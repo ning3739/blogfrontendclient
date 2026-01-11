@@ -25,7 +25,7 @@ const LanguageSwitcher = () => {
         flag: <US className="w-4 h-4 rounded-sm" />,
       },
     ],
-    [t]
+    [t],
   );
 
   const handleLanguageChange = async (newLocale: string) => {

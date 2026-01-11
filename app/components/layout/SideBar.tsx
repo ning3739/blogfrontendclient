@@ -8,10 +8,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import SiteLogo from "@/app/components/ui/logo/SiteLogo";
 import { useAuth } from "@/app/contexts/hooks/useAuth";
-import {
-  type MenuItem,
-  useSidebarRoutes,
-} from "@/app/contexts/hooks/useSidebarRoutes";
+import { type MenuItem, useSidebarRoutes } from "@/app/contexts/hooks/useSidebarRoutes";
 
 interface SideBarProps {
   isOpen?: boolean;
@@ -26,12 +23,7 @@ interface SidebarItemProps {
   onClick: (path: string) => void;
 }
 
-const SidebarItem: React.FC<SidebarItemProps> = ({
-  item,
-  index,
-  isCollapsed,
-  onClick,
-}) => {
+const SidebarItem: React.FC<SidebarItemProps> = ({ item, index, isCollapsed, onClick }) => {
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
@@ -50,7 +42,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         isCollapsed ? "justify-center py-4 mx-1" : "px-4 py-3 mx-2 space-x-3",
         item.active
           ? "bg-primary-50 text-primary-600 border-l-4 border-primary-500 rounded-sm font-semibold"
-          : "hover:bg-background-100 text-foreground-200 hover:text-foreground-50 rounded-lg"
+          : "hover:bg-background-100 text-foreground-200 hover:text-foreground-50 rounded-lg",
       )}
     >
       <item.icon
@@ -59,14 +51,14 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           isCollapsed ? "w-5 h-5" : "w-5 h-5",
           item.active
             ? "text-primary-600 scale-105"
-            : "text-foreground-300 group-hover:text-foreground-50 group-hover:scale-102"
+            : "text-foreground-300 group-hover:text-foreground-50 group-hover:scale-102",
         )}
       />
       {!isCollapsed && (
         <span
           className={clsx(
             "text-sm transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]",
-            item.active ? "font-semibold scale-102" : "font-medium"
+            item.active ? "font-semibold scale-102" : "font-medium",
           )}
         >
           {item.label}
@@ -110,7 +102,7 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen = true, onClose }) => {
       <aside
         className={clsx(
           "hidden lg:block h-screen sticky top-0 bg-card-50 border-r border-border-50 transition-all duration-300",
-          isCollapsed ? "w-16" : "w-64"
+          isCollapsed ? "w-16" : "w-64",
         )}
       >
         <div className="h-full flex flex-col">
@@ -123,11 +115,7 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen = true, onClose }) => {
               onClick={() => setIsCollapsed(!isCollapsed)}
               className="p-2 text-foreground-300 hover:text-foreground-100 transition-colors duration-200"
             >
-              {isCollapsed ? (
-                <PanelRight className="w-5 h-5" />
-              ) : (
-                <PanelLeft className="w-5 h-5" />
-              )}
+              {isCollapsed ? <PanelRight className="w-5 h-5" /> : <PanelLeft className="w-5 h-5" />}
             </motion.button>
           </div>
 
@@ -138,15 +126,13 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen = true, onClose }) => {
           <div
             className={clsx(
               "border-t border-border-50 bg-background-100",
-              isCollapsed ? "p-2" : "p-4"
+              isCollapsed ? "p-2" : "p-4",
             )}
           >
             <div
               className={clsx(
                 "flex hover:bg-background-200 rounded-lg cursor-pointer transition-all duration-200 group",
-                isCollapsed
-                  ? "justify-center p-3"
-                  : "items-center space-x-3 p-3"
+                isCollapsed ? "justify-center p-3" : "items-center space-x-3 p-3",
               )}
             >
               {!isCollapsed && (
@@ -171,15 +157,13 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen = true, onClose }) => {
                   <p className="text-sm font-semibold text-foreground-50 truncate">
                     {user?.username}
                   </p>
-                  <p className="text-xs text-foreground-400 truncate">
-                    {user?.email}
-                  </p>
+                  <p className="text-xs text-foreground-400 truncate">{user?.email}</p>
                 </div>
               )}
               <LogOut
                 className={clsx(
                   "text-foreground-400 hover:text-error-500 transition-colors duration-200 cursor-pointer",
-                  isCollapsed ? "w-7 h-7" : "w-5 h-5"
+                  isCollapsed ? "w-7 h-7" : "w-5 h-5",
                 )}
                 onClick={accountLogout}
               />
@@ -250,9 +234,7 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen = true, onClose }) => {
                     <p className="text-sm font-semibold text-foreground-50 truncate">
                       {user?.username}
                     </p>
-                    <p className="text-xs text-foreground-400 truncate">
-                      {user?.email}
-                    </p>
+                    <p className="text-xs text-foreground-400 truncate">{user?.email}</p>
                   </div>
                   <LogOut
                     className="w-4 h-4 text-foreground-400 hover:text-error-500 transition-colors duration-200 cursor-pointer"

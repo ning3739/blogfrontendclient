@@ -37,12 +37,7 @@ const TagDetails: React.FC<TagDetailsProps> = ({ tagSlug }) => {
 
   if (isLoading) {
     return (
-      <LoadingSpinner
-        variant="wave"
-        size="lg"
-        message={commonT("loading")}
-        fullScreen={true}
-      />
+      <LoadingSpinner variant="wave" size="lg" message={commonT("loading")} fullScreen={true} />
     );
   }
 

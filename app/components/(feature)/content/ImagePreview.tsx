@@ -13,12 +13,7 @@ interface ImagePreviewProps {
   onClose: () => void;
 }
 
-const ImagePreview = ({
-  isOpen,
-  imageUrl,
-  imageAlt = "Preview",
-  onClose,
-}: ImagePreviewProps) => {
+const ImagePreview = ({ isOpen, imageUrl, imageAlt = "Preview", onClose }: ImagePreviewProps) => {
   const [scale, setScale] = useState(1);
   const [rotation, setRotation] = useState(0);
 
@@ -208,9 +203,7 @@ const ImagePreview = ({
   );
 
   // 使用 Portal 将模态框渲染到 body 下
-  return typeof window !== "undefined"
-    ? createPortal(modalContent, document.body)
-    : null;
+  return typeof window !== "undefined" ? createPortal(modalContent, document.body) : null;
 };
 
 export default ImagePreview;

@@ -79,9 +79,7 @@ export default function MenuBar({ editor }: MenuBarProps) {
   const [showLanguageSelector, setShowLanguageSelector] = useState(false);
   const [showCaptionInput, setShowCaptionInput] = useState(false);
   const [captionText, setCaptionText] = useState("");
-  const [captionType, setCaptionType] = useState<
-    "image" | "video" | "audio" | null
-  >(null);
+  const [captionType, setCaptionType] = useState<"image" | "video" | "audio" | null>(null);
   const [showLinkInput, setShowLinkInput] = useState(false);
   const [linkUrl, setLinkUrl] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -91,10 +89,7 @@ export default function MenuBar({ editor }: MenuBarProps) {
   // 点击外部关闭下拉菜单
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsLanguageDropdownOpen(false);
         setShowLanguageSelector(false);
       }
@@ -231,12 +226,7 @@ export default function MenuBar({ editor }: MenuBarProps) {
 
   // 创建带语言的代码块
   const createCodeBlockWithLanguage = (language: string) => {
-    editor
-      .chain()
-      .focus()
-      .toggleCodeBlock()
-      .updateAttributes("codeBlock", { language })
-      .run();
+    editor.chain().focus().toggleCodeBlock().updateAttributes("codeBlock", { language }).run();
     setIsLanguageDropdownOpen(false);
     setShowLanguageSelector(false);
   };
@@ -315,12 +305,7 @@ export default function MenuBar({ editor }: MenuBarProps) {
   const handleLinkSubmit = () => {
     if (linkUrl.trim()) {
       // 添加或更新链接
-      editor
-        .chain()
-        .focus()
-        .extendMarkRange("link")
-        .setLink({ href: linkUrl.trim() })
-        .run();
+      editor.chain().focus().extendMarkRange("link").setLink({ href: linkUrl.trim() }).run();
     } else {
       // 如果 URL 为空，删除链接
       editor.chain().focus().unsetLink().run();
@@ -367,8 +352,8 @@ export default function MenuBar({ editor }: MenuBarProps) {
         disabled
           ? "text-foreground-400 opacity-50 cursor-not-allowed"
           : isActive
-          ? "bg-primary-50 text-primary-600"
-          : "text-foreground-300 hover:bg-background-100 hover:text-foreground-50"
+            ? "bg-primary-50 text-primary-600"
+            : "text-foreground-300 hover:bg-background-100 hover:text-foreground-50"
       }`}
       title={title}
     >
@@ -437,9 +422,8 @@ export default function MenuBar({ editor }: MenuBarProps) {
             >
               <span className="text-sm font-mono">
                 {editor.isActive("codeBlock")
-                  ? supportedLanguages.find(
-                      (lang) => lang.value === getCurrentCodeBlockLanguage()
-                    )?.label || "纯文本"
+                  ? supportedLanguages.find((lang) => lang.value === getCurrentCodeBlockLanguage())
+                      ?.label || "纯文本"
                   : "选择语言"}
               </span>
               <ChevronDown size={14} />
@@ -478,27 +462,21 @@ export default function MenuBar({ editor }: MenuBarProps) {
       {/* 标题 */}
       <div className="flex gap-1 border-r border-border-50 pr-3 mr-2">
         <Button
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 1 }).run()
-          }
+          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
           isActive={editor.isActive("heading", { level: 1 })}
           title="标题 1"
         >
           <Heading1 size={18} />
         </Button>
         <Button
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 2 }).run()
-          }
+          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           isActive={editor.isActive("heading", { level: 2 })}
           title="标题 2"
         >
           <Heading2 size={18} />
         </Button>
         <Button
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 3 }).run()
-          }
+          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
           isActive={editor.isActive("heading", { level: 3 })}
           title="标题 3"
         >
@@ -548,11 +526,7 @@ export default function MenuBar({ editor }: MenuBarProps) {
           </div>
         ) : (
           <>
-            <Button
-              onClick={handleLinkClick}
-              isActive={editor.isActive("link")}
-              title="添加链接"
-            >
+            <Button onClick={handleLinkClick} isActive={editor.isActive("link")} title="添加链接">
               <Link size={18} />
             </Button>
             {editor.isActive("link") && (
@@ -597,43 +571,30 @@ export default function MenuBar({ editor }: MenuBarProps) {
       </div>
 
       {/* 媒体说明 (图片/视频/音频) */}
-      {(editor.isActive("image") ||
-        editor.isActive("video") ||
-        editor.isActive("audio")) && (
+      {(editor.isActive("image") || editor.isActive("video") || editor.isActive("audio")) && (
         <div className="flex gap-1 items-center border-r border-border-50 pr-3 mr-2">
           {!showCaptionInput ||
           captionType !==
-            (editor.isActive("image")
-              ? "image"
-              : editor.isActive("video")
-              ? "video"
-              : "audio") ? (
+            (editor.isActive("image") ? "image" : editor.isActive("video") ? "video" : "audio") ? (
             <Button
               onClick={() =>
                 handleCaptionClick(
-                  editor.isActive("image")
-                    ? "image"
-                    : editor.isActive("video")
-                    ? "video"
-                    : "audio"
+                  editor.isActive("image") ? "image" : editor.isActive("video") ? "video" : "audio",
                 )
               }
               isActive={
                 !!(
-                  (editor.isActive("image") &&
-                    editor.getAttributes("image").caption) ||
-                  (editor.isActive("video") &&
-                    editor.getAttributes("video").caption) ||
-                  (editor.isActive("audio") &&
-                    editor.getAttributes("audio").caption)
+                  (editor.isActive("image") && editor.getAttributes("image").caption) ||
+                  (editor.isActive("video") && editor.getAttributes("video").caption) ||
+                  (editor.isActive("audio") && editor.getAttributes("audio").caption)
                 )
               }
               title={
                 editor.isActive("image")
                   ? "添加图片说明"
                   : editor.isActive("video")
-                  ? "添加视频说明"
-                  : "添加音频说明"
+                    ? "添加视频说明"
+                    : "添加音频说明"
               }
             >
               <FileText size={18} />
@@ -651,8 +612,8 @@ export default function MenuBar({ editor }: MenuBarProps) {
                   captionType === "image"
                     ? "输入图片说明..."
                     : captionType === "video"
-                    ? "输入视频说明..."
-                    : "输入音频说明..."
+                      ? "输入视频说明..."
+                      : "输入音频说明..."
                 }
                 className="px-2 py-1 text-sm border border-border-100 rounded-sm bg-card-50 text-foreground-200 focus:outline-none focus:border-primary-500 min-w-[200px]"
               />
@@ -689,16 +650,10 @@ export default function MenuBar({ editor }: MenuBarProps) {
 
       {/* 撤销/重做 */}
       <div className="flex gap-1">
-        <Button
-          onClick={() => editor.chain().focus().undo().run()}
-          title="撤销"
-        >
+        <Button onClick={() => editor.chain().focus().undo().run()} title="撤销">
           <Undo size={18} />
         </Button>
-        <Button
-          onClick={() => editor.chain().focus().redo().run()}
-          title="重做"
-        >
+        <Button onClick={() => editor.chain().focus().redo().run()} title="重做">
           <Redo size={18} />
         </Button>
       </div>

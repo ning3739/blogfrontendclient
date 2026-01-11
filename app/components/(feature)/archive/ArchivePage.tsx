@@ -20,9 +20,7 @@ const ArchivePage: React.FC = () => {
   const [limit] = useState(2);
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasNext, setHasNext] = useState(false);
-  const [allBlogs, setAllBlogs] = useState<
-    GetArchivedBlogListsResponse["blogs"]
-  >([]);
+  const [allBlogs, setAllBlogs] = useState<GetArchivedBlogListsResponse["blogs"]>([]);
   const [loadMoreCursor, setLoadMoreCursor] = useState<string | null>(null);
 
   // 构建初始 API 端点（不传 cursor，表示第一页）
@@ -38,12 +36,9 @@ const ArchivePage: React.FC = () => {
   } = useSWR<GetArchivedBlogListsResponse>(getInitialApiEndpoint());
 
   // 获取更多数据（当用户点击加载更多时）
-  const { data: moreBlogsData, isLoading: isLoadingMore } =
-    useSWR<GetArchivedBlogListsResponse>(
-      loadMoreCursor
-        ? `/blog/get-archived-blog-lists?limit=${limit}&cursor=${loadMoreCursor}`
-        : null
-    );
+  const { data: moreBlogsData, isLoading: isLoadingMore } = useSWR<GetArchivedBlogListsResponse>(
+    loadMoreCursor ? `/blog/get-archived-blog-lists?limit=${limit}&cursor=${loadMoreCursor}` : null,
+  );
 
   // 处理初始数据加载
   useEffect(() => {
@@ -60,10 +55,7 @@ const ArchivePage: React.FC = () => {
       setAllBlogs((prev) => {
         // 避免重复添加
         const newBlogs = moreBlogsData.blogs.filter(
-          (newBlog) =>
-            !prev.some(
-              (existingBlog) => existingBlog.blog_id === newBlog.blog_id
-            )
+          (newBlog) => !prev.some((existingBlog) => existingBlog.blog_id === newBlog.blog_id),
         );
         return newBlogs.length > 0 ? [...prev, ...newBlogs] : prev;
       });
@@ -82,12 +74,7 @@ const ArchivePage: React.FC = () => {
   // 初始加载状态
   if (isLoading && allBlogs.length === 0) {
     return (
-      <LoadingSpinner
-        variant="wave"
-        size="lg"
-        message={commonT("loading")}
-        fullScreen={true}
-      />
+      <LoadingSpinner variant="wave" size="lg" message={commonT("loading")} fullScreen={true} />
     );
   }
 
@@ -173,8 +160,7 @@ const ArchivePage: React.FC = () => {
                       const prevYear = prevBlog
                         ? new Date(prevBlog.created_at).getFullYear()
                         : null;
-                      const isFirstInYear =
-                        index === 0 || prevYear !== blogYear;
+                      const isFirstInYear = index === 0 || prevYear !== blogYear;
 
                       return (
                         <motion.div
@@ -215,8 +201,7 @@ const ArchivePage: React.FC = () => {
                           <BlogCard
                             blog={blog}
                             onClick={() => {
-                              const sectionPath =
-                                blog.section_slug || "journal";
+                              const sectionPath = blog.section_slug || "journal";
                               router.push(`/${sectionPath}/${blog.blog_slug}`);
                             }}
                             className="flex-1 ml-4 sm:ml-6 md:ml-8"
@@ -275,9 +260,7 @@ const ArchivePage: React.FC = () => {
                     damping: 20,
                   }}
                 >
-                  {isLoadingMore && (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  )}
+                  {isLoadingMore && <Loader2 className="w-4 h-4 animate-spin" />}
                   <span className="hidden sm:inline">
                     {isLoadingMore ? commonT("loading") : archiveT("loadMore")}
                   </span>

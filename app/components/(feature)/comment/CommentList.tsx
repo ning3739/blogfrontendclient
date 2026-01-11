@@ -1,11 +1,4 @@
-import {
-  Clock,
-  Edit3,
-  Loader2,
-  MapPin,
-  MessageCircle,
-  Trash2,
-} from "lucide-react";
+import { Clock, Edit3, Loader2, MapPin, MessageCircle, Trash2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -59,18 +52,12 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
   };
 
   // 获取初始评论列表（只获取第一页）
-  const {
-    data: commentsData,
-    isLoading,
-    error,
-  } = useSWR(getInitialApiEndpoint());
+  const { data: commentsData, isLoading, error } = useSWR(getInitialApiEndpoint());
 
   // 检查是否有任何操作正在进行
   const isAnyOperationInProgress = (commentId: number) => {
     return (
-      replyingTo === commentId ||
-      editingComment === commentId ||
-      deletingComment === commentId
+      replyingTo === commentId || editingComment === commentId || deletingComment === commentId
     );
   };
 
@@ -94,19 +81,15 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
       }
 
       if (response.status === 200) {
-        toast.success(
-          "message" in response ? response.message : "Comment deleted"
-        );
+        toast.success("message" in response ? response.message : "Comment deleted");
         // 从本地状态中移除已删除的评论，避免重新获取
         setAllComments((prevComments) =>
-          prevComments.filter((comment) => comment.comment_id !== commentId)
+          prevComments.filter((comment) => comment.comment_id !== commentId),
         );
         // 重新获取评论列表（可选，用于确保数据一致性）
         mutate(getInitialApiEndpoint());
       } else {
-        toast.error(
-          "error" in response ? response.error : "Failed to delete comment"
-        );
+        toast.error("error" in response ? response.error : "Failed to delete comment");
       }
     } catch (error) {
       console.error("Failed to delete comment:", error);
@@ -151,9 +134,8 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
             const newComments = responseData.comments.filter(
               (newComment: CommentItem) =>
                 !prev.some(
-                  (existingComment) =>
-                    existingComment.comment_id === newComment.comment_id
-                )
+                  (existingComment) => existingComment.comment_id === newComment.comment_id,
+                ),
             );
             return newComments.length > 0 ? [...prev, ...newComments] : prev;
           });
@@ -238,9 +220,7 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
     const iconSize = isSmall ? "w-3 h-3" : "w-4 h-4";
     const textSize = isSmall ? "text-sm" : "text-base";
     const avatarClass = `rounded-full object-cover ${
-      comment.user_role === "admin"
-        ? "border border-blue-500"
-        : "border border-gray-200"
+      comment.user_role === "admin" ? "border border-blue-500" : "border border-gray-200"
     }`;
 
     return (
@@ -277,16 +257,12 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
               </h4>
               <span className="flex items-center shrink-0">
                 <MapPin className={`${iconSize} mr-1`} />
-                <span className="whitespace-nowrap text-xs">
-                  {comment.city || "Unknown"}
-                </span>
+                <span className="whitespace-nowrap text-xs">{comment.city || "Unknown"}</span>
               </span>
             </div>
 
             {/* 桌面端：用户名单独一行 */}
-            <h4
-              className={`font-medium text-foreground-50 truncate ${textSize} hidden sm:block`}
-            >
+            <h4 className={`font-medium text-foreground-50 truncate ${textSize} hidden sm:block`}>
               {comment.username || "匿名用户"}
             </h4>
 
@@ -298,7 +274,7 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
                   ? `${commentT("updatedAt")} ${handleDateFormat(
                       comment.updated_at,
                       format,
-                      "second"
+                      "second",
                     )}`
                   : handleDateFormat(comment.created_at, format, "second")}
               </span>
@@ -317,7 +293,7 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
                     ? `${commentT("updatedAt")} ${handleDateFormat(
                         comment.updated_at,
                         format,
-                        "second"
+                        "second",
                       )}`
                     : handleDateFormat(comment.created_at, format, "second")}
                 </span>
@@ -441,12 +417,7 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
 
   if (isLoading) {
     return (
-      <LoadingSpinner
-        variant="wave"
-        size="lg"
-        message={commonT("loading")}
-        fullScreen={true}
-      />
+      <LoadingSpinner variant="wave" size="lg" message={commonT("loading")} fullScreen={true} />
     );
   }
 
@@ -602,9 +573,7 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
                       damping: 20,
                     }}
                   ></motion.div>
-                  <span>
-                    {commentT("replies", { count: comment.children.length })}
-                  </span>
+                  <span>{commentT("replies", { count: comment.children.length })}</span>
                   <motion.div
                     className="w-4 sm:w-6 h-px bg-border-100"
                     initial={{ scaleX: 0 }}
@@ -618,109 +587,95 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
                     }}
                   ></motion.div>
                 </motion.div>
-                {comment.children.map(
-                  (child: CommentItem, childIndex: number) => (
-                    <motion.div
-                      key={child.comment_id}
-                      className="ml-1 sm:ml-4 pl-1 sm:pl-4 border-l-2 border-border-100 bg-background-50 rounded-sm p-1 sm:p-3"
-                      initial={{ opacity: 0, x: -30, scale: 0.95 }}
-                      animate={{ opacity: 1, x: 0, scale: 1 }}
-                      transition={{
-                        duration: 0.5,
-                        delay: 0.6 + childIndex * 0.08,
+                {comment.children.map((child: CommentItem, childIndex: number) => (
+                  <motion.div
+                    key={child.comment_id}
+                    className="ml-1 sm:ml-4 pl-1 sm:pl-4 border-l-2 border-border-100 bg-background-50 rounded-sm p-1 sm:p-3"
+                    initial={{ opacity: 0, x: -30, scale: 0.95 }}
+                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: 0.6 + childIndex * 0.08,
+                      type: "spring",
+                      stiffness: 80,
+                      damping: 20,
+                    }}
+                    whileHover={{
+                      scale: 1.01,
+                      transition: {
+                        duration: 0.3,
                         type: "spring",
-                        stiffness: 80,
+                        stiffness: 300,
                         damping: 20,
-                      }}
-                      whileHover={{
-                        scale: 1.01,
-                        transition: {
-                          duration: 0.3,
+                      },
+                    }}
+                  >
+                    <CommentHeader comment={child} size="sm" />
+
+                    <div className="mb-1 sm:mb-2">
+                      <p className="text-xs sm:text-sm text-foreground-200 leading-relaxed whitespace-pre-wrap wrap-break-word">
+                        {child.comment}
+                      </p>
+                    </div>
+
+                    <ActionButtons comment={child} size="sm" />
+
+                    {/* 统一的输入框 */}
+                    <CommentInput comment={child} />
+
+                    {/* 第三层评论 */}
+                    {child.children && child.children.length > 0 && (
+                      <motion.div
+                        className="mt-2 sm:mt-3 space-y-1 sm:space-y-2"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        transition={{
+                          duration: 0.5,
                           type: "spring",
-                          stiffness: 300,
+                          stiffness: 80,
                           damping: 20,
-                        },
-                      }}
-                    >
-                      <CommentHeader comment={child} size="sm" />
+                        }}
+                      >
+                        {child.children.map((grandChild: CommentItem, grandChildIndex: number) => (
+                          <motion.div
+                            key={grandChild.comment_id}
+                            className="ml-0 sm:ml-2 pl-0 sm:pl-2 border-l-2 border-border-200 bg-card-200 rounded-sm p-1 sm:p-2"
+                            initial={{ opacity: 0, x: -20, scale: 0.95 }}
+                            animate={{ opacity: 1, x: 0, scale: 1 }}
+                            transition={{
+                              duration: 0.4,
+                              delay: 0.7 + grandChildIndex * 0.06,
+                              type: "spring",
+                              stiffness: 100,
+                              damping: 20,
+                            }}
+                            whileHover={{
+                              scale: 1.01,
+                              transition: {
+                                duration: 0.3,
+                                type: "spring",
+                                stiffness: 300,
+                                damping: 20,
+                              },
+                            }}
+                          >
+                            <CommentHeader comment={grandChild} size="sm" />
 
-                      <div className="mb-1 sm:mb-2">
-                        <p className="text-xs sm:text-sm text-foreground-200 leading-relaxed whitespace-pre-wrap wrap-break-word">
-                          {child.comment}
-                        </p>
-                      </div>
+                            <div className="mb-1">
+                              <p className="text-xs text-foreground-200 leading-relaxed whitespace-pre-wrap wrap-break-word">
+                                {grandChild.comment}
+                              </p>
+                            </div>
 
-                      <ActionButtons comment={child} size="sm" />
-
-                      {/* 统一的输入框 */}
-                      <CommentInput comment={child} />
-
-                      {/* 第三层评论 */}
-                      {child.children && child.children.length > 0 && (
-                        <motion.div
-                          className="mt-2 sm:mt-3 space-y-1 sm:space-y-2"
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          transition={{
-                            duration: 0.5,
-                            type: "spring",
-                            stiffness: 80,
-                            damping: 20,
-                          }}
-                        >
-                          {child.children.map(
-                            (
-                              grandChild: CommentItem,
-                              grandChildIndex: number
-                            ) => (
-                              <motion.div
-                                key={grandChild.comment_id}
-                                className="ml-0 sm:ml-2 pl-0 sm:pl-2 border-l-2 border-border-200 bg-card-200 rounded-sm p-1 sm:p-2"
-                                initial={{ opacity: 0, x: -20, scale: 0.95 }}
-                                animate={{ opacity: 1, x: 0, scale: 1 }}
-                                transition={{
-                                  duration: 0.4,
-                                  delay: 0.7 + grandChildIndex * 0.06,
-                                  type: "spring",
-                                  stiffness: 100,
-                                  damping: 20,
-                                }}
-                                whileHover={{
-                                  scale: 1.01,
-                                  transition: {
-                                    duration: 0.3,
-                                    type: "spring",
-                                    stiffness: 300,
-                                    damping: 20,
-                                  },
-                                }}
-                              >
-                                <CommentHeader comment={grandChild} size="sm" />
-
-                                <div className="mb-1">
-                                  <p className="text-xs text-foreground-200 leading-relaxed whitespace-pre-wrap wrap-break-word">
-                                    {grandChild.comment}
-                                  </p>
-                                </div>
-
-                                <ActionButtons
-                                  comment={grandChild}
-                                  size="sm"
-                                  showReply={false}
-                                />
-                                {/* 第三层评论只显示编辑输入框，不显示回复输入框 */}
-                                <CommentInput
-                                  comment={grandChild}
-                                  isThirdLevel={true}
-                                />
-                              </motion.div>
-                            )
-                          )}
-                        </motion.div>
-                      )}
-                    </motion.div>
-                  )
-                )}
+                            <ActionButtons comment={grandChild} size="sm" showReply={false} />
+                            {/* 第三层评论只显示编辑输入框，不显示回复输入框 */}
+                            <CommentInput comment={grandChild} isThirdLevel={true} />
+                          </motion.div>
+                        ))}
+                      </motion.div>
+                    )}
+                  </motion.div>
+                ))}
               </motion.div>
             )}
           </motion.div>
@@ -775,14 +730,10 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
           >
             {isLoadingMore && <Loader2 className="w-4 h-4 animate-spin" />}
             <span className="hidden sm:inline">
-              {isLoadingMore
-                ? commentT("loading")
-                : commentT("loadMoreComments")}
+              {isLoadingMore ? commentT("loading") : commentT("loadMoreComments")}
             </span>
             <span className="sm:hidden">
-              {isLoadingMore
-                ? commentT("loading")
-                : commentT("loadMoreComments")}
+              {isLoadingMore ? commentT("loading") : commentT("loadMoreComments")}
             </span>
           </motion.button>
         </motion.div>

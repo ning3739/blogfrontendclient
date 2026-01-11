@@ -6,10 +6,7 @@ import type {
 import httpClient from "../http/client";
 
 class MediaService {
-  async uploadMedia(
-    payload: UploadMediaRequest,
-    onProgress?: (progressEvent: any) => void
-  ) {
+  async uploadMedia(payload: UploadMediaRequest, onProgress?: (progressEvent: any) => void) {
     const formData = new FormData();
     payload.files.forEach((file) => formData.append("files", file));
 

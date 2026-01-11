@@ -54,16 +54,16 @@ const BlogAction: React.FC<BlogActionProps> = ({ blogId }) => {
   const commonT = useTranslations("common");
   const blogT = useTranslations("blog");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [playState, setPlayState] = useState<"stopped" | "playing" | "paused">(
-    "stopped"
-  );
+  const [playState, setPlayState] = useState<"stopped" | "playing" | "paused">("stopped");
 
   // 检查是否有总结内容
-  const { data: summaryData, error: summaryError } =
-    useSWR<BlogSummaryResponse>([`/blog/get-blog-summary/${blogId}`, locale], {
+  const { data: summaryData, error: summaryError } = useSWR<BlogSummaryResponse>(
+    [`/blog/get-blog-summary/${blogId}`, locale],
+    {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
-    });
+    },
+  );
 
   // 检查是否有音频内容
   const { data: audioData, error: audioError } = useSWR<BlogAudioResponse>(
@@ -71,7 +71,7 @@ const BlogAction: React.FC<BlogActionProps> = ({ blogId }) => {
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
-    }
+    },
   );
 
   // 判断是否有总结和音频内容
@@ -116,12 +116,8 @@ const BlogAction: React.FC<BlogActionProps> = ({ blogId }) => {
                 <Sparkles className="w-5 h-5" />
               </div>
               <div className="text-left">
-                <div className="font-semibold text-lg">
-                  {commonT("summary")}
-                </div>
-                <div className="text-sm opacity-90">
-                  {blogT("action.summarySubtitle")}
-                </div>
+                <div className="font-semibold text-lg">{commonT("summary")}</div>
+                <div className="text-sm opacity-90">{blogT("action.summarySubtitle")}</div>
               </div>
             </div>
           </button>
@@ -143,8 +139,8 @@ const BlogAction: React.FC<BlogActionProps> = ({ blogId }) => {
               playState === "playing"
                 ? blogT("action.audio.pause")
                 : playState === "paused"
-                ? blogT("action.audio.resume")
-                : blogT("action.audio.play")
+                  ? blogT("action.audio.resume")
+                  : blogT("action.audio.play")
             }
           >
             <div className="flex items-center justify-center gap-3">
@@ -160,15 +156,15 @@ const BlogAction: React.FC<BlogActionProps> = ({ blogId }) => {
                   {playState === "playing"
                     ? blogT("action.audio.pause")
                     : playState === "paused"
-                    ? blogT("action.audio.resume")
-                    : blogT("action.audio.play")}
+                      ? blogT("action.audio.resume")
+                      : blogT("action.audio.play")}
                 </div>
                 <div className="text-sm opacity-90">
                   {playState === "playing"
                     ? blogT("action.audio.pauseDescription")
                     : playState === "paused"
-                    ? blogT("action.audio.resumeDescription")
-                    : blogT("action.audio.playDescription")}
+                      ? blogT("action.audio.resumeDescription")
+                      : blogT("action.audio.playDescription")}
                 </div>
               </div>
             </div>

@@ -21,29 +21,20 @@ const BlogNavigation = ({ blogId }: BlogNavigationProps) => {
 
   const handlePreviousClick = () => {
     if (blogNavigation?.previous) {
-      router.push(
-        `/${blogNavigation.previous.section_slug}/${blogNavigation.previous.blog_slug}`
-      );
+      router.push(`/${blogNavigation.previous.section_slug}/${blogNavigation.previous.blog_slug}`);
     }
   };
 
   const handleNextClick = () => {
     if (blogNavigation?.next) {
-      router.push(
-        `/${blogNavigation.next.section_slug}/${blogNavigation.next.blog_slug}`
-      );
+      router.push(`/${blogNavigation.next.section_slug}/${blogNavigation.next.blog_slug}`);
     }
   };
 
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-8">
-        <LoadingSpinner
-          message={commonT("loading")}
-          size="sm"
-          fullScreen={false}
-          variant="wave"
-        />
+        <LoadingSpinner message={commonT("loading")} size="sm" fullScreen={false} variant="wave" />
       </div>
     );
   }

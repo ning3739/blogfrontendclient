@@ -20,17 +20,11 @@ interface GrowthChartProps {
   error?: unknown;
 }
 
-export default function GrowthChart({
-  data,
-  isLoading,
-  error,
-}: GrowthChartProps) {
+export default function GrowthChart({ data, isLoading, error }: GrowthChartProps) {
   const format = useFormatter();
 
   if (isLoading) {
-    return (
-      <LoadingSpinner message="加载增长趋势..." size="sm" variant="pulse" />
-    );
+    return <LoadingSpinner message="加载增长趋势..." size="sm" variant="pulse" />;
   }
 
   if (error || !data) {
@@ -45,10 +39,7 @@ export default function GrowthChart({
   }
 
   // 收集所有唯一的日期并合并数据
-  const dateMap = new Map<
-    string,
-    { users: number; blogs: number; revenue: number }
-  >();
+  const dateMap = new Map<string, { users: number; blogs: number; revenue: number }>();
 
   // 处理用户增长数据
   data.user_growth?.forEach((item) => {
@@ -93,26 +84,15 @@ export default function GrowthChart({
       rawDate: date,
       ...values,
     }))
-    .sort(
-      (a, b) => new Date(a.rawDate).getTime() - new Date(b.rawDate).getTime()
-    );
+    .sort((a, b) => new Date(a.rawDate).getTime() - new Date(b.rawDate).getTime());
 
   return (
     <div className="bg-card-50 border border-border-50 rounded-sm p-4 sm:p-6 shadow-sm w-full max-w-full overflow-hidden">
-      <h3 className="text-base sm:text-lg font-semibold text-foreground-50 mb-4">
-        增长趋势
-      </h3>
+      <h3 className="text-base sm:text-lg font-semibold text-foreground-50 mb-4">增长趋势</h3>
       <div className="w-full max-w-full" style={{ minHeight: "300px" }}>
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart
-            data={chartData}
-            margin={{ left: -20, right: 10, top: 5, bottom: 5 }}
-          >
-            <CartesianGrid
-              strokeDasharray="3 3"
-              stroke="var(--color-border-50)"
-              opacity={0.3}
-            />
+          <LineChart data={chartData} margin={{ left: -20, right: 10, top: 5, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-50)" opacity={0.3} />
             <XAxis
               dataKey="date"
               stroke="var(--color-foreground-400)"

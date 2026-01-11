@@ -24,27 +24,22 @@ const TagPage = () => {
     data: tagList,
     isLoading,
     error,
-  } = useSWR([
-    `/tag/get-tag-lists?page=${currentPage}&size=100&published_only=true`,
-    locale,
-  ]);
+  } = useSWR([`/tag/get-tag-lists?page=${currentPage}&size=100&published_only=true`, locale]);
 
   // Normalize data to word cloud format (hook must be before any return)
   const words = useMemo(() => {
     const items: GetTagItemResponse[] = Array.isArray(tagList?.items)
       ? (tagList.items as GetTagItemResponse[])
       : Array.isArray(tagList)
-      ? (tagList as GetTagItemResponse[])
-      : [];
+        ? (tagList as GetTagItemResponse[])
+        : [];
     // pick name field and provide weight by index
     const maxWeight = 100;
     const minWeight = 20;
     const n = items.length || 1;
     return items.map((it: GetTagItemResponse, idx: number) => {
       const name = it.title;
-      const value = Math.round(
-        maxWeight - ((maxWeight - minWeight) * idx) / Math.max(n - 1, 1)
-      );
+      const value = Math.round(maxWeight - ((maxWeight - minWeight) * idx) / Math.max(n - 1, 1));
       // Store slug for navigation
       const slug = it.slug;
       return { name, value, slug };
@@ -71,9 +66,7 @@ const TagPage = () => {
         chartRef.current = echarts.init(el);
       }
       const getCss = (v: string, fb: string) => {
-        const css = getComputedStyle(document.documentElement)
-          .getPropertyValue(v)
-          .trim();
+        const css = getComputedStyle(document.documentElement).getPropertyValue(v).trim();
         return css || fb;
       };
       const option: echarts.EChartsOption = {
@@ -139,12 +132,7 @@ const TagPage = () => {
 
   if (isLoading) {
     return (
-      <LoadingSpinner
-        message={commonT("loading")}
-        size="md"
-        variant="wave"
-        fullScreen={true}
-      />
+      <LoadingSpinner message={commonT("loading")} size="md" variant="wave" fullScreen={true} />
     );
   }
 
@@ -152,9 +140,7 @@ const TagPage = () => {
     return <ErrorDisplay message={commonT("loadFailedMessage")} type="error" />;
   }
 
-  const pagination = tagList?.pagination as
-    | OffsetPaginationResponse
-    | undefined;
+  const pagination = tagList?.pagination as OffsetPaginationResponse | undefined;
 
   return (
     <motion.div

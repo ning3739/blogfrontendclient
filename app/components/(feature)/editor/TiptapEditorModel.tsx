@@ -24,11 +24,15 @@ export default function TiptapEditorModel({
   onSelect,
 }: TiptapEditorModelProps) {
   const [currentPage, setCurrentPage] = useState(1);
+  
+  // 只有当 modal 打开时才发起请求，避免不必要的 404 错误
   const {
     data: mediaLists,
     error,
     isLoading,
-  } = useSWR(`media/admin/get-media-lists?page=${currentPage}&size=4&media_type=${type}`);
+  } = useSWR(
+    isOpen ? `media/admin/get-media-lists?page=${currentPage}&size=4&media_type=${type}` : null
+  );
 
   const handleSelect = (mediaId: number, url: string) => {
     if (onSelect) {

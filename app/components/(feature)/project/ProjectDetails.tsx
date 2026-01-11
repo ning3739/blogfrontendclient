@@ -1,23 +1,18 @@
 "use client";
 
-import {
-  AlertTriangle,
-  Download,
-  FolderOpen,
-  ShoppingCart,
-} from "lucide-react";
+import { AlertTriangle, Download, FolderOpen, ShoppingCart } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import useSWR from "swr";
+import Subscribe from "@/app/components/(feature)/home/Subscribe";
 import { Button } from "@/app/components/ui/button/butten";
 import CopyRight from "@/app/components/ui/copyright/CopyRight";
 import EmptyState from "@/app/components/ui/error/EmptyState";
 import ErrorDisplay from "@/app/components/ui/error/ErrorDisplay";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
 import Share from "@/app/components/ui/share/Share";
-import Subscribe from "@/app/components/(feature)/home/Subscribe";
 import { useAuth } from "@/app/contexts/hooks/useAuth";
 import MediaService from "@/app/lib/services/mediaService";
 import { formatCurrency } from "@/app/lib/utils/handleCurrencyFormat";
@@ -62,12 +57,7 @@ function ProjectDetails({ projectSlug }: { projectSlug: string }) {
 
   if (isLoading) {
     return (
-      <LoadingSpinner
-        message={commonT("loading")}
-        size="md"
-        variant="wave"
-        fullScreen={true}
-      />
+      <LoadingSpinner message={commonT("loading")} size="md" variant="wave" fullScreen={true} />
     );
   }
 
@@ -164,10 +154,7 @@ function ProjectDetails({ projectSlug }: { projectSlug: string }) {
                         {commonT("updatedAt")}:
                       </span>
                       <span className="text-foreground-200 font-semibold text-sm">
-                        {handleDateFormat(
-                          projectDetails?.updated_at || "",
-                          format
-                        )}
+                        {handleDateFormat(projectDetails?.updated_at || "", format)}
                       </span>
                     </div>
                   </>
@@ -216,114 +203,102 @@ function ProjectDetails({ projectSlug }: { projectSlug: string }) {
                 title={projectDetails?.project_name || ""}
                 createdAtText={`${commonT("createdAt")}: ${handleDateFormat(
                   projectDetails?.created_at || "",
-                  format
+                  format,
                 )}`}
               />
             </motion.div>
 
             {/* 分割线 */}
-            {projectDetails?.project_price &&
-              projectDetails.project_price > 0 && (
-                <motion.div
-                  className="max-full h-px bg-border-100 mx-auto mb-16"
-                  initial={{ opacity: 0, scaleX: 0 }}
-                  animate={{ opacity: 1, scaleX: 1 }}
-                  transition={{ duration: 0.5, delay: 1.3 }}
-                />
-              )}
+            {projectDetails?.project_price && projectDetails.project_price > 0 && (
+              <motion.div
+                className="max-full h-px bg-border-100 mx-auto mb-16"
+                initial={{ opacity: 0, scaleX: 0 }}
+                animate={{ opacity: 1, scaleX: 1 }}
+                transition={{ duration: 0.5, delay: 1.3 }}
+              />
+            )}
 
             {!isAuthenticated && <Subscribe />}
 
             {/* 项目价格和操作区域 */}
-            {projectDetails?.project_price &&
-              projectDetails.project_price > 0 && (
-                <>
-                  {/* 未购买时显示提示文字 */}
-                  {!isAuthenticated && (
-                    <motion.div
-                      className="text-center mb-6"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 1.3 }}
-                    >
-                      <p className="text-base text-foreground-200 leading-relaxed max-w-2xl mx-auto font-medium">
-                        {projectT("wantToKnowMore")}
-                      </p>
-                    </motion.div>
-                  )}
+            {projectDetails?.project_price && projectDetails.project_price > 0 && (
+              <>
+                {/* 未购买时显示提示文字 */}
+                {!isAuthenticated && (
                   <motion.div
-                    className="bg-background-50 rounded-sm border border-border-100 p-4 sm:p-6 max-w-2xl mx-auto"
-                    initial={{ opacity: 0, y: 30 }}
+                    className="text-center mb-6"
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 1.4 }}
+                    transition={{ duration: 0.5, delay: 1.3 }}
                   >
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-baseline space-x-2">
-                        <span className="text-3xl font-bold text-foreground-50">
-                          {formatCurrency(
-                            projectDetails?.project_price || 0,
-                            format,
-                            "NZD"
-                          )}
-                        </span>
-                        <span className="text-sm text-foreground-300">
-                          {projectT("price")}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center">
-                        {isAuthenticated &&
-                        projectDetails?.payment_status === "success" ? (
-                          <span className="px-3 py-1 bg-success-100 text-success-700 text-sm font-medium rounded-sm">
-                            {projectT("purchased")}
-                          </span>
-                        ) : isAuthenticated ? null : (
-                          <div className="flex items-center text-sm text-foreground-300">
-                            <AlertTriangle className="w-4 h-4 mr-1 text-warning-500" />
-                            <span>{projectT("loginToPurchase")}</span>
-                          </div>
-                        )}
-                      </div>
+                    <p className="text-base text-foreground-200 leading-relaxed max-w-2xl mx-auto font-medium">
+                      {projectT("wantToKnowMore")}
+                    </p>
+                  </motion.div>
+                )}
+                <motion.div
+                  className="bg-background-50 rounded-sm border border-border-100 p-4 sm:p-6 max-w-2xl mx-auto"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 1.4 }}
+                >
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-baseline space-x-2">
+                      <span className="text-3xl font-bold text-foreground-50">
+                        {formatCurrency(projectDetails?.project_price || 0, format, "NZD")}
+                      </span>
+                      <span className="text-sm text-foreground-300">{projectT("price")}</span>
                     </div>
 
-                    <div className="space-y-3">
-                      {isAuthenticated &&
-                      projectDetails?.payment_status === "success" ? (
-                        <Button
-                          variant="primary"
-                          size="lg"
-                          onClick={() => {
-                            if (projectDetails?.attachment_id) {
-                              handleDownloadProject(
-                                projectDetails.attachment_id
-                              );
-                            }
-                          }}
-                          className="w-full"
-                          disabled={!projectDetails?.attachment_id}
-                        >
-                          <Download className="w-5 h-5 mr-2" />
-                          {projectT("download")}
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="primary"
-                          size="lg"
-                          onClick={() => {
-                            if (projectDetails?.project_slug) {
-                              handleBuyProject(projectDetails.project_slug);
-                            }
-                          }}
-                          className="w-full"
-                        >
-                          <ShoppingCart className="w-5 h-5 mr-2" />
-                          {projectT("buy")}
-                        </Button>
+                    <div className="flex items-center">
+                      {isAuthenticated && projectDetails?.payment_status === "success" ? (
+                        <span className="px-3 py-1 bg-success-100 text-success-700 text-sm font-medium rounded-sm">
+                          {projectT("purchased")}
+                        </span>
+                      ) : isAuthenticated ? null : (
+                        <div className="flex items-center text-sm text-foreground-300">
+                          <AlertTriangle className="w-4 h-4 mr-1 text-warning-500" />
+                          <span>{projectT("loginToPurchase")}</span>
+                        </div>
                       )}
                     </div>
-                  </motion.div>
-                </>
-              )}
+                  </div>
+
+                  <div className="space-y-3">
+                    {isAuthenticated && projectDetails?.payment_status === "success" ? (
+                      <Button
+                        variant="primary"
+                        size="lg"
+                        onClick={() => {
+                          if (projectDetails?.attachment_id) {
+                            handleDownloadProject(projectDetails.attachment_id);
+                          }
+                        }}
+                        className="w-full"
+                        disabled={!projectDetails?.attachment_id}
+                      >
+                        <Download className="w-5 h-5 mr-2" />
+                        {projectT("download")}
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="primary"
+                        size="lg"
+                        onClick={() => {
+                          if (projectDetails?.project_slug) {
+                            handleBuyProject(projectDetails.project_slug);
+                          }
+                        }}
+                        className="w-full"
+                      >
+                        <ShoppingCart className="w-5 h-5 mr-2" />
+                        {projectT("buy")}
+                      </Button>
+                    )}
+                  </div>
+                </motion.div>
+              </>
+            )}
           </>
         ) : (
           <motion.div

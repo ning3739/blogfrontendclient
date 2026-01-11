@@ -31,13 +31,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // 只有在认证状态下才获取用户信息
   // 注意：useSWR的key可以是null，这不会违反hooks规则
-  const { data: user, isValidating } = useSWR(
-    isAuthenticated ? "/user/me/get-my-profile" : null,
-    {
-      revalidateOnMount: true,
-    }
-  );
-  
+  const { data: user, isValidating } = useSWR(isAuthenticated ? "/user/me/get-my-profile" : null, {
+    revalidateOnMount: true,
+  });
+
   // 计算userLoading状态：当已认证但用户数据还未加载时为true
   const userLoading = Boolean(isAuthenticated && (isValidating || !user));
 
@@ -132,7 +129,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const checkAuthStatus = useCallback(async () => {
     try {
       const response = await authService.checkAuthToken();
-      
+
       // 【主动刷新】如果只有 refresh_token，主动刷新 access_token
       // 说明：这是页面加载时的预防性刷新，避免首次 API 调用失败
       // 与 client.ts 中的自动刷新（被动刷新）互补，提升用户体验
@@ -145,7 +142,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         try {
           // 调用刷新接口生成新的 access_token
           const refreshResponse = await authService.generateAccessToken();
-          
+
           if (refreshResponse.status === 200) {
             // 刷新成功，设置为已认证
             setIsAuthenticated(true);
@@ -158,7 +155,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           return;
         }
       }
-      
+
       // 正常情况：检查 access_token 是否有效
       setIsAuthenticated(
         response.status === 200 && "data" in response && response.data.access_token === true,

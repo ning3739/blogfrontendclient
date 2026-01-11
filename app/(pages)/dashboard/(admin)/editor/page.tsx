@@ -18,17 +18,14 @@ import type { SectionListItem } from "@/app/types/sectionServiceType";
 import type { GetSeoItemResponse } from "@/app/types/seoServiceType";
 
 // 懒加载 TiptapEditor，减少初始加载大小
-const TiptapEditor = dynamic(
-  () => import("@/app/components/(feature)/editor/TiptapEditor"),
-  {
-    loading: () => (
-      <div className="bg-card-50 border border-border-50 rounded-sm shadow-sm p-8 min-h-[500px] flex items-center justify-center">
-        <LoadingSpinner message="加载编辑器..." size="md" variant="wave" />
-      </div>
-    ),
-    ssr: false,
-  }
-);
+const TiptapEditor = dynamic(() => import("@/app/components/(feature)/editor/TiptapEditor"), {
+  loading: () => (
+    <div className="bg-card-50 border border-border-50 rounded-sm shadow-sm p-8 min-h-[500px] flex items-center justify-center">
+      <LoadingSpinner message="加载编辑器..." size="md" variant="wave" />
+    </div>
+  ),
+  ssr: false,
+});
 
 export default function EditorPage() {
   const locale = useLocale();
@@ -39,7 +36,7 @@ export default function EditorPage() {
   const blogSlug = searchParams.get("blogSlug");
   const { sections } = useSection();
   const projectSectionId = sections?.find(
-    (section: SectionListItem) => section.type === "project"
+    (section: SectionListItem) => section.type === "project",
   )?.section_id;
   const [currentSeoPage, setCurrentSeoPage] = useState<number>(1);
   const [allSeoItems, setAllSeoItems] = useState<GetSeoItemResponse[]>([]);
@@ -52,10 +49,7 @@ export default function EditorPage() {
     isLoading: isSeoLoading,
     error: seoError,
     mutate: refreshSeoLists,
-  } = useSWR([
-    `/seo/admin/get-seo-lists?page=${currentSeoPage}&size=20`,
-    locale,
-  ]);
+  } = useSWR([`/seo/admin/get-seo-lists?page=${currentSeoPage}&size=20`, locale]);
 
   // 处理 SEO 列表加载更多
   const handleLoadMoreSeo = () => {
@@ -79,27 +73,18 @@ export default function EditorPage() {
   }, [seoLists, currentSeoPage]);
 
   // 使用项目编辑 Hook
-  const {
-    projectMetaData,
-    isProjectLoading,
-    handleProjectMetaDataSave,
-    handleProjectSave,
-  } = useProjectEditor({
-    type,
-    projectSlug,
-    sectionId,
-    projectSectionId,
-    content,
-    setContent,
-  });
+  const { projectMetaData, isProjectLoading, handleProjectMetaDataSave, handleProjectSave } =
+    useProjectEditor({
+      type,
+      projectSlug,
+      sectionId,
+      projectSectionId,
+      content,
+      setContent,
+    });
 
   // 使用博客编辑 Hook
-  const {
-    blogMetaData,
-    isBlogLoading,
-    handleBlogMetaDataSave,
-    handleBlogSave,
-  } = usePostEditor({
+  const { blogMetaData, isBlogLoading, handleBlogMetaDataSave, handleBlogSave } = usePostEditor({
     type,
     blogSlug,
     content,
@@ -134,23 +119,13 @@ export default function EditorPage() {
   // 在更新模式下显示加载状态
   if (type === "update" && projectSlug && isProjectLoading) {
     return (
-      <LoadingSpinner
-        message="加载项目数据中..."
-        size="lg"
-        variant="wave"
-        fullScreen={true}
-      />
+      <LoadingSpinner message="加载项目数据中..." size="lg" variant="wave" fullScreen={true} />
     );
   }
 
   if (type === "update" && blogSlug && isBlogLoading) {
     return (
-      <LoadingSpinner
-        message="加载博客数据中..."
-        size="lg"
-        variant="wave"
-        fullScreen={true}
-      />
+      <LoadingSpinner message="加载博客数据中..." size="lg" variant="wave" fullScreen={true} />
     );
   }
 
@@ -164,9 +139,7 @@ export default function EditorPage() {
               内容编辑器
             </h1>
             <p className="text-xs sm:text-sm lg:text-base text-foreground-300 leading-relaxed wrap-break-word">
-              {type === "update"
-                ? "编辑和更新现有内容"
-                : "创建新的博客文章或项目内容"}
+              {type === "update" ? "编辑和更新现有内容" : "创建新的博客文章或项目内容"}
             </p>
           </div>
           <div className="shrink-0">

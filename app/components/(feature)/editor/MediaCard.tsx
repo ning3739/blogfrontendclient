@@ -81,9 +81,9 @@ export default function MediaCard({ media, onSelect }: MediaCardProps) {
         <Image
           src={media.thumbnail_filepath_url}
           alt={`Media ${media.media_id}`}
-          width={160}
-          height={160}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+          fill
+          sizes="160px"
+          className="object-cover group-hover:scale-105 transition-transform duration-200"
         />
       ) : (
         <IconComponent className="w-12 h-12 text-primary-500" />

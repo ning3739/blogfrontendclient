@@ -40,12 +40,7 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <LoadingSpinner
-        message={commonT("loading")}
-        size="md"
-        variant="wave"
-        fullScreen={true}
-      />
+      <LoadingSpinner message={commonT("loading")} size="md" variant="wave" fullScreen={true} />
     );
   }
 
@@ -64,14 +59,10 @@ export default function ProfilePage() {
     ? [
         {
           title: dashboardT("accountStatus"),
-          value: userProfile.is_deleted
-            ? dashboardT("deleted")
-            : dashboardT("active"),
+          value: userProfile.is_deleted ? dashboardT("deleted") : dashboardT("active"),
           icon: userProfile.is_deleted ? XCircle : CheckCircle,
           iconBgColor: userProfile.is_deleted ? "bg-error-50" : "bg-success-50",
-          iconColor: userProfile.is_deleted
-            ? "text-error-500"
-            : "text-success-500",
+          iconColor: userProfile.is_deleted ? "text-error-500" : "text-success-500",
           delay: 0.1,
         },
         {
@@ -104,9 +95,7 @@ export default function ProfilePage() {
         <h1 className="text-2xl sm:text-3xl font-bold text-foreground-50 mb-1 sm:mb-2">
           {dashboardT("title")}
         </h1>
-        <p className="text-sm sm:text-base text-foreground-300">
-          {dashboardT("description")}
-        </p>
+        <p className="text-sm sm:text-base text-foreground-300">{dashboardT("description")}</p>
       </div>
 
       {userProfile ? (
@@ -134,8 +123,7 @@ export default function ProfilePage() {
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
                         <span className="text-primary-500 text-3xl font-bold">
-                          {userProfile.username?.charAt(0)?.toUpperCase() ||
-                            "U"}
+                          {userProfile.username?.charAt(0)?.toUpperCase() || "U"}
                         </span>
                       </div>
                     )}
@@ -154,9 +142,7 @@ export default function ProfilePage() {
                   <h2 className="text-2xl font-bold text-foreground-50 mb-1">
                     {userProfile.username}
                   </h2>
-                  <p className="text-sm text-foreground-400">
-                    {userProfile.email}
-                  </p>
+                  <p className="text-sm text-foreground-400">{userProfile.email}</p>
                 </div>
               </div>
             </motion.div>
@@ -179,15 +165,11 @@ export default function ProfilePage() {
                         key={stat.title}
                         className="flex items-center space-x-3 p-3 bg-background-100 rounded-sm"
                       >
-                        <div
-                          className={`p-2 ${stat.iconBgColor} rounded-sm shrink-0`}
-                        >
+                        <div className={`p-2 ${stat.iconBgColor} rounded-sm shrink-0`}>
                           <Icon className={`w-5 h-5 ${stat.iconColor}`} />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="text-xs text-foreground-400 mb-1">
-                            {stat.title}
-                          </p>
+                          <p className="text-xs text-foreground-400 mb-1">{stat.title}</p>
                           <p className="text-sm font-semibold text-foreground-50 truncate">
                             {stat.value}
                           </p>

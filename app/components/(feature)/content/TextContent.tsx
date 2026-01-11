@@ -1,13 +1,20 @@
 "use client";
 
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import HorizontalRule from "@tiptap/extension-horizontal-rule";
+import { Table } from "@tiptap/extension-table";
+import { TableCell } from "@tiptap/extension-table-cell";
+import { TableHeader } from "@tiptap/extension-table-header";
+import { TableRow } from "@tiptap/extension-table-row";
+import TaskItem from "@tiptap/extension-task-item";
+import TaskList from "@tiptap/extension-task-list";
 import TextAlign from "@tiptap/extension-text-align";
 import UniqueID from "@tiptap/extension-unique-id";
 import { EditorContent, type JSONContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { common, createLowlight } from "lowlight";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Audio } from "@/app/lib/extensions/audio";
 import { Image } from "@/app/lib/extensions/image";
 import { Video } from "@/app/lib/extensions/video";
@@ -37,57 +44,88 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
   }, [content]);
 
   // 复制代码块内容
-  const copyCodeBlock = async (codeElement: HTMLElement, button: HTMLButtonElement) => {
-    const code = codeElement.textContent || "";
-    try {
-      await navigator.clipboard.writeText(code);
-      // 添加视觉反馈
-      const originalText = button.textContent;
-      button.textContent = contentT("copied");
-      button.classList.remove("bg-background-500", "hover:bg-background-400");
-      button.classList.add("bg-success-500");
-      setTimeout(() => {
-        button.textContent = originalText;
-        button.classList.remove("bg-success-500");
-        button.classList.add("bg-background-500", "hover:bg-background-400");
-      }, 2000);
-    } catch (err) {
-      console.error(contentT("failedCopy"), err);
-    }
-  };
+  const copyCodeBlock = useCallback(
+    async (codeElement: HTMLElement, button: HTMLButtonElement) => {
+      const code = codeElement.textContent || "";
+      try {
+        await navigator.clipboard.writeText(code);
+        // 添加视觉反馈
+        const originalText = button.textContent;
+        button.textContent = contentT("copied");
+        button.classList.remove("bg-background-500", "hover:bg-background-400");
+        button.classList.add("bg-success-500");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.classList.remove("bg-success-500");
+          button.classList.add("bg-background-500", "hover:bg-background-400");
+        }, 2000);
+      } catch (err) {
+        console.error(contentT("failedCopy"), err);
+      }
+    },
+    [contentT],
+  );
 
   // 切换代码块折叠状态
-  const toggleCodeBlockCollapse = (preElement: HTMLElement, collapseButton: HTMLButtonElement) => {
-    const isCollapsed = preElement.classList.contains("collapsed");
+  const toggleCodeBlockCollapse = useCallback(
+    (preElement: HTMLElement, collapseButton: HTMLButtonElement) => {
+      const isCollapsed = preElement.classList.contains("collapsed");
 
-    if (isCollapsed) {
-      // 展开
-      preElement.classList.remove("collapsed");
-      preElement.style.maxHeight = "none";
-      collapseButton.innerHTML = contentT("collapse");
-      collapseButton.classList.remove("bg-primary-500");
-      collapseButton.classList.add("bg-background-500", "hover:bg-background-400");
-    } else {
-      // 折叠
-      preElement.classList.add("collapsed");
-      preElement.style.maxHeight = "300px";
-      collapseButton.innerHTML = contentT("expand");
-      collapseButton.classList.remove("bg-background-500", "hover:bg-background-400");
-      collapseButton.classList.add("bg-primary-500");
-    }
-  };
+      if (isCollapsed) {
+        // 展开
+        preElement.classList.remove("collapsed");
+        preElement.style.maxHeight = "none";
+        collapseButton.innerHTML = contentT("collapse");
+        collapseButton.classList.remove("bg-primary-500");
+        collapseButton.classList.add("bg-background-500", "hover:bg-background-400");
+      } else {
+        // 折叠
+        preElement.classList.add("collapsed");
+        preElement.style.maxHeight = "300px";
+        collapseButton.innerHTML = contentT("expand");
+        collapseButton.classList.remove("bg-background-500", "hover:bg-background-400");
+        collapseButton.classList.add("bg-primary-500");
+      }
+    },
+    [contentT],
+  );
 
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
         codeBlock: false, // 禁用默认的 codeBlock，使用 CodeBlockLowlight
+        horizontalRule: false,
       }),
       CodeBlockLowlight.configure({
         lowlight,
         languageClassPrefix: "language-",
         HTMLAttributes: {
           class: "code-block",
-          style: "padding: 0; margin: 0;",
+        },
+      }),
+      HorizontalRule.configure({
+        HTMLAttributes: {
+          class: "horizontal-rule",
+        },
+      }),
+      Table.configure({
+        resizable: false,
+        HTMLAttributes: {
+          class: "markdown-table",
+        },
+      }),
+      TableRow,
+      TableHeader,
+      TableCell,
+      TaskList.configure({
+        HTMLAttributes: {
+          class: "task-list",
+        },
+      }),
+      TaskItem.configure({
+        nested: true,
+        HTMLAttributes: {
+          class: "task-item",
         },
       }),
       TextAlign.configure({
@@ -151,10 +189,13 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
           plaintext: "Text",
         };
 
-        // 获取代码内容并计算行数
-        const codeText = codeElement.textContent || "";
+        // 获取代码内容并计算行数（移除末尾空行）
+        const codeText = (codeElement.textContent || "").replace(/\n+$/, "");
         const lines = codeText.split("\n");
         const lineCount = lines.length;
+
+        // 更新代码元素内容（移除多余空白）
+        codeElement.textContent = codeText;
 
         // 创建行号容器
         const lineNumbersContainer = document.createElement("div");
@@ -189,23 +230,32 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
         // 调整代码容器的样式
         const codeContainer = document.createElement("div");
         codeContainer.className = "code-container relative pl-16 pr-4 py-4";
-        codeContainer.style.lineHeight = "1.5rem"; // 与行号行高保持一致
-        codeContainer.style.whiteSpace = "pre"; // 防止代码换行
-        codeContainer.style.overflow = "visible"; // 允许内容超出容器
+        codeContainer.style.lineHeight = "1.5rem";
+        codeContainer.style.whiteSpace = "pre";
+        codeContainer.style.overflowX = "auto";
+        codeContainer.style.fontFamily =
+          'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
 
         // 将代码元素移动到新容器中
         codeElement.parentNode?.insertBefore(codeContainer, codeElement);
         codeContainer.appendChild(codeElement);
 
+        // 确保 code 元素也使用等宽字体
+        codeElement.style.fontFamily =
+          'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
+        codeElement.style.whiteSpace = "pre";
+
         // 为 pre 元素添加样式和子元素
         const preHTMLElement = preElement as HTMLElement;
         preHTMLElement.classList.add("relative", "group", "code-block-wrapper", "rounded-sm");
-        preHTMLElement.style.backgroundColor = "var(--color-background-200)"; // 使用设计系统背景色
-        preHTMLElement.style.color = "var(--color-foreground-50)"; // 使用设计系统文字色
+        preHTMLElement.style.backgroundColor = "var(--color-background-200)";
+        preHTMLElement.style.color = "var(--color-foreground-50)";
         preHTMLElement.style.border = "1px solid var(--color-border-200)";
-        preHTMLElement.style.overflow = "hidden"; // 初始隐藏滚动条
+        preHTMLElement.style.overflow = "hidden";
         preHTMLElement.style.position = "relative";
-        preHTMLElement.style.padding = "0"; // 移除 pre 的 padding，让子容器控制间距
+        preHTMLElement.style.padding = "0";
+        preHTMLElement.style.fontFamily =
+          'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
 
         // 检测高度和宽度并应用相应功能
         setTimeout(() => {
@@ -392,7 +442,7 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
           [&_.ProseMirror_code]:py-0.5
           [&_.ProseMirror_code]:rounded
           [&_.ProseMirror_code]:text-sm
-          [&_.ProseMirror_code]:font-code
+          [&_.ProseMirror_code]:font-mono
           [&_.ProseMirror_code]:before:content-['']
           [&_.ProseMirror_code]:after:content-['']
           [&_.ProseMirror_code]:leading-relaxed
@@ -417,21 +467,21 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
           [&_.ProseMirror_pre]:overflow-hidden
           [&_.ProseMirror_pre]:text-left
           [&_.ProseMirror_pre]:whitespace-pre
-          [&_.ProseMirror_pre]:font-code
+          [&_.ProseMirror_pre]:font-mono
           [&_.ProseMirror_pre]:text-sm
           [&_.ProseMirror_pre]:leading-6
           [&_.ProseMirror_pre]:text-foreground-50
           [&_.ProseMirror_pre]:relative
           [&_.ProseMirror_pre]:group
           [&_.ProseMirror_pre]:shadow-lg
-          [&_.ProseMirror_pre]:line-height-6
           [&_.ProseMirror_pre]:transition-all
           [&_.ProseMirror_pre]:duration-300
           [&_.ProseMirror_pre]:ease-in-out
           
           /* 代码块内的 code 标签 */
           [&_.ProseMirror_pre_code]:bg-transparent
-          [&_.ProseMirror_pre_code]:py-0
+          [&_.ProseMirror_pre_code]:p-0
+          [&_.ProseMirror_pre_code]:m-0
           [&_.ProseMirror_pre_code]:text-inherit
           [&_.ProseMirror_pre_code]:before:content-['']
           [&_.ProseMirror_pre_code]:after:content-['']
@@ -439,7 +489,59 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
           [&_.ProseMirror_pre_code]:overflow-x-auto
           [&_.ProseMirror_pre_code]:leading-6
           [&_.ProseMirror_pre_code]:text-sm
-          [&_.ProseMirror_pre_code]:font-code
+          [&_.ProseMirror_pre_code]:font-mono
+          [&_.ProseMirror_pre_code]:whitespace-pre
+          
+          /* 表格样式 */
+          [&_.ProseMirror_table]:w-full
+          [&_.ProseMirror_table]:border-collapse
+          [&_.ProseMirror_table]:my-4
+          [&_.ProseMirror_table]:text-sm
+          [&_.ProseMirror_table]:overflow-x-auto
+          [&_.ProseMirror_table]:block
+          [&_.ProseMirror_table]:max-w-full
+          
+          [&_.ProseMirror_th]:border
+          [&_.ProseMirror_th]:border-border-200
+          [&_.ProseMirror_th]:bg-background-100
+          [&_.ProseMirror_th]:px-4
+          [&_.ProseMirror_th]:py-2
+          [&_.ProseMirror_th]:text-left
+          [&_.ProseMirror_th]:font-semibold
+          [&_.ProseMirror_th]:text-foreground-50
+          [&_.ProseMirror_th]:whitespace-nowrap
+          
+          [&_.ProseMirror_td]:border
+          [&_.ProseMirror_td]:border-border-200
+          [&_.ProseMirror_td]:px-4
+          [&_.ProseMirror_td]:py-2
+          [&_.ProseMirror_td]:text-foreground-200
+          
+          [&_.ProseMirror_tr:nth-child(even)]:bg-background-50
+          
+          /* 任务列表样式 */
+          [&_.ProseMirror_.task-list]:list-none
+          [&_.ProseMirror_.task-list]:ml-0
+          [&_.ProseMirror_.task-list]:pl-0
+          [&_.ProseMirror_.task-list]:my-4
+          
+          [&_.ProseMirror_.task-item]:flex
+          [&_.ProseMirror_.task-item]:items-start
+          [&_.ProseMirror_.task-item]:gap-2
+          [&_.ProseMirror_.task-item]:my-1
+          
+          [&_.ProseMirror_.task-item_input]:mt-1.5
+          [&_.ProseMirror_.task-item_input]:cursor-pointer
+          [&_.ProseMirror_.task-item_input]:accent-primary-500
+          
+          [&_.ProseMirror_.task-item[data-checked='true']_p]:line-through
+          [&_.ProseMirror_.task-item[data-checked='true']_p]:text-foreground-400
+          
+          /* 水平分割线样式 */
+          [&_.ProseMirror_hr]:border-0
+          [&_.ProseMirror_hr]:border-t
+          [&_.ProseMirror_hr]:border-border-200
+          [&_.ProseMirror_hr]:my-6
           
           /* 代码容器样式 */
           [&_.ProseMirror_.code-container]:pl-16
@@ -447,18 +549,16 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
           [&_.ProseMirror_.code-container]:py-4
           [&_.ProseMirror_.code-container]:min-h-0
           [&_.ProseMirror_.code-container]:leading-6
-          [&_.ProseMirror_.code-container]:line-height-6
           [&_.ProseMirror_.code-container]:whitespace-pre
-          [&_.ProseMirror_.code-container]:overflow-visible
+          [&_.ProseMirror_.code-container]:overflow-x-auto
           
           /* 行号样式 */
           [&_.ProseMirror_.line-numbers]:select-none
           [&_.ProseMirror_.line-numbers]:pointer-events-none
           [&_.ProseMirror_.line-numbers]:text-foreground-500
-          [&_.ProseMirror_.line-numbers]:font-code
+          [&_.ProseMirror_.line-numbers]:font-mono
           [&_.ProseMirror_.line-numbers]:text-xs
           [&_.ProseMirror_.line-numbers]:leading-6
-          [&_.ProseMirror_.line-numbers]:line-height-6
           [&_.ProseMirror_.line-numbers]:flex
           [&_.ProseMirror_.line-numbers]:flex-col
           [&_.ProseMirror_.line-numbers]:py-4
@@ -471,7 +571,7 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
           [&_.ProseMirror_.line-number]:items-center
           [&_.ProseMirror_.line-number]:justify-center
           [&_.ProseMirror_.line-number]:text-xs
-          [&_.ProseMirror_.line-number]:font-code
+          [&_.ProseMirror_.line-number]:font-mono
           [&_.ProseMirror_.line-number]:shrink-0
           
           /* 复制按钮样式 */

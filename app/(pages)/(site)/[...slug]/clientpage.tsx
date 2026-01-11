@@ -20,17 +20,8 @@ export default function ClientPage({ params }: { params: { slug: string[] } }) {
   // 始终调用 hook，但只在需要时传递有效的 slug
   const needsSectionData =
     slug.length === 1 &&
-    [
-      "journal",
-      "musings",
-      "dev-notes",
-      "projects",
-      "forum",
-      "blogroll",
-    ].includes(pageSlug);
-  const { section: sectionData } = useSectionDetailsBySlug(
-    needsSectionData ? pageSlug : null
-  );
+    ["journal", "musings", "dev-notes", "projects", "forum", "blogroll"].includes(pageSlug);
+  const { section: sectionData } = useSectionDetailsBySlug(needsSectionData ? pageSlug : null);
 
   if (slug.length === 1) {
     // 第一级路由处理，使用 slug，如 /about, /journal, /musings, /dev-notes
@@ -67,9 +58,7 @@ export default function ClientPage({ params }: { params: { slug: string[] } }) {
     return (
       <>
         {/* 博客相关的子 section - blog 父 section 不提供直接访问 */}
-        {(pageSlug === "journal" ||
-          pageSlug === "musings" ||
-          pageSlug === "dev-notes") &&
+        {(pageSlug === "journal" || pageSlug === "musings" || pageSlug === "dev-notes") &&
           sectionData && <BlogPage sectionData={sectionData} />}
         {pageSlug === "projects" && <ProjectPage sectionData={sectionData} />}
         {pageSlug === "forum" && <ForumPage sectionData={sectionData} />}
@@ -79,13 +68,7 @@ export default function ClientPage({ params }: { params: { slug: string[] } }) {
   } else if (slug.length === 2) {
     const [sectionSlug, slugValue] = slug;
 
-    const leveltwoRoutes = [
-      "journal",
-      "musings",
-      "dev-notes",
-      "projects",
-      "tag",
-    ];
+    const leveltwoRoutes = ["journal", "musings", "dev-notes", "projects", "tag"];
 
     if (!leveltwoRoutes.includes(sectionSlug)) {
       notFound();
@@ -98,9 +81,7 @@ export default function ClientPage({ params }: { params: { slug: string[] } }) {
           sectionSlug === "musings" ||
           sectionSlug === "dev-notes") && <BlogDetails blogSlug={slugValue} />}
         {/* 项目相关的子 section 详情 */}
-        {sectionSlug === "projects" && (
-          <ProjectDetails projectSlug={slugValue} />
-        )}
+        {sectionSlug === "projects" && <ProjectDetails projectSlug={slugValue} />}
         {sectionSlug === "tag" && <TagDetails tagSlug={slugValue} />}
       </>
     );

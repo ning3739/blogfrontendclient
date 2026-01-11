@@ -34,8 +34,9 @@ const PaymentLists: React.FC<PaymentListsProps> = ({
   const format = useFormatter();
   const router = useRouter();
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [selectedPaymentRecord, setSelectedPaymentRecord] =
-    useState<GetPaymentRecordsItems | null>(null);
+  const [selectedPaymentRecord, setSelectedPaymentRecord] = useState<GetPaymentRecordsItems | null>(
+    null,
+  );
 
   // 处理查看详情点击
   const handleViewDetails = (record: GetPaymentRecordsItems) => {
@@ -144,9 +145,7 @@ const PaymentLists: React.FC<PaymentListsProps> = ({
                   <td className="py-3 lg:py-4 px-3 lg:px-4">
                     <div className="min-w-0 flex-1">
                       <button
-                        onClick={() =>
-                          handleProjectClick(record.project?.project_slug)
-                        }
+                        onClick={() => handleProjectClick(record.project?.project_slug)}
                         className="text-xs lg:text-sm text-foreground-50 hover:text-primary-500 truncate transition-colors text-left"
                         disabled={!record.project?.project_slug}
                       >
@@ -161,15 +160,13 @@ const PaymentLists: React.FC<PaymentListsProps> = ({
                   </td>
                   <td className="py-3 lg:py-4 px-3 lg:px-4 text-center">
                     {record.payment_status.toLowerCase() === "success" ? (
-                      <span
-                        className={`${getStatusStyle(record.payment_status)}`}
-                      >
+                      <span className={`${getStatusStyle(record.payment_status)}`}>
                         {getStatusText(record.payment_status)}
                       </span>
                     ) : (
                       <span
                         className={`inline-flex items-center px-2 py-1 rounded-sm text-xs font-medium border ${getStatusStyle(
-                          record.payment_status
+                          record.payment_status,
                         )}`}
                       >
                         {getStatusText(record.payment_status)}
@@ -193,12 +190,8 @@ const PaymentLists: React.FC<PaymentListsProps> = ({
                         <Eye className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
                       </motion.button>
                       <motion.button
-                        whileHover={
-                          record.attachment_id ? { scale: 1.05 } : undefined
-                        }
-                        whileTap={
-                          record.attachment_id ? { scale: 0.95 } : undefined
-                        }
+                        whileHover={record.attachment_id ? { scale: 1.05 } : undefined}
+                        whileTap={record.attachment_id ? { scale: 0.95 } : undefined}
                         onClick={() => handleDownload(record)}
                         disabled={!record.attachment_id}
                         className={`p-1.5 lg:p-2 rounded-sm transition-colors ${
@@ -206,9 +199,7 @@ const PaymentLists: React.FC<PaymentListsProps> = ({
                             ? "bg-success-50 text-success-400 hover:bg-success-100 cursor-pointer"
                             : "bg-background-100 text-foreground-400 cursor-not-allowed opacity-50"
                         }`}
-                        title={
-                          record.attachment_id ? "下载项目文件" : "暂无附件"
-                        }
+                        title={record.attachment_id ? "下载项目文件" : "暂无附件"}
                       >
                         <Download className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
                       </motion.button>
@@ -238,15 +229,13 @@ const PaymentLists: React.FC<PaymentListsProps> = ({
                     {record.order_number}
                   </h3>
                   {record.payment_status.toLowerCase() === "success" ? (
-                    <span
-                      className={`${getStatusStyle(record.payment_status)}`}
-                    >
+                    <span className={`${getStatusStyle(record.payment_status)}`}>
                       {getStatusText(record.payment_status)}
                     </span>
                   ) : (
                     <span
                       className={`inline-flex items-center px-2 py-1 rounded-sm text-xs font-medium border ${getStatusStyle(
-                        record.payment_status
+                        record.payment_status,
                       )}`}
                     >
                       {getStatusText(record.payment_status)}
@@ -256,12 +245,9 @@ const PaymentLists: React.FC<PaymentListsProps> = ({
 
                 <div className="space-y-2">
                   <p className="text-xs text-foreground-300">
-                    {type === "admin" ? "项目名称" : dashboardT("projectTitle")}
-                    :{" "}
+                    {type === "admin" ? "项目名称" : dashboardT("projectTitle")}:{" "}
                     <button
-                      onClick={() =>
-                        handleProjectClick(record.project?.project_slug)
-                      }
+                      onClick={() => handleProjectClick(record.project?.project_slug)}
                       className="text-foreground-50 hover:text-primary-500 transition-colors"
                       disabled={!record.project?.project_slug}
                     >
@@ -289,12 +275,8 @@ const PaymentLists: React.FC<PaymentListsProps> = ({
                     <Eye className="w-3.5 h-3.5" />
                   </motion.button>
                   <motion.button
-                    whileHover={
-                      record.attachment_id ? { scale: 1.05 } : undefined
-                    }
-                    whileTap={
-                      record.attachment_id ? { scale: 0.95 } : undefined
-                    }
+                    whileHover={record.attachment_id ? { scale: 1.05 } : undefined}
+                    whileTap={record.attachment_id ? { scale: 0.95 } : undefined}
                     onClick={() => handleDownload(record)}
                     disabled={!record.attachment_id}
                     className={`p-1.5 rounded-sm transition-colors ${
@@ -336,7 +318,7 @@ const PaymentLists: React.FC<PaymentListsProps> = ({
                 ) : (
                   <span
                     className={`inline-flex items-center px-2 py-1 rounded-sm text-xs font-medium border ${getStatusStyle(
-                      record.payment_status
+                      record.payment_status,
                     )}`}
                   >
                     {getStatusText(record.payment_status)}
@@ -349,9 +331,7 @@ const PaymentLists: React.FC<PaymentListsProps> = ({
                 <p className="text-xs text-foreground-300">
                   {type === "admin" ? "项目名称" : dashboardT("projectTitle")}:{" "}
                   <button
-                    onClick={() =>
-                      handleProjectClick(record.project?.project_slug)
-                    }
+                    onClick={() => handleProjectClick(record.project?.project_slug)}
                     className="text-foreground-50 hover:text-primary-500 transition-colors"
                     disabled={!record.project?.project_slug}
                   >
@@ -381,12 +361,8 @@ const PaymentLists: React.FC<PaymentListsProps> = ({
                     <Eye className="w-3.5 h-3.5" />
                   </motion.button>
                   <motion.button
-                    whileHover={
-                      record.attachment_id ? { scale: 1.05 } : undefined
-                    }
-                    whileTap={
-                      record.attachment_id ? { scale: 0.95 } : undefined
-                    }
+                    whileHover={record.attachment_id ? { scale: 1.05 } : undefined}
+                    whileTap={record.attachment_id ? { scale: 0.95 } : undefined}
                     onClick={() => handleDownload(record)}
                     disabled={!record.attachment_id}
                     className={`p-1.5 rounded-sm transition-colors ${

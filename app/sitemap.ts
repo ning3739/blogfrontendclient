@@ -2,10 +2,7 @@ import type { MetadataRoute } from "next";
 import httpClient from "@/app/lib/http/client";
 import type { BlogSitemapItem } from "@/app/types/blogServiceType";
 import type { ProjectSitemapItem } from "@/app/types/projectServiceType";
-import type {
-  SectionChild,
-  SectionListResponse,
-} from "@/app/types/sectionServiceType";
+import type { SectionChild, SectionListResponse } from "@/app/types/sectionServiceType";
 import type { TagSitemapItem } from "@/app/types/tagServiceType";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -59,9 +56,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const sections = (sectionsResponse.data as SectionListResponse[]) || [];
 
     // 扁平化 sections - 将所有 children 提取出来
-    const allSections: Array<
-      SectionListResponse | (SectionChild & { id: number })
-    > = [];
+    const allSections: Array<SectionListResponse | (SectionChild & { id: number })> = [];
     sections.forEach((section) => {
       // 添加父 section（如果不是 blog 且 is_active）
       if (section.is_active && section.slug !== "blog") {
@@ -91,7 +86,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // 获取所有博客文章
     const blogRoutes: MetadataRoute.Sitemap = [];
     const blogSections = allSections.filter((section) =>
-      ["journal", "musings", "dev-notes"].includes(section.slug)
+      ["journal", "musings", "dev-notes"].includes(section.slug),
     );
 
     for (const section of blogSections) {
@@ -110,9 +105,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           });
 
           if (!("data" in blogsResponse)) {
-            console.error(
-              `Failed to fetch blogs for section ${section.slug} page ${page}`
-            );
+            console.error(`Failed to fetch blogs for section ${section.slug} page ${page}`);
             break;
           }
 
@@ -138,10 +131,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           page++;
         }
       } catch (error) {
-        console.error(
-          `Error fetching blogs for section ${section.slug}:`,
-          error
-        );
+        console.error(`Error fetching blogs for section ${section.slug}:`, error);
       }
     }
 
@@ -152,24 +142,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       let hasMore = true;
 
       while (hasMore) {
-        const projectsResponse = await httpClient.get(
-          "/project/get-project-lists",
-          {
-            params: {
-              page,
-              size: 100,
-              published_only: true,
-            },
-          }
-        );
+        const projectsResponse = await httpClient.get("/project/get-project-lists", {
+          params: {
+            page,
+            size: 100,
+            published_only: true,
+          },
+        });
 
         if (!("data" in projectsResponse)) {
           console.error(`Failed to fetch projects page ${page}`);
           break;
         }
 
-        const projects =
-          (projectsResponse.data?.items as ProjectSitemapItem[]) || [];
+        const projects = (projectsResponse.data?.items as ProjectSitemapItem[]) || [];
 
         if (projects.length === 0) {
           hasMore = false;
@@ -223,9 +209,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
         const pageTagRoutes = tags.map((tag: TagSitemapItem) => ({
           url: `${baseUrl}/tag/${tag.slug}`,
-          lastModified: new Date(
-            tag.updated_at || tag.created_at || new Date()
-          ),
+          lastModified: new Date(tag.updated_at || tag.created_at || new Date()),
           changeFrequency: "weekly" as const,
           priority: 0.6,
         }));
@@ -242,13 +226,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
 
     // 合并所有路由
-    return [
-      ...staticRoutes,
-      ...sectionRoutes,
-      ...blogRoutes,
-      ...projectRoutes,
-      ...tagRoutes,
-    ];
+    return [...staticRoutes, ...sectionRoutes, ...blogRoutes, ...projectRoutes, ...tagRoutes];
   } catch (error) {
     console.error("Error generating sitemap:", error);
     return staticRoutes;

@@ -18,11 +18,7 @@ interface StreamItem {
   isComplete: boolean;
 }
 
-const BlogSummaryModel = ({
-  isOpen,
-  onClose,
-  summaryData,
-}: BlogSummaryModelProps) => {
+const BlogSummaryModel = ({ isOpen, onClose, summaryData }: BlogSummaryModelProps) => {
   const commonT = useTranslations("common");
   const [streamItems, setStreamItems] = useState<StreamItem[]>([]);
   const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
@@ -51,26 +47,26 @@ const BlogSummaryModel = ({
         const itemId = `summary-item-${Date.now()}-${itemIndex}`;
 
         const timeout = setTimeout(() => {
-          setStreamItems((prev) => [
-            ...prev,
-            { id: itemId, text: "", isComplete: false },
-          ]);
+          setStreamItems((prev) => [...prev, { id: itemId, text: "", isComplete: false }]);
 
           const chars = fullText.split("");
           chars.forEach((char: string, charIndex: number) => {
-            const charTimeout = setTimeout(() => {
-              setStreamItems((prev) => {
-                const newItems = [...prev];
-                if (newItems[itemIndex]) {
-                  newItems[itemIndex] = {
-                    id: itemId,
-                    text: newItems[itemIndex].text + char,
-                    isComplete: charIndex === chars.length - 1,
-                  };
-                }
-                return newItems;
-              });
-            }, itemDelay + charIndex * 20);
+            const charTimeout = setTimeout(
+              () => {
+                setStreamItems((prev) => {
+                  const newItems = [...prev];
+                  if (newItems[itemIndex]) {
+                    newItems[itemIndex] = {
+                      id: itemId,
+                      text: newItems[itemIndex].text + char,
+                      isComplete: charIndex === chars.length - 1,
+                    };
+                  }
+                  return newItems;
+                });
+              },
+              itemDelay + charIndex * 20,
+            );
 
             timeoutsRef.current.push(charTimeout);
           });
@@ -88,13 +84,7 @@ const BlogSummaryModel = ({
   }, [summaryData, isOpen]);
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={commonT("summary")}
-      round="sm"
-      size="lg"
-    >
+    <Modal isOpen={isOpen} onClose={onClose} title={commonT("summary")} round="sm" size="lg">
       {!summaryData && (
         <ErrorDisplay
           title={commonT("notFound")}
@@ -115,9 +105,7 @@ const BlogSummaryModel = ({
             >
               <div className="flex items-start gap-3">
                 <div className="shrink-0 w-8 h-8 rounded-sm bg-primary-50 flex items-center justify-center">
-                  <span className="text-sm font-semibold text-primary-500">
-                    {index + 1}
-                  </span>
+                  <span className="text-sm font-semibold text-primary-500">{index + 1}</span>
                 </div>
                 <p className="text-foreground-100 flex-1 leading-relaxed">
                   {item.text}

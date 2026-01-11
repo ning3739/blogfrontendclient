@@ -100,6 +100,7 @@ export const ProjectMetaData = ({
       setTitle(initialData.title ?? "");
       setDescription(initialData.description ?? "");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     initialData?.selectedSeoId,
     initialData?.selectedCoverImageId,
@@ -110,7 +111,6 @@ export const ProjectMetaData = ({
     initialData?.price,
     initialData?.title,
     initialData?.description,
-    initialData,
   ]);
 
   // 点击外部关闭下拉菜单

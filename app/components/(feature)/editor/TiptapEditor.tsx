@@ -1,14 +1,26 @@
 "use client";
 
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import HorizontalRule from "@tiptap/extension-horizontal-rule";
+import { Table } from "@tiptap/extension-table";
+import { TableCell } from "@tiptap/extension-table-cell";
+import { TableHeader } from "@tiptap/extension-table-header";
+import { TableRow } from "@tiptap/extension-table-row";
+import TaskItem from "@tiptap/extension-task-item";
+import TaskList from "@tiptap/extension-task-list";
 import TextAlign from "@tiptap/extension-text-align";
 import { Placeholder } from "@tiptap/extensions";
 import { EditorContent, type JSONContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import { common, createLowlight } from "lowlight";
 import { useEffect, useRef } from "react";
 import MenuBar from "@/app/components/(feature)/editor/MenuBar";
 import { Audio } from "@/app/lib/extensions/audio";
 import { Image } from "@/app/lib/extensions/image";
 import { Video } from "@/app/lib/extensions/video";
+
+// 创建 lowlight 实例
+const lowlight = createLowlight(common);
 
 export default function TiptapEditor({
   content,
@@ -22,12 +34,39 @@ export default function TiptapEditor({
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
-        codeBlock: {
-          languageClassPrefix: "language-",
-          HTMLAttributes: {
-            class: "code-block",
-            style: "padding: 0; margin: 0;",
-          },
+        codeBlock: false, // 禁用默认的 codeBlock，使用 CodeBlockLowlight
+        horizontalRule: false,
+      }),
+      CodeBlockLowlight.configure({
+        lowlight,
+        languageClassPrefix: "language-",
+        HTMLAttributes: {
+          class: "code-block",
+        },
+      }),
+      HorizontalRule.configure({
+        HTMLAttributes: {
+          class: "horizontal-rule",
+        },
+      }),
+      Table.configure({
+        resizable: true,
+        HTMLAttributes: {
+          class: "markdown-table",
+        },
+      }),
+      TableRow,
+      TableHeader,
+      TableCell,
+      TaskList.configure({
+        HTMLAttributes: {
+          class: "task-list",
+        },
+      }),
+      TaskItem.configure({
+        nested: true,
+        HTMLAttributes: {
+          class: "task-item",
         },
       }),
       TextAlign.configure({
@@ -112,7 +151,7 @@ export default function TiptapEditor({
           [&_.ProseMirror_code]:py-0.5
           [&_.ProseMirror_code]:rounded
           [&_.ProseMirror_code]:text-sm
-          [&_.ProseMirror_code]:font-code
+          [&_.ProseMirror_code]:font-mono
           [&_.ProseMirror_code]:before:content-['']
           [&_.ProseMirror_code]:after:content-['']
           [&_.ProseMirror_code]:leading-relaxed
@@ -132,23 +171,73 @@ export default function TiptapEditor({
           [&_.ProseMirror_pre]:border
           [&_.ProseMirror_pre]:border-border-100
           [&_.ProseMirror_pre]:rounded-sm
-          [&_.ProseMirror_pre]:p-0
+          [&_.ProseMirror_pre]:p-4
           [&_.ProseMirror_pre]:my-4
           [&_.ProseMirror_pre]:overflow-x-auto
           [&_.ProseMirror_pre]:text-left
           [&_.ProseMirror_pre]:whitespace-pre
-          [&_.ProseMirror_pre]:font-code
+          [&_.ProseMirror_pre]:font-mono
           [&_.ProseMirror_pre]:text-sm
           [&_.ProseMirror_pre]:leading-relaxed
           [&_.ProseMirror_pre]:text-foreground-200
           
           /* 代码块内的 code 元素 */
-          [&_.ProseMirror_pre_code]:py-0
+          [&_.ProseMirror_pre_code]:p-0
+          [&_.ProseMirror_pre_code]:m-0
           [&_.ProseMirror_pre_code]:block
           [&_.ProseMirror_pre_code]:bg-transparent
           [&_.ProseMirror_pre_code]:text-inherit
+          [&_.ProseMirror_pre_code]:font-mono
+          [&_.ProseMirror_pre_code]:text-sm
+          [&_.ProseMirror_pre_code]:leading-relaxed
+          [&_.ProseMirror_pre_code]:whitespace-pre
           [&_.ProseMirror_pre_code]:before:content-['']
           [&_.ProseMirror_pre_code]:after:content-['']
+          
+          /* 表格样式 */
+          [&_.ProseMirror_table]:w-full
+          [&_.ProseMirror_table]:border-collapse
+          [&_.ProseMirror_table]:my-4
+          [&_.ProseMirror_table]:text-sm
+          
+          [&_.ProseMirror_th]:border
+          [&_.ProseMirror_th]:border-border-200
+          [&_.ProseMirror_th]:bg-background-100
+          [&_.ProseMirror_th]:px-4
+          [&_.ProseMirror_th]:py-2
+          [&_.ProseMirror_th]:text-left
+          [&_.ProseMirror_th]:font-semibold
+          [&_.ProseMirror_th]:text-foreground-50
+          
+          [&_.ProseMirror_td]:border
+          [&_.ProseMirror_td]:border-border-200
+          [&_.ProseMirror_td]:px-4
+          [&_.ProseMirror_td]:py-2
+          [&_.ProseMirror_td]:text-foreground-200
+          
+          [&_.ProseMirror_tr:nth-child(even)]:bg-background-50
+          
+          /* 任务列表样式 */
+          [&_.ProseMirror_.task-list]:list-none
+          [&_.ProseMirror_.task-list]:ml-0
+          [&_.ProseMirror_.task-list]:pl-0
+          
+          [&_.ProseMirror_.task-item]:flex
+          [&_.ProseMirror_.task-item]:items-start
+          [&_.ProseMirror_.task-item]:gap-2
+          [&_.ProseMirror_.task-item]:my-1
+          
+          [&_.ProseMirror_.task-item_input]:mt-1.5
+          [&_.ProseMirror_.task-item_input]:cursor-pointer
+          
+          [&_.ProseMirror_.task-item[data-checked='true']_p]:line-through
+          [&_.ProseMirror_.task-item[data-checked='true']_p]:text-foreground-400
+          
+          /* 水平分割线样式 */
+          [&_.ProseMirror_hr]:border-0
+          [&_.ProseMirror_hr]:border-t
+          [&_.ProseMirror_hr]:border-border-200
+          [&_.ProseMirror_hr]:my-6
           
           /* 引用块 */
           [&_.ProseMirror_blockquote]:border-l-4 

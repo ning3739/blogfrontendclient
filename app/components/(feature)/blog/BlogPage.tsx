@@ -35,29 +35,19 @@ const BlogPage: React.FC<BlogPageProps> = ({ sectionData }) => {
           `/blog/get-blog-lists?page=${currentPage}&size=6&section_id=${sectionData.section_id}&published_only=true`,
           locale,
         ]
-      : null
+      : null,
   );
 
   // 如果 sectionData 不存在，显示加载状态
   if (!sectionData) {
     return (
-      <LoadingSpinner
-        variant="wave"
-        size="lg"
-        message={commonT("loading")}
-        fullScreen={true}
-      />
+      <LoadingSpinner variant="wave" size="lg" message={commonT("loading")} fullScreen={true} />
     );
   }
 
   if (isLoading) {
     return (
-      <LoadingSpinner
-        variant="wave"
-        size="lg"
-        message={commonT("loading")}
-        fullScreen={true}
-      />
+      <LoadingSpinner variant="wave" size="lg" message={commonT("loading")} fullScreen={true} />
     );
   }
 

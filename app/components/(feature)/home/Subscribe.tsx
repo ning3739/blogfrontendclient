@@ -29,15 +29,11 @@ const Subscribe = () => {
     try {
       const response = await subscriberService.createSubscriber({ email });
       if (response.status === 200) {
-        toast.success(
-          "message" in response ? response.message : "Subscribed successfully"
-        );
+        toast.success("message" in response ? response.message : "Subscribed successfully");
         setIsSubscribed(true);
         setEmail("");
       } else {
-        toast.error(
-          "error" in response ? response.error : "Failed to subscribe"
-        );
+        toast.error("error" in response ? response.error : "Failed to subscribe");
       }
     } catch (error) {
       console.error(homeT("subscribeError"), error);
@@ -58,13 +54,8 @@ const Subscribe = () => {
       >
         {/* 邮箱订阅 */}
         <div className="flex-1 flex flex-col">
-          <p className="text-sm text-foreground-300 mb-3">
-            {homeT("subscribeDescription")}
-          </p>
-          <form
-            onSubmit={handleEmailSubscribe}
-            className="space-y-3 flex-1 flex flex-col"
-          >
+          <p className="text-sm text-foreground-300 mb-3">{homeT("subscribeDescription")}</p>
+          <form onSubmit={handleEmailSubscribe} className="space-y-3 flex-1 flex flex-col">
             <InputField
               type="email"
               id="email-subscribe"

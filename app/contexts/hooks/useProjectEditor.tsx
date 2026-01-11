@@ -1,7 +1,7 @@
 "use client";
 
 import type { JSONContent } from "@tiptap/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import useSWR from "swr";
 import projectService from "@/app/lib/services/projectService";
@@ -28,6 +28,18 @@ const initialProjectMetaData: ProjectMetaData = {
   description: "",
 };
 
+// 解析 JSON 内容的通用函数（移到组件外部避免重复创建）
+const parseContent = (content: TiptapContent): JSONContent | null => {
+  if (!content) return null;
+
+  try {
+    return content as JSONContent;
+  } catch (error) {
+    console.error("Failed to parse content:", error);
+    return null;
+  }
+};
+
 export const useProjectEditor = ({
   type,
   projectSlug,
@@ -47,7 +59,7 @@ export const useProjectEditor = ({
     );
 
   // 验证项目数据
-  const validateProjectData = (): {
+  const validateProjectData = useCallback((): {
     isValid: boolean;
     missingFields: string[];
   } => {
@@ -69,19 +81,7 @@ export const useProjectEditor = ({
     }
 
     return { isValid: missingFields.length === 0, missingFields };
-  };
-
-  // 解析 JSON 内容的通用函数
-  const parseContent = (content: TiptapContent): JSONContent | null => {
-    if (!content) return null;
-
-    try {
-      return content as JSONContent;
-    } catch (error) {
-      console.error("Failed to parse content:", error);
-      return null;
-    }
-  };
+  }, [projectMetaData]);
 
   // 当项目数据加载完成时，预填充表单
   useEffect(() => {
@@ -102,8 +102,7 @@ export const useProjectEditor = ({
         description: projectData.chinese_description || "",
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectDetails, type, parseContent, setContent]);
+  }, [projectDetails, type, setContent]);
 
   const handleProjectMetaDataSave = (data: ProjectMetaData) => {
     setProjectMetaData(data);

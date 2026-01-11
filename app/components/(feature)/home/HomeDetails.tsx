@@ -57,12 +57,7 @@ const HomeDetails = () => {
 
   if (isLoading) {
     return (
-      <LoadingSpinner
-        variant="wave"
-        size="lg"
-        message={commonT("loading")}
-        fullScreen={true}
-      />
+      <LoadingSpinner variant="wave" size="lg" message={commonT("loading")} fullScreen={true} />
     );
   }
 
@@ -266,9 +261,7 @@ const HomeDetails = () => {
             </span>
             {homeT("second.believePrefix")}
             <span className="relative inline-block mx-1">
-              <span className="text-primary-400 font-semibold">
-                {homeT("second.details")}
-              </span>
+              <span className="text-primary-400 font-semibold">{homeT("second.details")}</span>
               <motion.span
                 className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary-400"
                 initial={{ scaleX: 0 }}

@@ -262,6 +262,29 @@ pre {
   font-family: var(--font-code);
 }
 
+/* 自定义 font-code 类 */
+.font-code {
+  font-family: var(--font-code);
+}
+
+/* 确保 ProseMirror 编辑器中的代码块使用等宽字体 */
+.ProseMirror pre,
+.ProseMirror pre code,
+.ProseMirror code,
+.ProseMirror .code-block,
+.ProseMirror .code-block code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace !important;
+  white-space: pre !important;
+}
+
+.ProseMirror pre code,
+.ProseMirror .code-block code {
+  display: block;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+
 /* 英文环境下，英文字体优先 */
 body[data-locale="en"],
 [lang="en"] {

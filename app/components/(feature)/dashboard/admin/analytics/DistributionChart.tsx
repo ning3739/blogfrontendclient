@@ -1,11 +1,4 @@
-import {
-  Cell,
-  Legend,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-} from "recharts";
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import ErrorDisplay from "@/app/components/ui/error/ErrorDisplay";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
 
@@ -36,9 +29,7 @@ export default function DistributionChart({
   error,
 }: DistributionChartProps) {
   if (isLoading) {
-    return (
-      <LoadingSpinner message={`加载${title}...`} size="sm" variant="pulse" />
-    );
+    return <LoadingSpinner message={`加载${title}...`} size="sm" variant="pulse" />;
   }
 
   if (error || !data) {
@@ -53,9 +44,7 @@ export default function DistributionChart({
   }
   return (
     <div className="bg-card-50 border border-border-50 rounded-sm p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow w-full max-w-full overflow-hidden">
-      <h3 className="text-lg sm:text-xl font-semibold text-foreground-50 mb-5">
-        {title}
-      </h3>
+      <h3 className="text-lg sm:text-xl font-semibold text-foreground-50 mb-5">{title}</h3>
       <div className="w-full max-w-full" style={{ minHeight: "320px" }}>
         <ResponsiveContainer width="100%" height={320}>
           <PieChart>
@@ -69,10 +58,7 @@ export default function DistributionChart({
                   name: string;
                   percent: number;
                 };
-                const name =
-                  entry.name.length > 10
-                    ? `${entry.name.slice(0, 8)}..`
-                    : entry.name;
+                const name = entry.name.length > 10 ? `${entry.name.slice(0, 8)}..` : entry.name;
                 return `${name}: ${(entry.percent * 100).toFixed(0)}%`;
               }}
               outerRadius={window.innerWidth < 640 ? 70 : 90}
