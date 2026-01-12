@@ -11,9 +11,9 @@ import useSWR from "swr";
 import { BlogMetaData } from "@/app/components/(feature)/editor/BlogMetaData";
 import { ProjectMetaData } from "@/app/components/(feature)/editor/ProjectMetaData";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
-import { usePostEditor } from "@/app/contexts/hooks/usePostEditor";
-import { useProjectEditor } from "@/app/contexts/hooks/useProjectEditor";
-import useSection from "@/app/contexts/hooks/useSection";
+import { usePostEditor } from "@/app/hooks/usePostEditor";
+import { useProjectEditor } from "@/app/hooks/useProjectEditor";
+import useSection from "@/app/hooks/useSection";
 import type { SectionListItem } from "@/app/types/sectionServiceType";
 import type { GetSeoItemResponse } from "@/app/types/seoServiceType";
 

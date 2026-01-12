@@ -10,7 +10,7 @@ import EmptyState from "@/app/components/ui/error/EmptyState";
 import ErrorDisplay from "@/app/components/ui/error/ErrorDisplay";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
 import StatsCard from "@/app/components/ui/stats/StatsCard";
-import { useAuth } from "@/app/contexts/hooks/useAuth";
+import { useAuth } from "@/app/hooks/useAuth";
 
 export default function SavedBlogPage() {
   const { user } = useAuth();

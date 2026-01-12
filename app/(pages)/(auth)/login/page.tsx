@@ -9,7 +9,7 @@ import { Button } from "@/app/components/ui/button/butten";
 import GithubIcon from "@/app/components/ui/icon/GithubIcon";
 import GoogleIcon from "@/app/components/ui/icon/GoogleIcon";
 import InputField from "@/app/components/ui/input/InputField";
-import { useAuth } from "@/app/contexts/hooks/useAuth";
+import { useAuth } from "@/app/hooks/useAuth";
 import { Validator } from "@/app/lib/utils/validator";
 
 export default function LoginPage() {

@@ -10,6 +10,7 @@ import {
   Search,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import CreateSeoModal from "@/app/components/(feature)/editor/CreateSeoModal";
 import DocumentPickerModal from "@/app/components/(feature)/editor/DocumentPickerModal";
@@ -223,6 +224,7 @@ export const ProjectMetaData = ({
               )}
           </div>
           <button
+            type="button"
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="flex items-center space-x-1 px-3 py-1.5 rounded-sm text-foreground-300 hover:text-foreground-50 hover:bg-background-300"
           >
@@ -243,8 +245,9 @@ export const ProjectMetaData = ({
                 SEO 设置
               </label>
               <div className="relative" ref={dropdownRef}>
-                <div
-                  className="w-full rounded-sm border border-border-100 bg-card-50 px-4 py-3 text-foreground-50 cursor-pointer hover:border-border-200 hover:bg-background-300"
+                <button
+                  type="button"
+                  className="w-full rounded-sm border border-border-100 bg-card-50 px-4 py-3 text-foreground-50 cursor-pointer hover:border-border-200 hover:bg-background-300 text-left"
                   onClick={() => setIsSeoDropdownOpen(!isSeoDropdownOpen)}
                 >
                   <div className="flex items-center justify-between">
@@ -260,7 +263,7 @@ export const ProjectMetaData = ({
                       }`}
                     />
                   </div>
-                </div>
+                </button>
 
                 {isSeoDropdownOpen && (
                   <div className="absolute z-50 w-full mt-2 bg-card-50 border border-border-100 rounded-sm shadow-lg max-h-80 overflow-hidden flex flex-col">
@@ -275,8 +278,9 @@ export const ProjectMetaData = ({
                     </div>
                     <div className="flex-1 overflow-y-auto min-h-0">
                       {/* 创建新SEO选项 */}
-                      <div
-                        className="px-4 py-3 border-b border-border-100 cursor-pointer hover:bg-primary-50"
+                      <button
+                        type="button"
+                        className="w-full px-4 py-3 border-b border-border-100 cursor-pointer hover:bg-primary-50 text-left"
                         onClick={() => {
                           setIsCreateSeoModalOpen(true);
                           setIsSeoDropdownOpen(false);
@@ -288,15 +292,16 @@ export const ProjectMetaData = ({
                             创建新的 SEO 设置
                           </span>
                         </div>
-                      </div>
+                      </button>
 
                       {/* SEO列表 */}
                       {filteredSeoItems.length > 0 ? (
                         <>
                           {filteredSeoItems.map((item) => (
-                            <div
+                            <button
+                              type="button"
                               key={item.seo_id}
-                              className="px-4 py-3 cursor-pointer hover:bg-background-300"
+                              className="w-full px-4 py-3 cursor-pointer hover:bg-background-300 text-left"
                               onClick={() => handleSeoSelect(item.seo_id)}
                             >
                               <div className="flex items-center justify-between">
@@ -315,13 +320,14 @@ export const ProjectMetaData = ({
                                   <Check className="h-4 w-4 text-primary-500" />
                                 )}
                               </div>
-                            </div>
+                            </button>
                           ))}
 
                           {/* 获取更多按钮 - 样式与 SEO item 一致 */}
                           {hasMore && onLoadMore && (
-                            <div
-                              className="px-4 py-3 cursor-pointer hover:bg-background-300 border-t border-border-100"
+                            <button
+                              type="button"
+                              className="w-full px-4 py-3 cursor-pointer hover:bg-background-300 border-t border-border-100 text-left"
                               onClick={onLoadMore}
                             >
                               <div className="flex items-center justify-between">
@@ -341,7 +347,7 @@ export const ProjectMetaData = ({
                                   )}
                                 </div>
                               </div>
-                            </div>
+                            </button>
                           )}
                         </>
                       ) : (
@@ -441,6 +447,7 @@ export const ProjectMetaData = ({
                   { value: 4, label: "其他项目" },
                 ].map((type) => (
                   <button
+                    type="button"
                     key={type.value}
                     onClick={() => setProjectType(type.value)}
                     className={`p-3 rounded-sm border text-sm font-medium hover:border-primary-300 ${
@@ -503,11 +510,14 @@ export const ProjectMetaData = ({
               <div className="space-y-3">
                 {selectedCoverImageUrl ? (
                   <div className="relative group">
-                    <img
-                      src={selectedCoverImageUrl}
-                      alt="Selected cover"
-                      className="w-full h-48 object-cover rounded-sm border border-border-100"
-                    />
+                    <div className="relative w-full h-48">
+                      <Image
+                        src={selectedCoverImageUrl}
+                        alt="Selected cover"
+                        fill
+                        className="object-cover rounded-sm border border-border-100"
+                      />
+                    </div>
                     <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 rounded-sm flex items-center justify-center transition-opacity">
                       <Button
                         variant="secondary"
@@ -519,6 +529,7 @@ export const ProjectMetaData = ({
                       </Button>
                     </div>
                     <button
+                      type="button"
                       onClick={() => {
                         setSelectedCoverImageId(null);
                         setSelectedCoverImageUrl(null);
@@ -529,7 +540,8 @@ export const ProjectMetaData = ({
                     </button>
                   </div>
                 ) : (
-                  <div
+                  <button
+                    type="button"
                     className="w-full h-48 border-2 border-dashed border-border-100 rounded-sm flex items-center justify-center cursor-pointer hover:border-primary-500 hover:bg-primary-50"
                     onClick={() => setIsImageModalOpen(true)}
                   >
@@ -537,7 +549,7 @@ export const ProjectMetaData = ({
                       <ImageIcon className="h-8 w-8 text-foreground-400 mx-auto mb-2" />
                       <p className="text-sm text-foreground-300 font-medium">点击选择封面图片</p>
                     </div>
-                  </div>
+                  </button>
                 )}
               </div>
             </div>
@@ -574,8 +586,9 @@ export const ProjectMetaData = ({
                       </Button>
                     </div>
                   ) : (
-                    <div
-                      className="flex items-center justify-between p-4 border-2 border-dashed border-border-100 rounded-sm cursor-pointer hover:border-primary-500 hover:bg-primary-50"
+                    <button
+                      type="button"
+                      className="w-full flex items-center justify-between p-4 border-2 border-dashed border-border-100 rounded-sm cursor-pointer hover:border-primary-500 hover:bg-primary-50 text-left"
                       onClick={() => setIsDocumentModalOpen(true)}
                     >
                       <div className="flex items-center space-x-3">
@@ -585,7 +598,7 @@ export const ProjectMetaData = ({
                       <Button variant="outline" size="sm">
                         选择
                       </Button>
-                    </div>
+                    </button>
                   )}
                 </div>
               </div>

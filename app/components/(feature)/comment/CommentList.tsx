@@ -9,7 +9,7 @@ import useSWR, { mutate } from "swr";
 import EmptyState from "@/app/components/ui/error/EmptyState";
 import ErrorDisplay from "@/app/components/ui/error/ErrorDisplay";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
-import { useAuth } from "@/app/contexts/hooks/useAuth";
+import { useAuth } from "@/app/hooks/useAuth";
 import blogService from "@/app/lib/services/blogService";
 import boardService from "@/app/lib/services/boardService";
 import { handleDateFormat } from "@/app/lib/utils/handleDateFormat";

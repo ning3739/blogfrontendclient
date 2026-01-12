@@ -15,7 +15,7 @@ import EmptyState from "@/app/components/ui/error/EmptyState";
 import ErrorDisplay from "@/app/components/ui/error/ErrorDisplay";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
 import Share from "@/app/components/ui/share/Share";
-import { useAuth } from "@/app/contexts/hooks/useAuth";
+import { useAuth } from "@/app/hooks/useAuth";
 import { handleDateFormat } from "@/app/lib/utils/handleDateFormat";
 import type { GetBlogDetailsResponse } from "@/app/types/blogServiceType";
 import CommentTextInput, { CommentType } from "../comment/CommentTextInput";

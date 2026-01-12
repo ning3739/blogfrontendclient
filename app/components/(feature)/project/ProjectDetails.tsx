@@ -13,7 +13,7 @@ import EmptyState from "@/app/components/ui/error/EmptyState";
 import ErrorDisplay from "@/app/components/ui/error/ErrorDisplay";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
 import Share from "@/app/components/ui/share/Share";
-import { useAuth } from "@/app/contexts/hooks/useAuth";
+import { useAuth } from "@/app/hooks/useAuth";
 import MediaService from "@/app/lib/services/mediaService";
 import { formatCurrency } from "@/app/lib/utils/handleCurrencyFormat";
 import { handleDateFormat } from "@/app/lib/utils/handleDateFormat";

@@ -7,8 +7,8 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import SiteLogo from "@/app/components/ui/logo/SiteLogo";
-import { useAuth } from "@/app/contexts/hooks/useAuth";
-import { type MenuItem, useSidebarRoutes } from "@/app/contexts/hooks/useSidebarRoutes";
+import { useAuth } from "@/app/hooks/useAuth";
+import { type MenuItem, useSidebarRoutes } from "@/app/hooks/useSidebarRoutes";
 
 interface SideBarProps {
   isOpen?: boolean;
@@ -23,7 +23,7 @@ interface SidebarItemProps {
   onNavigate?: () => void;
 }
 
-const SidebarItem = React.memo<SidebarItemProps>(({ item, index, isCollapsed, onNavigate }) => {
+const SidebarItem = React.memo<SidebarItemProps>(({ item, isCollapsed, onNavigate }) => {
   return (
     <Link
       href={item.path}
@@ -70,13 +70,7 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen = true, onClose }) => {
   const renderMenuItems = () => (
     <nav className="space-y-1">
       {menuItems.map((item, index) => (
-        <SidebarItem
-          key={item.label}
-          item={item}
-          index={index}
-          isCollapsed={isCollapsed}
-          onNavigate={onClose}
-        />
+        <SidebarItem key={item.label} item={item} index={index} isCollapsed={isCollapsed} onNavigate={onClose} />
       ))}
     </nav>
   );
@@ -96,6 +90,7 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen = true, onClose }) => {
           <div className="py-6 px-4 border-b border-border-50 flex items-center justify-between">
             {!isCollapsed && <SiteLogo size="lg" />}
             <button
+              type="button"
               onClick={() => setIsCollapsed(!isCollapsed)}
               className="p-2 text-foreground-300 hover:text-foreground-100 hover:scale-110 transition-[color,transform,background-color] duration-200 hover:bg-background-100 rounded-lg"
             >
@@ -185,6 +180,7 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen = true, onClose }) => {
                 </div>
 
                 <button
+                  type="button"
                   onClick={onClose}
                   className="p-2 text-foreground-200 hover:text-foreground-100 hover:scale-110 transition-[color,transform,background-color] duration-200 rounded-lg hover:bg-background-100"
                 >

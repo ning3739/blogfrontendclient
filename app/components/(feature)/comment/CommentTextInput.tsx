@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { mutate } from "swr";
 import { Button } from "@/app/components/ui/button/butten";
 import InputField from "@/app/components/ui/input/InputField";
-import { useAuth } from "@/app/contexts/hooks/useAuth";
+import { useAuth } from "@/app/hooks/useAuth";
 import blogService from "@/app/lib/services/blogService";
 import boardService from "@/app/lib/services/boardService";
 import type { BlogCommentItem } from "@/app/types/blogServiceType";

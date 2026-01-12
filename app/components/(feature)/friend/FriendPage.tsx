@@ -8,7 +8,7 @@ import useSWR from "swr";
 import EmptyState from "@/app/components/ui/error/EmptyState";
 import ErrorDisplay from "@/app/components/ui/error/ErrorDisplay";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
-import { useAuth } from "@/app/contexts/hooks/useAuth";
+import { useAuth } from "@/app/hooks/useAuth";
 import type { SectionListItem } from "@/app/types/sectionServiceType";
 import FriendLinkList from "./FriendLinkList";
 import FriendTextInput from "./FriendTextInput";

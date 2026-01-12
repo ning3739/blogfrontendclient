@@ -10,6 +10,7 @@ import {
   Tag,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 import CreateSeoModal from "@/app/components/(feature)/editor/CreateSeoModal";
@@ -19,8 +20,8 @@ import { Button } from "@/app/components/ui/button/butten";
 import Card from "@/app/components/ui/card/Card";
 import ErrorDisplay from "@/app/components/ui/error/ErrorDisplay";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
-import type { BlogMetaData as BlogMetaDataType } from "@/app/contexts/hooks/usePostEditor";
-import useSection from "@/app/contexts/hooks/useSection";
+import type { BlogMetaData as BlogMetaDataType } from "@/app/hooks/usePostEditor";
+import useSection from "@/app/hooks/useSection";
 import type { SectionListResponse } from "@/app/types/sectionServiceType";
 import type { GetSeoItemResponse } from "@/app/types/seoServiceType";
 
@@ -388,9 +389,10 @@ export const BlogMetaData = ({
                     <div className="absolute z-50 w-full mt-2 bg-card-50 border border-border-100 rounded-sm shadow-lg max-h-60 overflow-auto">
                       <div className="max-h-60 overflow-auto">
                         {filteredSectionItems.map((item: SectionListResponse) => (
-                          <div
+                          <button
+                            type="button"
                             key={item?.section_id}
-                            className="px-4 py-3 cursor-pointer hover:bg-background-300"
+                            className="w-full px-4 py-3 cursor-pointer hover:bg-background-300 text-left"
                             onClick={() => handleSectionSelect(item?.section_id)}
                           >
                             <div className="flex items-center justify-between">
@@ -401,7 +403,7 @@ export const BlogMetaData = ({
                                 <Check className="h-4 w-4 text-primary-500" />
                               )}
                             </div>
-                          </div>
+                          </button>
                         ))}
                       </div>
                     </div>
@@ -449,8 +451,9 @@ export const BlogMetaData = ({
                     </div>
                     <div className="flex-1 overflow-y-auto min-h-0">
                       {/* 创建新SEO选项 */}
-                      <div
-                        className="px-4 py-3 border-b border-border-100 cursor-pointer hover:bg-primary-50"
+                      <button
+                        type="button"
+                        className="w-full px-4 py-3 border-b border-border-100 cursor-pointer hover:bg-primary-50 text-left"
                         onClick={() => {
                           setIsCreateSeoModalOpen(true);
                           setIsSeoDropdownOpen(false);
@@ -462,15 +465,16 @@ export const BlogMetaData = ({
                             创建新的 SEO 设置
                           </span>
                         </div>
-                      </div>
+                      </button>
 
                       {/* SEO列表 */}
                       {filteredSeoItems.length > 0 ? (
                         <>
                           {filteredSeoItems.map((item) => (
-                            <div
+                            <button
+                              type="button"
                               key={item.seo_id}
-                              className="px-4 py-3 cursor-pointer hover:bg-background-300"
+                              className="w-full px-4 py-3 cursor-pointer hover:bg-background-300 text-left"
                               onClick={() => handleSeoSelect(item.seo_id)}
                             >
                               <div className="flex items-center justify-between">
@@ -489,13 +493,14 @@ export const BlogMetaData = ({
                                   <Check className="h-4 w-4 text-primary-500" />
                                 )}
                               </div>
-                            </div>
+                            </button>
                           ))}
 
                           {/* 获取更多按钮 - 样式与 SEO item 一致 */}
                           {hasMore && onLoadMore && (
-                            <div
-                              className="px-4 py-3 cursor-pointer hover:bg-background-300 border-t border-border-100"
+                            <button
+                              type="button"
+                              className="w-full px-4 py-3 cursor-pointer hover:bg-background-300 border-t border-border-100 text-left"
                               onClick={onLoadMore}
                             >
                               <div className="flex items-center justify-between">
@@ -515,7 +520,7 @@ export const BlogMetaData = ({
                                   )}
                                 </div>
                               </div>
-                            </div>
+                            </button>
                           )}
                         </>
                       ) : (
@@ -580,8 +585,9 @@ export const BlogMetaData = ({
                     </div>
                     <div className="flex-1 overflow-y-auto min-h-0">
                       {/* 创建新标签选项 */}
-                      <div
-                        className="px-4 py-3 border-b border-border-100 cursor-pointer hover:bg-primary-50"
+                      <button
+                        type="button"
+                        className="w-full px-4 py-3 border-b border-border-100 cursor-pointer hover:bg-primary-50 text-left"
                         onClick={() => {
                           setIsCreateTagModalOpen(true);
                           setIsTagDropdownOpen(false);
@@ -591,15 +597,16 @@ export const BlogMetaData = ({
                           <Plus className="h-4 w-4 text-primary-500" />
                           <span className="text-sm text-primary-600 font-medium">创建新标签</span>
                         </div>
-                      </div>
+                      </button>
 
                       {/* 标签列表 */}
                       {filteredTagItems.length > 0 ? (
                         <>
                           {filteredTagItems.map((item) => (
-                            <div
+                            <button
+                              type="button"
                               key={item?.tag_id}
-                              className="px-4 py-3 cursor-pointer hover:bg-background-300"
+                              className="w-full px-4 py-3 cursor-pointer hover:bg-background-300 text-left"
                               onClick={() => handleTagToggle(item?.tag_id)}
                             >
                               <div className="flex items-center justify-between">
@@ -610,13 +617,14 @@ export const BlogMetaData = ({
                                   <Check className="h-4 w-4 text-primary-500" />
                                 )}
                               </div>
-                            </div>
+                            </button>
                           ))}
 
                           {/* 获取更多按钮 */}
                           {hasMoreTag && (
-                            <div
-                              className="px-4 py-3 cursor-pointer hover:bg-background-300 border-t border-border-100"
+                            <button
+                              type="button"
+                              className="w-full px-4 py-3 cursor-pointer hover:bg-background-300 border-t border-border-100 text-left"
                               onClick={handleLoadMoreTag}
                             >
                               <div className="flex items-center justify-between">
@@ -636,7 +644,7 @@ export const BlogMetaData = ({
                                   )}
                                 </div>
                               </div>
-                            </div>
+                            </button>
                           )}
                         </>
                       ) : (
@@ -749,11 +757,14 @@ export const BlogMetaData = ({
               <div className="space-y-3">
                 {selectedCoverImageUrl ? (
                   <div className="relative group">
-                    <img
-                      src={selectedCoverImageUrl}
-                      alt="Selected cover"
-                      className="w-full h-48 object-cover rounded-sm border border-border-100"
-                    />
+                    <div className="relative w-full h-48">
+                      <Image
+                        src={selectedCoverImageUrl}
+                        alt="Selected cover"
+                        fill
+                        className="object-cover rounded-sm border border-border-100"
+                      />
+                    </div>
                     <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 rounded-sm flex items-center justify-center transition-opacity">
                       <Button
                         variant="secondary"
@@ -765,6 +776,7 @@ export const BlogMetaData = ({
                       </Button>
                     </div>
                     <button
+                      type="button"
                       onClick={() => {
                         setSelectedCoverImageId(null);
                         setSelectedCoverImageUrl(null);
@@ -775,7 +787,8 @@ export const BlogMetaData = ({
                     </button>
                   </div>
                 ) : (
-                  <div
+                  <button
+                    type="button"
                     className="w-full h-48 border-2 border-dashed border-border-100 rounded-sm flex items-center justify-center cursor-pointer hover:border-primary-500 hover:bg-primary-50"
                     onClick={() => setIsImageModalOpen(true)}
                   >
@@ -783,7 +796,7 @@ export const BlogMetaData = ({
                       <ImageIcon className="h-8 w-8 text-foreground-400 mx-auto mb-2" />
                       <p className="text-sm text-foreground-300 font-medium">点击选择封面图片</p>
                     </div>
-                  </div>
+                  </button>
                 )}
               </div>
             </div>

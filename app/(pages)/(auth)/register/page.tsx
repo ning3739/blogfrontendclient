@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Button } from "@/app/components/ui/button/butten";
 import InputField from "@/app/components/ui/input/InputField";
-import { useAuth } from "@/app/contexts/hooks/useAuth";
+import { useAuth } from "@/app/hooks/useAuth";
 import { authService } from "@/app/lib/services/authService";
 import { Validator } from "@/app/lib/utils/validator";
 

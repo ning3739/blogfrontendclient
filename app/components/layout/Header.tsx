@@ -9,8 +9,8 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import SiteLogo from "@/app/components/ui/logo/SiteLogo";
-import { useAuth } from "@/app/contexts/hooks/useAuth";
-import useSection from "@/app/contexts/hooks/useSection";
+import { useAuth } from "@/app/hooks/useAuth";
+import useSection from "@/app/hooks/useSection";
 import type { SectionListResponse } from "@/app/types/sectionServiceType";
 
 const Header = () => {
@@ -170,6 +170,7 @@ const Header = () => {
                   {section.children && section.children.length > 0 ? (
                     // 有子section的父section，不提供链接，只显示dropdown
                     <button
+                      type="button"
                       onClick={(e) => {
                         e.preventDefault();
                         toggleSectionExpansion(section.section_id.toString());
@@ -246,6 +247,7 @@ const Header = () => {
                 onMouseLeave={() => setDropdownMenuOpen(false)}
               >
                 <button
+                  type="button"
                   onClick={() => setDropdownMenuOpen(!dropdownMenuOpen)}
                   className="flex items-center space-x-2 text-base font-semibold text-foreground-200 hover:text-primary-600 transition-colors duration-200 active:scale-95"
                 >
@@ -288,6 +290,7 @@ const Header = () => {
                         {headerT("dashboard")}
                       </Link>
                       <button
+                        type="button"
                         onClick={() => {
                           accountLogout();
                           setDropdownMenuOpen(false);
@@ -313,6 +316,7 @@ const Header = () => {
 
           {/* Mobile Menu Button */}
           <button
+            type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden p-2 text-foreground-200 hover:text-primary-600 hover:scale-110 active:scale-90 transition-[color,transform] duration-200"
           >
@@ -355,6 +359,7 @@ const Header = () => {
                     <div className="flex items-center justify-between p-4 border-b border-border-50">
                       <SiteLogo />
                       <button
+                        type="button"
                         onClick={() => setMobileMenuOpen(false)}
                         className="p-2 text-foreground-200 hover:text-primary-600 transition-colors duration-200"
                       >
@@ -380,6 +385,7 @@ const Header = () => {
                               {section.children && section.children.length > 0 ? (
                                 // 有子section的父section，可点击展开/收起
                                 <button
+                                  type="button"
                                   onClick={() =>
                                     toggleSectionExpansion(section.section_id.toString())
                                   }
@@ -485,6 +491,7 @@ const Header = () => {
                               {headerT("dashboard")}
                             </Link>
                             <button
+                              type="button"
                               onClick={() => {
                                 accountLogout();
                                 setMobileMenuOpen(false);

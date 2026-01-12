@@ -149,7 +149,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (access_token && !refresh_token) {
         try {
           await authService.accountLogout();
-        } catch (logoutError) {
+        } catch (_logoutError) {
           // 静默失败
         }
         setIsAuthenticated(false);
@@ -167,7 +167,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       // 【情况4】两个 token 都有效 - 正常状态
       setIsAuthenticated(true);
-    } catch (error) {
+    } catch (_error) {
       setIsAuthenticated(false);
     }
   }, []);

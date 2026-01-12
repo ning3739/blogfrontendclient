@@ -4,7 +4,7 @@ import { Bookmark, Eye, Heart, MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import useSWR from "swr";
-import { useAuth } from "@/app/contexts/hooks/useAuth";
+import { useAuth } from "@/app/hooks/useAuth";
 import blogService from "@/app/lib/services/blogService";
 import { isBlogLiked, setBlogLikeStatus } from "@/app/lib/utils/cookieUtils";
 import type { GetBlogStatsResponse } from "@/app/types/blogServiceType";

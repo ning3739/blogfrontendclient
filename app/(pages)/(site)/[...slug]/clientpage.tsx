@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
-import { useSectionDetailsBySlug } from "@/app/contexts/hooks/useSection";
+import { useSectionDetailsBySlug } from "@/app/hooks/useSection";
 
 const Loading = () => (
   <div className="flex items-center justify-center min-h-[50vh]">
@@ -42,11 +42,11 @@ const TagPage = dynamic(() => import("@/app/components/(feature)/tag/TagPage"), 
 const UserPage = dynamic(() => import("@/app/components/(feature)/user/UserPage"), {
   loading: Loading,
 });
-const CopyrightPage = dynamic(() => import("@/app/components/(feature)/content/CopyrightPage"), {
+const CopyrightPage = dynamic(() => import("@/app/components/(feature)/copyright/CopyrightPage"), {
   loading: Loading,
 });
 const PrivacyPolicyPage = dynamic(
-  () => import("@/app/components/(feature)/content/PrivacyPolicyPage"),
+  () => import("@/app/components/(feature)/privacy/PrivacyPolicyPage"),
   {
     loading: Loading,
   },

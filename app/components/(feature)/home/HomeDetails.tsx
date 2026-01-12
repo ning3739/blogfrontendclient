@@ -153,8 +153,9 @@ const HomeDetails = () => {
             {homeT("roles.detailOriented")}
           </span>
           <span className="text-foreground-50">,</span>
-          <span
-            className="inline-flex items-center gap-2 sm:gap-3 text-foreground-50 cursor-pointer select-none"
+          <button
+            type="button"
+            className="inline-flex items-center gap-2 sm:gap-3 text-foreground-50 cursor-pointer select-none bg-transparent border-0 p-0"
             onClick={handleEmojiClick}
           >
             <motion.span
@@ -167,7 +168,7 @@ const HomeDetails = () => {
               {emojis[emojiIndex]}
             </motion.span>
             {homeT("roles.perfectionist")}
-          </span>
+          </button>
         </div>
       </div>
 

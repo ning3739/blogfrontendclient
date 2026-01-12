@@ -11,7 +11,7 @@ import EmptyState from "@/app/components/ui/error/EmptyState";
 import ErrorDisplay from "@/app/components/ui/error/ErrorDisplay";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
 import StatsCard from "@/app/components/ui/stats/StatsCard";
-import useSection from "@/app/contexts/hooks/useSection";
+import useSection from "@/app/hooks/useSection";
 import type { SectionListItem } from "@/app/types/sectionServiceType";
 
 export default function PostsPage() {

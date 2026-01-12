@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import React from "react";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
-import { useAuth } from "@/app/contexts/hooks/useAuth";
+import { useAuth } from "@/app/hooks/useAuth";
 
 interface QuickActionButtonProps {
   icon: React.ReactNode;
