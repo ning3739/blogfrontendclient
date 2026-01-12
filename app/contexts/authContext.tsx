@@ -140,11 +140,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       // 【异常情况1】两个 token 都无效 - 清除 cookie
       if (!access_token && !refresh_token) {
-        console.warn("Both tokens are invalid, clearing cookies");
         try {
           await authService.accountLogout();
         } catch (logoutError) {
-          console.warn("Failed to clear invalid cookies:", logoutError);
+          // 静默失败
         }
         setIsAuthenticated(false);
         return;
@@ -154,11 +153,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // 说明：refresh_token 可能在数据库中被删除了，access_token 过期后无法刷新
       // 处理：清除所有 cookie，要求用户重新登录
       if (access_token && !refresh_token) {
-        console.warn("Access token exists but refresh token is missing, clearing cookies");
         try {
           await authService.accountLogout();
         } catch (logoutError) {
-          console.warn("Failed to clear cookies:", logoutError);
+          // 静默失败
         }
         setIsAuthenticated(false);
         return;
@@ -174,12 +172,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             return;
           }
         } catch (refreshError) {
-          console.warn("Token refresh failed:", refreshError);
           // 刷新失败，清除过期的 cookie
           try {
             await authService.accountLogout();
           } catch (logoutError) {
-            console.warn("Failed to clear expired cookies:", logoutError);
+            // 静默失败
           }
           setIsAuthenticated(false);
           return;
@@ -189,10 +186,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // 【正常情况】两个 token 都有效
       setIsAuthenticated(access_token && refresh_token);
     } catch (error) {
-      console.warn("Check auth status failed:", error);
       setIsAuthenticated(false);
     }
-  }, []);
+  }, []); // 空依赖数组，避免 Fast Refresh 问题
 
   // 在组件挂载时检查认证状态
   useEffect(() => {
