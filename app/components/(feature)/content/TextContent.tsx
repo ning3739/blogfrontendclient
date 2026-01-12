@@ -23,12 +23,22 @@ import ImagePreview from "./ImagePreview";
 // 创建 lowlight 实例
 const lowlight = createLowlight(common);
 
+// 注册额外的语言（补充 common 包中没有的，与 MenuBar 中 supportedLanguages 保持一致）
+import bash from "highlight.js/lib/languages/bash";
+import csharp from "highlight.js/lib/languages/csharp";
 import dockerfile from "highlight.js/lib/languages/dockerfile";
-// 注册额外的语言（补充 common 包中没有的）
 import html from "highlight.js/lib/languages/xml";
+import sql from "highlight.js/lib/languages/sql";
+import yaml from "highlight.js/lib/languages/yaml";
 
 lowlight.register("html", html);
+lowlight.register("xml", html);
 lowlight.register("dockerfile", dockerfile);
+lowlight.register("bash", bash);
+lowlight.register("shell", bash);
+lowlight.register("sql", sql);
+lowlight.register("yaml", yaml);
+lowlight.register("csharp", csharp);
 
 const TextContent = ({ content }: { content: JSONContent | string }) => {
   // 国际化
@@ -190,12 +200,33 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
         };
 
         // 获取代码内容并计算行数（移除末尾空行）
-        const codeText = (codeElement.textContent || "").replace(/\n+$/, "");
+        const codeText = (codeElement.textContent || "").replace(/\n+$/, "").replace(/\s+$/, "");
         const lines = codeText.split("\n");
         const lineCount = lines.length;
 
-        // 更新代码元素内容（移除多余空白）
-        codeElement.textContent = codeText;
+        // 移除 innerHTML 末尾的空行，同时保留语法高亮标签
+        // 注意：不能使用 textContent，因为它会移除所有 HTML 标签（包括语法高亮的 span）
+        let cleanedHTML = codeElement.innerHTML;
+        // 循环清理直到没有变化（处理嵌套情况）
+        let prevHTML = "";
+        while (prevHTML !== cleanedHTML) {
+          prevHTML = cleanedHTML;
+          cleanedHTML = cleanedHTML
+            .replace(/\n+$/g, "") // 移除末尾换行
+            .replace(/[\s\u00A0]+$/g, "") // 移除末尾空白（包括非断行空格）
+            .replace(/<span[^>]*>\s*<\/span>$/g, "") // 移除末尾空 span
+            .replace(/<br\s*\/?>\s*$/gi, ""); // 移除末尾 br 标签
+        }
+        codeElement.innerHTML = cleanedHTML;
+        
+        // 计算精确的高度：行数 × 行高
+        const exactHeight = lineCount * 24; // 1.5rem = 24px
+        
+        // 确保 code 元素没有额外的底部空间
+        codeElement.style.display = "block";
+        codeElement.style.lineHeight = "1.5rem";
+        codeElement.style.height = `${exactHeight}px`;
+        codeElement.style.overflow = "hidden";
 
         // 创建行号容器
         const lineNumbersContainer = document.createElement("div");
@@ -229,7 +260,7 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
 
         // 调整代码容器的样式
         const codeContainer = document.createElement("div");
-        codeContainer.className = "code-container relative pl-16 pr-4 py-4";
+        codeContainer.className = "code-container relative pl-16 pr-4 pt-4 pb-4";
         codeContainer.style.lineHeight = "1.5rem";
         codeContainer.style.whiteSpace = "pre";
         codeContainer.style.overflowX = "auto";
@@ -240,10 +271,12 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
         codeElement.parentNode?.insertBefore(codeContainer, codeElement);
         codeContainer.appendChild(codeElement);
 
-        // 确保 code 元素也使用等宽字体
+        // 确保 code 元素也使用等宽字体，并移除额外的底部空间
         codeElement.style.fontFamily =
           'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
         codeElement.style.whiteSpace = "pre";
+        codeElement.style.margin = "0";
+        codeElement.style.padding = "0";
 
         // 为 pre 元素添加样式和子元素
         const preHTMLElement = preElement as HTMLElement;
