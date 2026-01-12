@@ -59,7 +59,10 @@ export default async function proxy(request: NextRequest) {
   if (isAuthPage) {
     const isAuthenticated = await checkAuth();
     if (isAuthenticated) {
-      return NextResponse.redirect(new URL("/", request.url));
+      const response = NextResponse.redirect(new URL("/", request.url));
+      // 禁用缓存，确保每次都重新检查认证状态
+      response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+      return response;
     }
   }
 
@@ -67,11 +70,18 @@ export default async function proxy(request: NextRequest) {
   if (isProtectedPage) {
     const isAuthenticated = await checkAuth();
     if (!isAuthenticated) {
-      return NextResponse.redirect(new URL("/login", request.url));
+      const response = NextResponse.redirect(new URL("/login", request.url));
+      response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+      return response;
     }
   }
 
-  return NextResponse.next();
+  const response = NextResponse.next();
+  // 对于认证相关页面，禁用缓存
+  if (isAuthPage || isProtectedPage) {
+    response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+  }
+  return response;
 }
 
 export const config = {

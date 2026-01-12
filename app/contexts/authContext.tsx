@@ -94,7 +94,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (response.status === 200 && "data" in response) {
         toast.success("message" in response ? response.message : "Logout successful");
         setIsAuthenticated(false);
-        router.push("/login");
+        // 使用硬刷新跳转到登录页，避免 Next.js 路由缓存导致中间件检测到旧的认证状态
+        window.location.href = "/login";
       } else {
         const errorMsg = "error" in response ? response.error : "Logout failed";
         setError(errorMsg);
@@ -107,7 +108,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } finally {
       setLoading(false);
     }
-  }, [router]);
+  }, []);
 
   const oauthLogin = useCallback((provider: "github" | "google") => {
     setLoading(true);
