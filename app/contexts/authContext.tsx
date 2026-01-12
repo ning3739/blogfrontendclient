@@ -131,60 +131,65 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const response = await authService.checkAuthToken();
 
-      // 【主动刷新】如果只有 refresh_token，主动刷新 access_token
-      // 说明：这是页面加载时的预防性刷新，避免首次 API 调用失败
-      // 与 client.ts 中的自动刷新（被动刷新）互补，提升用户体验
-      if (
-        response.status === 200 &&
-        "data" in response &&
-        response.data.refresh_token === true &&
-        response.data.access_token === false
-      ) {
-        try {
-          // 调用刷新接口生成新的 access_token
-          const refreshResponse = await authService.generateAccessToken();
-
-          if (refreshResponse.status === 200) {
-            // 刷新成功，设置为已认证
-            setIsAuthenticated(true);
-            return;
-          }
-        } catch (refreshError) {
-          // 刷新失败，可能 refresh_token 也过期了
-          console.warn("Token refresh failed:", refreshError);
-          
-          // 【关键修复】清除过期的 cookie
-          try {
-            await authService.accountLogout();
-          } catch (logoutError) {
-            console.warn("Failed to clear expired cookies:", logoutError);
-          }
-          
-          setIsAuthenticated(false);
-          return;
-        }
+      if (response.status !== 200 || !("data" in response)) {
+        setIsAuthenticated(false);
+        return;
       }
 
-      // 正常情况：检查 access_token 是否有效
-      const hasValidToken =
-        response.status === 200 && "data" in response && response.data.access_token === true;
+      const { access_token, refresh_token } = response.data;
 
-      // 【关键修复】如果两个 token 都无效，清除 cookie
-      if (
-        response.status === 200 &&
-        "data" in response &&
-        !response.data.access_token &&
-        !response.data.refresh_token
-      ) {
+      // 【异常情况1】两个 token 都无效 - 清除 cookie
+      if (!access_token && !refresh_token) {
+        console.warn("Both tokens are invalid, clearing cookies");
         try {
           await authService.accountLogout();
         } catch (logoutError) {
           console.warn("Failed to clear invalid cookies:", logoutError);
         }
+        setIsAuthenticated(false);
+        return;
       }
 
-      setIsAuthenticated(hasValidToken);
-    } catch {
+      // 【异常情况2】有 access_token 但没有 refresh_token - 这是不正常的状态
+      // 说明：refresh_token 可能在数据库中被删除了，access_token 过期后无法刷新
+      // 处理：清除所有 cookie，要求用户重新登录
+      if (access_token && !refresh_token) {
+        console.warn("Access token exists but refresh token is missing, clearing cookies");
+        try {
+          await authService.accountLogout();
+        } catch (logoutError) {
+          console.warn("Failed to clear cookies:", logoutError);
+        }
+        setIsAuthenticated(false);
+        return;
+      }
+
+      // 【主动刷新】只有 refresh_token，没有 access_token - 尝试刷新
+      if (!access_token && refresh_token) {
+        try {
+          const refreshResponse = await authService.generateAccessToken();
+
+          if (refreshResponse.status === 200) {
+            setIsAuthenticated(true);
+            return;
+          }
+        } catch (refreshError) {
+          console.warn("Token refresh failed:", refreshError);
+          // 刷新失败，清除过期的 cookie
+          try {
+            await authService.accountLogout();
+          } catch (logoutError) {
+            console.warn("Failed to clear expired cookies:", logoutError);
+          }
+          setIsAuthenticated(false);
+          return;
+        }
+      }
+
+      // 【正常情况】两个 token 都有效
+      setIsAuthenticated(access_token && refresh_token);
+    } catch (error) {
+      console.warn("Check auth status failed:", error);
       setIsAuthenticated(false);
     }
   }, []);
