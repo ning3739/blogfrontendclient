@@ -152,15 +152,38 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         } catch (refreshError) {
           // 刷新失败，可能 refresh_token 也过期了
           console.warn("Token refresh failed:", refreshError);
+          
+          // 【关键修复】清除过期的 cookie
+          try {
+            await authService.accountLogout();
+          } catch (logoutError) {
+            console.warn("Failed to clear expired cookies:", logoutError);
+          }
+          
           setIsAuthenticated(false);
           return;
         }
       }
 
       // 正常情况：检查 access_token 是否有效
-      setIsAuthenticated(
-        response.status === 200 && "data" in response && response.data.access_token === true,
-      );
+      const hasValidToken =
+        response.status === 200 && "data" in response && response.data.access_token === true;
+
+      // 【关键修复】如果两个 token 都无效，清除 cookie
+      if (
+        response.status === 200 &&
+        "data" in response &&
+        !response.data.access_token &&
+        !response.data.refresh_token
+      ) {
+        try {
+          await authService.accountLogout();
+        } catch (logoutError) {
+          console.warn("Failed to clear invalid cookies:", logoutError);
+        }
+      }
+
+      setIsAuthenticated(hasValidToken);
     } catch {
       setIsAuthenticated(false);
     }
@@ -170,6 +193,39 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     checkAuthStatus();
   }, [checkAuthStatus]);
+
+  // 监听用户活动，在用户活跃时刷新 token
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    let lastRefreshTime = Date.now();
+    const REFRESH_INTERVAL = 10 * 60 * 1000; // 10 分钟
+
+    const handleUserActivity = async () => {
+      const now = Date.now();
+      // 如果距离上次刷新超过 10 分钟，且用户有活动，则刷新
+      if (now - lastRefreshTime > REFRESH_INTERVAL) {
+        try {
+          await authService.generateAccessToken();
+          lastRefreshTime = now;
+        } catch (error) {
+          console.warn("Activity-based token refresh failed:", error);
+        }
+      }
+    };
+
+    // 监听用户活动事件
+    const events = ["mousedown", "keydown", "scroll", "touchstart"];
+    events.forEach((event) => {
+      window.addEventListener(event, handleUserActivity, { passive: true });
+    });
+
+    return () => {
+      events.forEach((event) => {
+        window.removeEventListener(event, handleUserActivity);
+      });
+    };
+  }, [isAuthenticated]);
 
   const value: AuthContextType = useMemo(
     () => ({

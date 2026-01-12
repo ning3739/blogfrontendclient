@@ -23,6 +23,12 @@ const Header = () => {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // 确保组件已挂载，避免 hydration 错误
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const isActiveLink = (slug: string) => {
     return pathname === `/${slug}`;
@@ -114,8 +120,9 @@ const Header = () => {
       }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
       className="backdrop-blur-sm border-b border-border-50 fixed top-0 left-0 right-0 z-50"
+      style={{ opacity: 1, transform: "translateY(0px)" }}
     >
-      <div className="container lg:max-w-6xl md:max-w-5xl sm:max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 border-x border-border-50">
+      <div className="container lg:max-w-6xl md:max-w-5xl sm:max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <motion.div
@@ -320,7 +327,8 @@ const Header = () => {
       </div>
 
       {/* Mobile Navigation Overlay - 使用 Portal 渲染到 body */}
-      {typeof window !== "undefined" &&
+      {isMounted &&
+        typeof window !== "undefined" &&
         createPortal(
           <AnimatePresence>
             {mobileMenuOpen && (
