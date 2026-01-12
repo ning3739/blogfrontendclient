@@ -91,17 +91,16 @@ const BlogDetails: React.FC<BlogDetailsProps> = ({ blogSlug }) => {
             >
               {blogDetails?.cover_url && (
                 <motion.div
-                  className="relative w-full h-64 md:h-80 mb-16 rounded-sm overflow-hidden cursor-pointer"
+                  className="relative w-full h-64 md:h-80 mb-16 rounded-sm overflow-hidden cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-transform duration-300"
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
                 >
                   <Image
                     src={blogDetails?.cover_url || ""}
                     alt={blogDetails?.blog_name || ""}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
                     className="object-cover transition-transform duration-300 hover:scale-105"
                     priority
                   />
@@ -292,11 +291,10 @@ const BlogDetails: React.FC<BlogDetailsProps> = ({ blogSlug }) => {
               transition={{ duration: 0.6, delay: 0.8 }}
             >
               <motion.div
-                className="rounded-sm p-8 border bg-card-100 border-border-100"
+                className="rounded-sm p-8 border bg-card-100 border-border-100 hover:scale-[1.02] transition-transform duration-300"
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 1.0 }}
-                whileHover={{ scale: 1.02 }}
               >
                 <CommentTextInput
                   type={CommentType.BLOG}

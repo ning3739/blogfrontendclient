@@ -19,7 +19,7 @@ const Card: React.FC<CardProps> = ({
   variant = "default",
   onClick,
 }) => {
-  const baseClasses = "transition-all duration-300";
+  const baseClasses = "transition-[box-shadow,transform,border-color] duration-300";
 
   const variantClasses = {
     default: "bg-card-100 rounded-sm border border-border-100 shadow-sm",

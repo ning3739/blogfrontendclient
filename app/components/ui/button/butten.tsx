@@ -18,7 +18,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 // 基础样式 - 所有按钮共享
 const baseClasses =
-  "inline-flex items-center justify-center rounded-sm font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 transform hover:-translate-y-0.5 active:translate-y-0";
+  "inline-flex items-center justify-center rounded-sm font-semibold transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 transform hover:-translate-y-0.5 active:translate-y-0";
 
 // 静态样式 - 没有动画的按钮
 const staticBaseClasses =

@@ -271,7 +271,7 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
               <Clock className={`${iconSize} mr-1`} />
               <span className="text-xs">
                 {comment.updated_at
-                  ? `${commentT("updatedAt")} ${handleDateFormat(
+                  ? `${commonT("updatedAt")} ${handleDateFormat(
                       comment.updated_at,
                       format,
                       "second",
@@ -290,7 +290,7 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
                 <Clock className={`${iconSize} mr-1`} />
                 <span className="text-xs">
                   {comment.updated_at
-                    ? `${commentT("updatedAt")} ${handleDateFormat(
+                    ? `${commonT("updatedAt")} ${handleDateFormat(
                         comment.updated_at,
                         format,
                         "second",
@@ -347,8 +347,8 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
               className={buttonClass}
             >
               <MessageCircle className={iconSize} />
-              <span className="hidden sm:inline">{commentT("reply")}</span>
-              <span className="sm:hidden">{commentT("reply")}</span>
+              <span className="hidden sm:inline">{commonT("reply")}</span>
+              <span className="sm:hidden">{commonT("reply")}</span>
             </button>
           )}
         </div>
@@ -363,8 +363,8 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
                 className={buttonClass}
               >
                 <Edit3 className={iconSize} />
-                <span className="hidden sm:inline">{commentT("edit")}</span>
-                <span className="sm:hidden">{commentT("edit")}</span>
+                <span className="hidden sm:inline">{commonT("edit")}</span>
+                <span className="sm:hidden">{commonT("edit")}</span>
               </button>
             )}
 
@@ -379,8 +379,8 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
                 className={buttonClass}
               >
                 <Trash2 className={iconSize} />
-                <span className="hidden sm:inline">{commentT("delete")}</span>
-                <span className="sm:hidden">{commentT("delete")}</span>
+                <span className="hidden sm:inline">{commonT("delete")}</span>
+                <span className="sm:hidden">{commonT("delete")}</span>
               </button>
             )}
           </div>
@@ -421,12 +421,12 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
     );
   }
 
-  if (!isLoading && (error as any)?.status === 404) {
+  if (!isLoading && (error as { status?: number })?.status === 404) {
     return (
       <EmptyState
         icon={MessageCircle}
         title={commentT("noComments")}
-        description={commentT("beFirstToComment")}
+        description={commonT("beFirstToComment")}
       />
     );
   }
@@ -447,7 +447,7 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
       <EmptyState
         icon={MessageCircle}
         title={commentT("noComments")}
-        description={commentT("beFirstToComment")}
+        description={commonT("beFirstToComment")}
       />
     );
   }
@@ -573,7 +573,7 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
                       damping: 20,
                     }}
                   ></motion.div>
-                  <span>{commentT("replies", { count: comment.children.length })}</span>
+                  <span>{commonT("replies", { count: comment.children.length })}</span>
                   <motion.div
                     className="w-4 sm:w-6 h-px bg-border-100"
                     initial={{ scaleX: 0 }}
@@ -699,7 +699,7 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
           <motion.button
             onClick={handleLoadMore}
             disabled={isLoadingMore}
-            className="px-4 sm:px-6 py-2 sm:py-3 bg-primary-600 text-white rounded-sm hover:bg-primary-700 disabled:bg-background-300 disabled:text-foreground-500 transition-all duration-200 flex items-center gap-2 mx-auto text-sm sm:text-base min-h-11 sm:min-h-12"
+            className="px-4 sm:px-6 py-2 sm:py-3 bg-primary-600 text-white rounded-sm hover:bg-primary-700 disabled:bg-background-300 disabled:text-foreground-500 transition-colors duration-200 flex items-center gap-2 mx-auto text-sm sm:text-base min-h-11 sm:min-h-12"
             whileHover={{
               scale: 1.03,
               transition: {
@@ -730,10 +730,10 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
           >
             {isLoadingMore && <Loader2 className="w-4 h-4 animate-spin" />}
             <span className="hidden sm:inline">
-              {isLoadingMore ? commentT("loading") : commentT("loadMoreComments")}
+              {isLoadingMore ? commonT("loading") : commonT("loadMore")}
             </span>
             <span className="sm:hidden">
-              {isLoadingMore ? commentT("loading") : commentT("loadMoreComments")}
+              {isLoadingMore ? commonT("loading") : commonT("loadMore")}
             </span>
           </motion.button>
         </motion.div>

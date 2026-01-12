@@ -97,11 +97,10 @@ const FriendPage: React.FC<FriendPageProps> = ({ sectionData }) => {
           transition={{ duration: 0.6, delay: 0.8 }}
         >
           <motion.div
-            className="rounded-sm p-8 border bg-card-100 border-border-100"
+            className="rounded-sm p-8 border bg-card-100 border-border-100 hover:scale-[1.02] transition-transform duration-300"
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5, delay: 1.0 }}
-            whileHover={{ scale: 1.02 }}
           >
             <FriendTextInput
               isAuthenticated={isAuthenticated}

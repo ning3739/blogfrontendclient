@@ -99,13 +99,14 @@ export default function MediaCard({ media, onSelect }: MediaCardProps) {
   };
 
   return (
-    <div
+    <button
+      type="button"
       onClick={handleClick}
       className={`
-        relative rounded-sm overflow-hidden border bg-card-50 shadow-sm group
+        relative rounded-sm overflow-hidden border bg-card-50 shadow-sm group w-full text-left
         ${
           onSelect
-            ? "cursor-pointer border-border-100 hover:border-primary-500 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
+            ? "cursor-pointer border-border-100 hover:border-primary-500 hover:shadow-lg hover:scale-[1.02] transition-[border-color,box-shadow,transform] duration-200"
             : "border-border-100"
         }
       `}
@@ -117,6 +118,6 @@ export default function MediaCard({ media, onSelect }: MediaCardProps) {
         <p className="text-xs text-foreground-200 font-medium truncate">{media.file_name}</p>
         <p className="text-xs text-foreground-400 mt-1 capitalize">{media.media_type}</p>
       </div>
-    </div>
+    </button>
   );
 }

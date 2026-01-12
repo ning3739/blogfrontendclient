@@ -30,7 +30,7 @@ export default function StatsCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, type: "spring", stiffness: 100 }}
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
-      className={`bg-card-50 border border-border-50 rounded-sm p-5 sm:p-6 hover:shadow-lg hover:border-border-100 transition-all duration-300 ${className}`}
+      className={`bg-card-50 border border-border-50 rounded-sm p-5 sm:p-6 hover:shadow-lg hover:border-border-100 transition-[box-shadow,border-color] duration-300 ${className}`}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">

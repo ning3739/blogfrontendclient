@@ -102,10 +102,8 @@ const TOC = () => {
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
       <motion.div
-        className="flex items-center justify-between cursor-pointer group"
+        className="flex items-center justify-between cursor-pointer group hover:scale-[1.01] transition-transform duration-200"
         onClick={() => setIsCollapsed(!isCollapsed)}
-        whileHover={{ scale: 1.01 }}
-        transition={{ duration: 0.2 }}
       >
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-sm bg-card-200 group-hover:bg-card-300 transition-colors duration-200">
@@ -139,7 +137,7 @@ const TOC = () => {
                 <motion.div
                   key={item.id}
                   className={`
-                    group relative cursor-pointer rounded-lg transition-all duration-300 ease-out
+                    group relative cursor-pointer rounded-lg transition-[background-color,transform] duration-300 ease-out
                     ${
                       item.level === 1
                         ? "py-3 px-4 font-semibold text-foreground-50 text-sm"
@@ -179,7 +177,7 @@ const TOC = () => {
                   {/* 激活状态指示器 */}
                   {isActive && (
                     <motion.div
-                      className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-primary-600 rounded-r-full"
+                      className="absolute left-0 top-0 bottom-0 w-1 bg-linear-to-b from-primary-500 to-primary-600 rounded-r-full"
                       initial={{ scaleY: 0 }}
                       animate={{ scaleY: 1 }}
                       transition={{ duration: 0.3 }}
@@ -191,7 +189,7 @@ const TOC = () => {
                     {/* 层级数字 */}
                     <div
                       className={`
-                      shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium transition-all duration-200
+                      shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium transition-colors duration-200
                       ${
                         item.level === 1
                           ? "bg-primary-100 text-primary-700 group-hover:bg-primary-200"

@@ -70,7 +70,7 @@ const ImagePreview = ({ isOpen, imageUrl, imageAlt = "Preview", onClose }: Image
     <AnimatePresence mode="wait">
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-0 sm:p-4"
+          className="fixed inset-0 z-9999 flex items-center justify-center p-0 sm:p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -151,16 +151,15 @@ const ImagePreview = ({ isOpen, imageUrl, imageAlt = "Preview", onClose }: Image
               </div>
 
               {/* 右侧：关闭按钮 */}
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+              <button
+                type="button"
                 onClick={onClose}
-                className="p-1.5 sm:p-2 rounded-sm bg-card-50 text-foreground-300 hover:bg-error-50 hover:text-error-500 border border-border-100 shrink-0"
+                className="p-1.5 sm:p-2 rounded-sm bg-card-50 text-foreground-300 hover:bg-error-50 hover:text-error-500 hover:scale-110 active:scale-90 border border-border-100 shrink-0 transition-[background-color,color,transform] duration-200"
                 title="关闭 (ESC)"
                 aria-label="关闭"
               >
                 <X className="w-4 h-4 sm:w-5 sm:h-5" />
-              </motion.button>
+              </button>
             </div>
 
             {/* 图片显示区域 */}

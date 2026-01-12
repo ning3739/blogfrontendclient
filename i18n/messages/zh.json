@@ -1,4 +1,11 @@
 {
+  "notFoundPage": {
+    "title": "页面走丢了",
+    "description": "您访问的页面可能已被删除、重命名或暂时不可用",
+    "backHome": "回到首页",
+    "goBack": "返回上页",
+    "errorCode": "错误代码: 404 | 页面未找到"
+  },
   "common": {
     "loading": "加载中...",
     "loadFailed": "加载失败",
@@ -11,6 +18,8 @@
     "cancel": "取消",
     "delete": "删除",
     "edit": "编辑",
+    "reply": "回复",
+    "replies": "{count} 条回复",
     "status": "状态",
     "actions": "操作",
     "previewMode": "预览",
@@ -24,6 +33,9 @@
     "back": "返回",
     "summary": "摘要",
     "noMoreContent": "没有更多内容",
+    "loginRequired": "请登录后继续",
+    "beFirstToComment": "快来抢沙发吧！",
+    "loadMore": "加载更多...",
     "share": {
       "shareButton": "分享",
       "download": "下载卡片",
@@ -31,36 +43,15 @@
     }
   },
   "home": {
-    "common": {
-      "and": "和",
-      "dot": "。"
-    },
     "roles": {
       "developer": "<开发者/>",
       "designer": "设计师",
       "detailOriented": "细节控",
       "perfectionist": "强迫症"
     },
-    "intro": {
-      "hi": "嗨，我是",
-      "name": "小李",
-      "site": "这里是我的个人博客，记录",
-      "tech": "技术探索",
-      "design": "设计思考",
-      "life": "生活感悟"
-    },
-    "second": {
-      "iLovePrefix": "我热爱",
-      "coding": "编程",
-      "design": "设计",
-      "believePrefix": "，相信好的产品源于对",
-      "details": "细节"
-    },
-    "welcome": {
-      "prefix": "欢迎你的到来，希望这里的文字能给你带来一些",
-      "inspire": "启发",
-      "resonate": "共鸣"
-    },
+    "intro": "<wave></wave> 嗨，我是<name>小李</name>！这里是我的个人博客，记录<highlight>技术探索</highlight>、<highlight>设计思考</highlight>和<highlight>生活感悟</highlight>。",
+    "passion": "我热爱<em>编程</em>和<em>设计</em>，相信好的产品源于对<underline>细节</underline>的执着。",
+    "welcome": "欢迎你的到来，希望这里的文字能给你带来一些<em>启发</em>和<em>共鸣</em>。",
     "popularPosts": "热门文章",
     "subscribeTitle": "订阅",
     "subscribeDescription": "如果你喜欢我的内容，不妨订阅支持一下 🫶 每月一封，随时可以取消订阅。",
@@ -151,25 +142,11 @@
   },
   "comment": {
     "inputPlaceholder": "愣着干嘛，快写下你的评论...",
-    "submit": "提交",
-    "update": "更新",
-    "submitting": "提交中...",
     "commentRequired": "请输入评论内容",
     "commentTooLong": "评论不能超过500个字符",
     "submitError": "提交失败，请重试",
     "noComments": "还没有评论，来抢沙发吧!",
-    "reply": "回复",
-    "replies": "{count} 条回复",
-    "edit": "编辑",
-    "delete": "删除",
-    "cancel": "取消",
-    "loading": "加载中...",
-    "loadFailed": "加载失败",
-    "loadFailedMessage": "无法加载评论列表，请稍后重试",
-    "beFirstToComment": "成为第一个发表评论的人吧！",
-    "loadMoreComments": "加载更多评论...",
-    "updatedAt": "更新于",
-    "loginRequired": "请先登录后再发表评论"
+    "loadFailedMessage": "无法加载评论列表，请稍后重试"
   },
   "blog": {
     "action": {
@@ -186,29 +163,10 @@
   },
   "forum": {
     "inputPlaceholder": "想对我说的话,或是你的建议,或是你的想法...",
-    "submit": "提交",
-    "update": "更新",
-    "submitting": "提交中...",
-    "commentRequired": "请输入评论内容",
-    "commentTooLong": "评论不能超过500个字符",
-    "submitError": "提交失败，请重试",
-    "noComments": "还没有留言，来抢沙发吧!",
-    "reply": "回复",
-    "replies": "{count} 条回复",
-    "edit": "编辑",
-    "delete": "删除",
-    "cancel": "取消",
-    "loading": "加载中...",
-    "loadFailed": "加载失败",
-    "loadFailedMessage": "无法加载论坛详情，请稍后重试",
     "forumNotFound": "未找到论坛",
     "forumNotFoundMessage": "该论坛不存在或已被删除",
     "loadCommentsFailed": "加载评论失败",
-    "loadCommentsFailedMessage": "无法加载评论列表，请稍后重试",
-    "beFirstToComment": "成为第一个发表评论的人吧！",
-    "loadMoreComments": "加载更多评论...",
-    "updatedAt": "更新于",
-    "loginRequired": "请先登录后再发表评论"
+    "loadCommentsFailedMessage": "无法加载评论列表，请稍后重试"
   },
   "friend": {
     "sitename": "请输入您的网站名称",
@@ -288,8 +246,7 @@
   },
   "archive": {
     "title": "归档",
-    "description": "博客文章的归档集合。",
-    "loadMore": "加载更多..."
+    "description": "博客文章的归档集合。"
   },
   "user": {
     "userTitle": "用户详情",
@@ -378,5 +335,47 @@
     "copyright": {
       "notice": "转载须注明出处与链接，遵循 {licenseText} 协议。"
     }
+  },
+  "copyright": {
+    "title": "版权声明",
+    "description": "关于本网站内容所有权和使用权的说明。",
+    "contentOwnership": {
+      "title": "内容所有权",
+      "content": "本网站上的所有原创内容，包括但不限于文章、图片、代码片段和设计，除非另有说明，均归网站作者所有。\n\n本站使用的第三方内容已标注其原作者，并按照适用的许可协议使用。"
+    },
+    "sharingPolicy": {
+      "title": "分享与转载",
+      "content": "欢迎您在以下条件下分享和引用本网站的内容：\n\n• 注明出处并提供原文链接\n• 未经许可请勿修改内容\n• 仅限非商业用途，除非获得明确授权\n• 遵循 CC BY-NC-SA 4.0 许可协议（如适用）"
+    },
+    "legalDisclaimer": {
+      "title": "法律声明",
+      "content": "本网站提供的信息仅供一般参考之用。虽然我努力保持内容的准确性和时效性，但对信息的完整性、可靠性或适用性不作任何保证。\n\n您对此类信息的任何依赖均由您自行承担风险。"
+    },
+    "lastUpdated": "最后更新：2025年1月"
+  },
+  "privacyPolicy": {
+    "title": "隐私政策",
+    "description": "我们如何收集、使用和保护您的个人信息。",
+    "dataCollection": {
+      "title": "数据收集",
+      "content": "我们只收集提供服务所必需的最少个人信息：\n\n• 注册时的账户信息（邮箱、用户名）\n• 用于改善用户体验的使用数据和分析\n• 您自愿提交的评论和内容\n• 用于安全目的的技术数据，如 IP 地址和浏览器类型"
+    },
+    "dataUsage": {
+      "title": "数据使用方式",
+      "content": "您的信息将用于：\n\n• 提供和维护我们的服务\n• 发送更新和通知（如已订阅）\n• 改善和个性化您的体验\n• 防止欺诈和滥用\n• 遵守法律义务"
+    },
+    "cookies": {
+      "title": "Cookie 与追踪",
+      "content": "我们使用 Cookie 和类似技术来：\n\n• 记住您的偏好和设置\n• 验证您的会话\n• 分析网站流量和使用模式\n\n您可以通过浏览器控制 Cookie 设置。禁用 Cookie 可能会影响部分网站功能。"
+    },
+    "userRights": {
+      "title": "您的权利",
+      "content": "您有权：\n\n• 访问您的个人数据\n• 要求更正不准确的数据\n• 要求删除您的账户和数据\n• 选择退出营销通信\n• 以可移植格式导出您的数据"
+    },
+    "contact": {
+      "title": "联系我们",
+      "content": "如果您对本隐私政策有任何疑问或希望行使您的权利，请通过网站的联系表单或电子邮件与我们联系。\n\n我们将在合理的时间内回复您的请求。"
+    },
+    "lastUpdated": "最后更新：2025年1月"
   }
 }

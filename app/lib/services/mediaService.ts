@@ -1,3 +1,4 @@
+import type { AxiosProgressEvent } from "axios";
 import type {
   DeleteMediaRequest,
   DownloadMediaRequest,
@@ -6,7 +7,10 @@ import type {
 import httpClient from "../http/client";
 
 class MediaService {
-  async uploadMedia(payload: UploadMediaRequest, onProgress?: (progressEvent: any) => void) {
+  async uploadMedia(
+    payload: UploadMediaRequest,
+    onProgress?: (progressEvent: AxiosProgressEvent) => void,
+  ) {
     const formData = new FormData();
     payload.files.forEach((file) => formData.append("files", file));
 
@@ -16,7 +20,9 @@ class MediaService {
   }
 
   async downloadMedia(payload: DownloadMediaRequest) {
-    return httpClient.download("/media/admin/download-media", payload);
+    return httpClient.download("/media/admin/download-media", {
+      media_id: payload.media_id,
+    });
   }
 
   async deleteMedia(payload: DeleteMediaRequest) {

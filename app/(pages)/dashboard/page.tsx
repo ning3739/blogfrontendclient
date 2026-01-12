@@ -39,7 +39,7 @@ const QuickActionButton: React.FC<QuickActionButtonProps> = React.memo(
         onClick={onClick}
       >
         <div
-          className={`h-full transition-all duration-300 border-l-4 bg-card-100 rounded-sm border border-border-100 shadow-sm hover:shadow-xl hover:scale-[1.01] hover:-translate-y-1 p-7 ${borderColorClass}`}
+          className={`h-full transition-[box-shadow,transform] duration-300 border-l-4 bg-card-100 rounded-sm border border-border-100 shadow-sm hover:shadow-xl hover:scale-[1.01] hover:-translate-y-1 p-7 ${borderColorClass}`}
         >
           <div className="flex flex-col items-center text-center gap-4">
             <div className={`p-3 rounded-lg ${bgColorClass}`}>
@@ -65,127 +65,8 @@ export default function DashboardPage() {
   const router = useRouter();
   const dashboardT = useTranslations("dashboard");
 
-  const quickActions = React.useMemo(
-    () =>
-      user && user.role === "admin"
-        ? [
-            {
-              icon: <BookOpen className="w-6 h-6" />,
-              title: "创建博客",
-              borderColorClass: "border-l-primary-500",
-              bgColorClass: "bg-primary-100",
-              textColorClass: "text-primary-500",
-              onClick: () => {
-                router.push("/dashboard/editor?type=blog");
-              },
-            },
-            {
-              icon: <FolderOpen className="w-6 h-6" />,
-              title: "创建项目",
-              borderColorClass: "border-l-success-500",
-              bgColorClass: "bg-success-100",
-              textColorClass: "text-success-500",
-              onClick: () => {
-                router.push("/dashboard/editor?type=project");
-              },
-            },
-            {
-              icon: <Search className="w-6 h-6" />,
-              title: "SEO优化",
-              borderColorClass: "border-l-warning-500",
-              bgColorClass: "bg-warning-100",
-              textColorClass: "text-warning-500",
-              onClick: () => {
-                router.push("/dashboard/seo");
-              },
-            },
-            {
-              icon: <Tag className="w-6 h-6" />,
-              title: "管理标签",
-              borderColorClass: "border-l-info-500",
-              bgColorClass: "bg-info-100",
-              textColorClass: "text-info-500",
-              onClick: () => {
-                router.push("/dashboard/tags");
-              },
-            },
-            {
-              icon: <Image className="w-6 h-6" />,
-              title: "管理媒体",
-              borderColorClass: "border-l-error-500",
-              bgColorClass: "bg-error-100",
-              textColorClass: "text-error-500",
-              onClick: () => {
-                router.push("/dashboard/media");
-              },
-            },
-            {
-              icon: <Users className="w-6 h-6" />,
-              title: "管理用户",
-              borderColorClass: "border-l-primary-400",
-              bgColorClass: "bg-primary-100",
-              textColorClass: "text-primary-400",
-              onClick: () => {
-                router.push("/dashboard/users");
-              },
-            },
-            {
-              icon: <CreditCard className="w-6 h-6" />,
-              title: "管理支付",
-              borderColorClass: "border-l-success-400",
-              bgColorClass: "bg-success-100",
-              textColorClass: "text-success-400",
-              onClick: () => {
-                router.push("/dashboard/payments?type=admin");
-              },
-            },
-            {
-              icon: <Handshake className="w-6 h-6" />,
-              title: "友链管理",
-              borderColorClass: "border-l-primary-400",
-              bgColorClass: "bg-primary-100",
-              textColorClass: "text-primary-400",
-              onClick: () => {
-                router.push("/dashboard/friends");
-              },
-            },
-          ]
-        : [
-            {
-              icon: <User className="w-6 h-6" />,
-              title: dashboardT("menu.myProfile"),
-              borderColorClass: "border-l-primary-400",
-              bgColorClass: "bg-primary-100",
-              textColorClass: "text-primary-400",
-              onClick: () => {
-                router.push("/dashboard/profile");
-              },
-            },
-            {
-              icon: <Bookmark className="w-6 h-6" />,
-              title: dashboardT("menu.mySaved"),
-              borderColorClass: "border-l-primary-400",
-              bgColorClass: "bg-primary-100",
-              textColorClass: "text-primary-400",
-              onClick: () => {
-                router.push("/dashboard/saved-blog");
-              },
-            },
-            {
-              icon: <CreditCard className="w-6 h-6" />,
-              title: dashboardT("menu.myPayments"),
-              borderColorClass: "border-l-primary-400",
-              bgColorClass: "bg-primary-100",
-              textColorClass: "text-primary-400",
-              onClick: () => {
-                router.push("/dashboard/payments?type=user");
-              },
-            },
-          ],
-    [user, dashboardT, router],
-  );
-
-  // 如果已认证但用户数据还未加载，显示加载状态
+  // 如果已认证但用户数据还未加载，提前返回加载状态
+  // 这样可以避免在 user 未加载时渲染错误的 dashboard
   if (isAuthenticated && (userLoading || !user)) {
     return (
       <LoadingSpinner
@@ -197,6 +78,123 @@ export default function DashboardPage() {
       />
     );
   }
+
+  const quickActions =
+    user && user.role === "admin"
+      ? [
+          {
+            icon: <BookOpen className="w-6 h-6" />,
+            title: "创建博客",
+            borderColorClass: "border-l-primary-500",
+            bgColorClass: "bg-primary-100",
+            textColorClass: "text-primary-500",
+            onClick: () => {
+              router.push("/dashboard/editor?type=blog");
+            },
+          },
+          {
+            icon: <FolderOpen className="w-6 h-6" />,
+            title: "创建项目",
+            borderColorClass: "border-l-success-500",
+            bgColorClass: "bg-success-100",
+            textColorClass: "text-success-500",
+            onClick: () => {
+              router.push("/dashboard/editor?type=project");
+            },
+          },
+          {
+            icon: <Search className="w-6 h-6" />,
+            title: "SEO优化",
+            borderColorClass: "border-l-warning-500",
+            bgColorClass: "bg-warning-100",
+            textColorClass: "text-warning-500",
+            onClick: () => {
+              router.push("/dashboard/seo");
+            },
+          },
+          {
+            icon: <Tag className="w-6 h-6" />,
+            title: "管理标签",
+            borderColorClass: "border-l-info-500",
+            bgColorClass: "bg-info-100",
+            textColorClass: "text-info-500",
+            onClick: () => {
+              router.push("/dashboard/tags");
+            },
+          },
+          {
+            icon: <Image className="w-6 h-6" />,
+            title: "管理媒体",
+            borderColorClass: "border-l-error-500",
+            bgColorClass: "bg-error-100",
+            textColorClass: "text-error-500",
+            onClick: () => {
+              router.push("/dashboard/media");
+            },
+          },
+          {
+            icon: <Users className="w-6 h-6" />,
+            title: "管理用户",
+            borderColorClass: "border-l-primary-400",
+            bgColorClass: "bg-primary-100",
+            textColorClass: "text-primary-400",
+            onClick: () => {
+              router.push("/dashboard/users");
+            },
+          },
+          {
+            icon: <CreditCard className="w-6 h-6" />,
+            title: "管理支付",
+            borderColorClass: "border-l-success-400",
+            bgColorClass: "bg-success-100",
+            textColorClass: "text-success-400",
+            onClick: () => {
+              router.push("/dashboard/payments?type=admin");
+            },
+          },
+          {
+            icon: <Handshake className="w-6 h-6" />,
+            title: "友链管理",
+            borderColorClass: "border-l-primary-400",
+            bgColorClass: "bg-primary-100",
+            textColorClass: "text-primary-400",
+            onClick: () => {
+              router.push("/dashboard/friends");
+            },
+          },
+        ]
+      : [
+          {
+            icon: <User className="w-6 h-6" />,
+            title: dashboardT("menu.myProfile"),
+            borderColorClass: "border-l-primary-400",
+            bgColorClass: "bg-primary-100",
+            textColorClass: "text-primary-400",
+            onClick: () => {
+              router.push("/dashboard/profile");
+            },
+          },
+          {
+            icon: <Bookmark className="w-6 h-6" />,
+            title: dashboardT("menu.mySaved"),
+            borderColorClass: "border-l-primary-400",
+            bgColorClass: "bg-primary-100",
+            textColorClass: "text-primary-400",
+            onClick: () => {
+              router.push("/dashboard/saved-blog");
+            },
+          },
+          {
+            icon: <CreditCard className="w-6 h-6" />,
+            title: dashboardT("menu.myPayments"),
+            borderColorClass: "border-l-primary-400",
+            bgColorClass: "bg-primary-100",
+            textColorClass: "text-primary-400",
+            onClick: () => {
+              router.push("/dashboard/payments?type=user");
+            },
+          },
+        ];
 
   return (
     <div className="min-h-screen bg-background-100 p-6">

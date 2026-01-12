@@ -108,7 +108,7 @@ const OffsetPagination: React.FC<OffsetPaginationProps> = ({
           <div className="flex items-center space-x-1 sm:space-x-2">
             {/* 上一页按钮 */}
             <motion.button
-              className={`group flex items-center justify-center px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-sm border border-transparent transition-all duration-200 ${
+              className={`group flex items-center justify-center px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-sm border border-transparent transition-colors duration-200 ${
                 has_prev
                   ? "text-foreground-300 hover:text-foreground-50 hover:bg-card-200 hover:border-border-200"
                   : "text-foreground-400 cursor-not-allowed"
@@ -136,7 +136,7 @@ const OffsetPagination: React.FC<OffsetPaginationProps> = ({
                     </span>
                   ) : (
                     <motion.button
-                      className={`relative flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 text-xs sm:text-sm font-medium rounded-sm border border-transparent transition-all duration-200 ${
+                      className={`relative flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 text-xs sm:text-sm font-medium rounded-sm border border-transparent transition-colors duration-200 ${
                         page === current_page
                           ? "text-white bg-primary-600 shadow-lg"
                           : "text-foreground-300 hover:text-foreground-50 hover:bg-card-200 hover:border-border-200"
@@ -160,7 +160,7 @@ const OffsetPagination: React.FC<OffsetPaginationProps> = ({
 
             {/* 下一页按钮 */}
             <motion.button
-              className={`group flex items-center justify-center px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-sm border border-transparent transition-all duration-200 ${
+              className={`group flex items-center justify-center px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-sm border border-transparent transition-colors duration-200 ${
                 has_next
                   ? "text-foreground-300 hover:text-foreground-50 hover:bg-card-200 hover:border-border-200"
                   : "text-foreground-400 cursor-not-allowed"

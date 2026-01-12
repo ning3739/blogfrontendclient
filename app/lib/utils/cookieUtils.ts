@@ -15,6 +15,7 @@ export const setCookie = (name: string, value: string, days?: number): void => {
     date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
     expires = `; expires=${date.toUTCString()}`;
   }
+  // biome-ignore lint/suspicious/noDocumentCookie: Direct cookie access is required for client-side cookie management
   document.cookie = `${name}=${value}${expires}; path=/`;
 };
 
@@ -33,6 +34,7 @@ export const getCookie = (name: string): string | null => {
  * @param name cookie 名称
  */
 export const deleteCookie = (name: string): void => {
+  // biome-ignore lint/suspicious/noDocumentCookie: Direct cookie access is required for client-side cookie management
   document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 };
 

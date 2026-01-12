@@ -1,8 +1,7 @@
 /* Tailwind 导入 */
 @import "tailwindcss";
 
-/* Mapbox GL CSS */
-@import "mapbox-gl/dist/mapbox-gl.css";
+/* Mapbox GL CSS 已移至 UserLocationMap.tsx 按需加载 */
 
 /* 隐藏滚动条 */
 .scrollbar-hide {
@@ -273,8 +272,9 @@ pre {
 .ProseMirror code,
 .ProseMirror .code-block,
 .ProseMirror .code-block code {
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace !important;
-  white-space: pre !important;
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  white-space: pre;
 }
 
 .ProseMirror pre code,

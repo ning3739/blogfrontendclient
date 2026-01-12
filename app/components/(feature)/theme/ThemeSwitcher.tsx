@@ -54,12 +54,10 @@ const ThemeSwitcher = () => {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.2, delay: index * 0.05 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
             onClick={() => setTheme(option.value)}
             title={option.label}
             className={`
-              relative w-8 h-8 rounded-sm flex items-center justify-center transition-all duration-200
+              relative w-8 h-8 rounded-sm flex items-center justify-center transition-[color,background-color,transform] duration-200 hover:scale-105 active:scale-95
               ${
                 isActive
                   ? "bg-primary-100 text-primary-600"

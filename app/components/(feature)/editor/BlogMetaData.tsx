@@ -10,7 +10,7 @@ import {
   Tag,
   X,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 import CreateSeoModal from "@/app/components/(feature)/editor/CreateSeoModal";
 import CreateTagModal from "@/app/components/(feature)/editor/CreateTagModal";
@@ -118,9 +118,10 @@ export const BlogMetaData = ({
       }
     }
   }, [initialData]);
-  const handleLoadMoreTag = () => {
+
+  const handleLoadMoreTag = useCallback(() => {
     setCurrentTagPage((prev) => prev + 1);
-  };
+  }, []);
 
   // 当标签数据更新时，累积到 allTagItems 中
   useEffect(() => {
@@ -339,6 +340,7 @@ export const BlogMetaData = ({
               )}
           </div>
           <button
+            type="button"
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="flex items-center space-x-1 px-3 py-1.5 rounded-sm text-foreground-300 hover:text-foreground-50 hover:bg-background-300"
           >
@@ -353,9 +355,15 @@ export const BlogMetaData = ({
             {/* 栏目选择 - 仅在创建模式下显示 */}
             {type === "blog" && (
               <div className="space-y-3">
-                <label className="block text-sm font-medium text-foreground-50">栏目</label>
+                <label
+                  htmlFor="section-select"
+                  className="block text-sm font-medium text-foreground-50"
+                >
+                  栏目
+                </label>
                 <div className="relative" ref={sectionDropdownRef}>
-                  <div
+                  <button
+                    type="button"
                     className="w-full rounded-sm border border-border-100 bg-card-50 px-4 py-3 text-foreground-50 cursor-pointer hover:border-border-200 hover:bg-background-300"
                     onClick={() => setIsSectionDropdownOpen(!isSectionDropdownOpen)}
                   >
@@ -374,7 +382,7 @@ export const BlogMetaData = ({
                         }`}
                       />
                     </div>
-                  </div>
+                  </button>
 
                   {isSectionDropdownOpen && (
                     <div className="absolute z-50 w-full mt-2 bg-card-50 border border-border-100 rounded-sm shadow-lg max-h-60 overflow-auto">
@@ -404,9 +412,12 @@ export const BlogMetaData = ({
 
             {/* SEO 选择器 */}
             <div className="space-y-3">
-              <label className="block text-sm font-medium text-foreground-50">SEO 设置</label>
+              <label htmlFor="seo-select" className="block text-sm font-medium text-foreground-50">
+                SEO 设置
+              </label>
               <div className="relative" ref={seoDropdownRef}>
-                <div
+                <button
+                  type="button"
                   className="w-full rounded-sm border border-border-100 bg-card-50 px-4 py-3 text-foreground-50 cursor-pointer hover:border-border-200 hover:bg-background-300"
                   onClick={() => setIsSeoDropdownOpen(!isSeoDropdownOpen)}
                 >
@@ -423,7 +434,7 @@ export const BlogMetaData = ({
                       }`}
                     />
                   </div>
-                </div>
+                </button>
 
                 {isSeoDropdownOpen && (
                   <div className="absolute z-50 w-full mt-2 bg-card-50 border border-border-100 rounded-sm shadow-lg max-h-80 overflow-hidden flex flex-col">
@@ -521,7 +532,12 @@ export const BlogMetaData = ({
             {/* 标签选择器 */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <label className="block text-sm font-medium text-foreground-50">标签</label>
+                <label
+                  htmlFor="tag-select"
+                  className="block text-sm font-medium text-foreground-50"
+                >
+                  标签
+                </label>
                 <div className="flex items-center space-x-2">
                   <span className="text-xs text-foreground-400">{selectedTags.length}/3</span>
                   {selectedTags.length >= 3 && (
@@ -533,7 +549,8 @@ export const BlogMetaData = ({
                 </div>
               </div>
               <div className="relative" ref={tagDropdownRef}>
-                <div
+                <button
+                  type="button"
                   className="w-full rounded-sm border border-border-100 bg-card-50 px-4 py-3 text-foreground-50 cursor-pointer hover:border-border-200 hover:bg-background-300"
                   onClick={() => setIsTagDropdownOpen(!isTagDropdownOpen)}
                 >
@@ -548,7 +565,7 @@ export const BlogMetaData = ({
                       }`}
                     />
                   </div>
-                </div>
+                </button>
 
                 {isTagDropdownOpen && (
                   <div className="absolute z-50 w-full mt-2 bg-card-50 border border-border-100 rounded-sm shadow-lg max-h-80 overflow-hidden flex flex-col">
@@ -642,6 +659,7 @@ export const BlogMetaData = ({
                     >
                       {item?.title || "未知标签"}
                       <button
+                        type="button"
                         onClick={() => handleTagRemove(item?.tag_id)}
                         className="hover:text-primary-900"
                       >
@@ -656,7 +674,12 @@ export const BlogMetaData = ({
             {/* 博客标题 */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <label className="block text-sm font-medium text-foreground-50">博客标题</label>
+                <label
+                  htmlFor="blog-title"
+                  className="block text-sm font-medium text-foreground-50"
+                >
+                  博客标题
+                </label>
                 <span
                   className={`text-xs font-medium ${
                     title.length > 50 ? "text-error-500" : "text-foreground-400"
@@ -666,6 +689,7 @@ export const BlogMetaData = ({
                 </span>
               </div>
               <input
+                id="blog-title"
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -685,7 +709,12 @@ export const BlogMetaData = ({
             {/* 博客描述 */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <label className="block text-sm font-medium text-foreground-50">博客描述</label>
+                <label
+                  htmlFor="blog-description"
+                  className="block text-sm font-medium text-foreground-50"
+                >
+                  博客描述
+                </label>
                 <span
                   className={`text-xs font-medium ${
                     description.length > 500 ? "text-error-500" : "text-foreground-400"
@@ -695,6 +724,7 @@ export const BlogMetaData = ({
                 </span>
               </div>
               <textarea
+                id="blog-description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="请输入博客描述"
@@ -713,7 +743,9 @@ export const BlogMetaData = ({
 
             {/* 封面图片选择器 */}
             <div className="space-y-3">
-              <label className="block text-sm font-medium text-foreground-50">封面图片</label>
+              <label htmlFor="cover-image" className="block text-sm font-medium text-foreground-50">
+                封面图片
+              </label>
               <div className="space-y-3">
                 {selectedCoverImageUrl ? (
                   <div className="relative group">

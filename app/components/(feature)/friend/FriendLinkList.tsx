@@ -12,7 +12,13 @@ import EmptyState from "@/app/components/ui/error/EmptyState";
 import ErrorDisplay from "@/app/components/ui/error/ErrorDisplay";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
 import httpClient from "@/app/lib/http/client";
+import type { GetFriendListItemsResponse } from "@/app/types/friendServiceType";
 import { FriendType } from "@/app/types/friendServiceType";
+
+// 扩展类型，包含 type_name
+interface FriendItem extends GetFriendListItemsResponse {
+  type_name: string;
+}
 
 // 辅助函数：获取枚举的 name 字符串
 const getFriendTypeName = (type: FriendType): string => {
@@ -26,7 +32,7 @@ const FriendLinkList = ({ friend_id }: { friend_id: number }) => {
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasNext, setHasNext] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [allFriends, setAllFriends] = useState<any[]>([]);
+  const [allFriends, setAllFriends] = useState<FriendItem[]>([]);
   const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
 
   // 使用SWR获取初始数据
@@ -55,10 +61,10 @@ const FriendLinkList = ({ friend_id }: { friend_id: number }) => {
     // 按类型分类所有累积的友链
     // 后端返回 type_name 是枚举的 name 属性（字符串），与 FriendType 枚举的 name 对应
     const featuredFriends = allFriends.filter(
-      (friend: any) => friend.type_name === getFriendTypeName(FriendType.featured),
+      (friend) => friend.type_name === getFriendTypeName(FriendType.featured),
     );
     const normalFriends = allFriends.filter(
-      (friend: any) => friend.type_name === getFriendTypeName(FriendType.normal),
+      (friend) => friend.type_name === getFriendTypeName(FriendType.normal),
     );
 
     return {
@@ -141,12 +147,12 @@ const FriendLinkList = ({ friend_id }: { friend_id: number }) => {
   }
 
   // 友链项目组件
-  const FriendItem = ({
+  const FriendItemComponent = ({
     friend,
     variant,
     index,
   }: {
-    friend: any;
+    friend: FriendItem;
     variant: "featured" | "default";
     index: number;
   }) => (
@@ -165,13 +171,11 @@ const FriendLinkList = ({ friend_id }: { friend_id: number }) => {
         className="block h-full"
       >
         <motion.div
-          className={`h-full cursor-pointer rounded-sm p-5 transition-all duration-300 ${
+          className={`h-full cursor-pointer rounded-sm p-5 transition-[border-color,box-shadow,transform] duration-300 ${
             variant === "featured"
               ? "bg-card-100 border border-border-100 shadow-lg"
               : "bg-card-100 border border-border-100 shadow-sm"
-          } hover:shadow-xl hover:scale-[1.01] hover:-translate-y-1`}
-          whileHover={{ scale: 1.01, y: -4 }}
-          whileTap={{ scale: 0.99 }}
+          } hover:shadow-xl hover:scale-[1.01] hover:-translate-y-1 active:scale-[0.99]`}
         >
           <div className="flex flex-col h-full">
             {/* Logo和标题区域 */}
@@ -180,7 +184,7 @@ const FriendLinkList = ({ friend_id }: { friend_id: number }) => {
                 {friend.logo_url && !imageErrors.has(friend.id) ? (
                   <Image
                     src={friend.logo_url}
-                    alt={friend.title}
+                    alt={friend.chinese_title}
                     width={48}
                     height={48}
                     className="object-cover w-full h-full"
@@ -195,7 +199,7 @@ const FriendLinkList = ({ friend_id }: { friend_id: number }) => {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center space-x-2">
                   <h3 className="text-lg font-semibold text-foreground-50 truncate">
-                    {friend.title}
+                    {friend.chinese_title}
                   </h3>
                   {variant === "featured" && (
                     <Star className="w-4 h-4 text-yellow-500 fill-current shrink-0" />
@@ -206,9 +210,9 @@ const FriendLinkList = ({ friend_id }: { friend_id: number }) => {
             </div>
 
             {/* 描述区域 */}
-            {friend.description && (
+            {friend.chinese_description && (
               <p className="text-foreground-300 text-sm mb-4 line-clamp-3 flex-1">
-                {friend.description}
+                {friend.chinese_description}
               </p>
             )}
 
@@ -248,8 +252,13 @@ const FriendLinkList = ({ friend_id }: { friend_id: number }) => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <AnimatePresence>
-              {featuredFriends.map((friend: any, index: number) => (
-                <FriendItem key={friend.id} friend={friend} variant="featured" index={index} />
+              {featuredFriends.map((friend, index) => (
+                <FriendItemComponent
+                  key={friend.id}
+                  friend={friend}
+                  variant="featured"
+                  index={index}
+                />
               ))}
             </AnimatePresence>
           </div>
@@ -270,8 +279,13 @@ const FriendLinkList = ({ friend_id }: { friend_id: number }) => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <AnimatePresence>
-              {normalFriends.map((friend: any, index: number) => (
-                <FriendItem key={friend.id} friend={friend} variant="default" index={index} />
+              {normalFriends.map((friend, index) => (
+                <FriendItemComponent
+                  key={friend.id}
+                  friend={friend}
+                  variant="default"
+                  index={index}
+                />
               ))}
             </AnimatePresence>
           </div>

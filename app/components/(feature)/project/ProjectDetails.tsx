@@ -91,17 +91,16 @@ function ProjectDetails({ projectSlug }: { projectSlug: string }) {
             >
               {projectDetails?.cover_url && (
                 <motion.div
-                  className="relative w-full h-64 md:h-80 mb-8 rounded-sm overflow-hidden cursor-pointer"
+                  className="relative w-full h-64 md:h-80 mb-8 rounded-sm overflow-hidden cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-transform duration-300"
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
                 >
                   <Image
                     src={projectDetails?.cover_url || ""}
                     alt={projectDetails?.project_name || ""}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
                     className="object-cover transition-transform duration-300 hover:scale-105"
                     priority
                   />
@@ -226,83 +225,83 @@ function ProjectDetails({ projectSlug }: { projectSlug: string }) {
             {projectDetails?.project_price !== undefined &&
               projectDetails?.project_price !== null &&
               projectDetails.project_price > 0 && (
-              <>
-                {/* 未购买时显示提示文字 */}
-                {!isAuthenticated && (
+                <>
+                  {/* 未购买时显示提示文字 */}
+                  {!isAuthenticated && (
+                    <motion.div
+                      className="text-center mb-6"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 1.3 }}
+                    >
+                      <p className="text-base text-foreground-200 leading-relaxed max-w-2xl mx-auto font-medium">
+                        {projectT("wantToKnowMore")}
+                      </p>
+                    </motion.div>
+                  )}
                   <motion.div
-                    className="text-center mb-6"
-                    initial={{ opacity: 0, y: 20 }}
+                    className="bg-background-50 rounded-sm border border-border-100 p-4 sm:p-6 max-w-2xl mx-auto"
+                    initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 1.3 }}
+                    transition={{ duration: 0.6, delay: 1.4 }}
                   >
-                    <p className="text-base text-foreground-200 leading-relaxed max-w-2xl mx-auto font-medium">
-                      {projectT("wantToKnowMore")}
-                    </p>
-                  </motion.div>
-                )}
-                <motion.div
-                  className="bg-background-50 rounded-sm border border-border-100 p-4 sm:p-6 max-w-2xl mx-auto"
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 1.4 }}
-                >
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-baseline space-x-2">
-                      <span className="text-3xl font-bold text-foreground-50">
-                        {formatCurrency(projectDetails?.project_price || 0, format, "NZD")}
-                      </span>
-                      <span className="text-sm text-foreground-300">{projectT("price")}</span>
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-baseline space-x-2">
+                        <span className="text-3xl font-bold text-foreground-50">
+                          {formatCurrency(projectDetails?.project_price || 0, format, "NZD")}
+                        </span>
+                        <span className="text-sm text-foreground-300">{projectT("price")}</span>
+                      </div>
+
+                      <div className="flex items-center">
+                        {isAuthenticated && projectDetails?.payment_status === "success" ? (
+                          <span className="px-3 py-1 bg-success-100 text-success-700 text-sm font-medium rounded-sm">
+                            {projectT("purchased")}
+                          </span>
+                        ) : isAuthenticated ? null : (
+                          <div className="flex items-center text-sm text-foreground-300">
+                            <AlertTriangle className="w-4 h-4 mr-1 text-warning-500" />
+                            <span>{projectT("loginToPurchase")}</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
-                    <div className="flex items-center">
+                    <div className="space-y-3">
                       {isAuthenticated && projectDetails?.payment_status === "success" ? (
-                        <span className="px-3 py-1 bg-success-100 text-success-700 text-sm font-medium rounded-sm">
-                          {projectT("purchased")}
-                        </span>
-                      ) : isAuthenticated ? null : (
-                        <div className="flex items-center text-sm text-foreground-300">
-                          <AlertTriangle className="w-4 h-4 mr-1 text-warning-500" />
-                          <span>{projectT("loginToPurchase")}</span>
-                        </div>
+                        <Button
+                          variant="primary"
+                          size="lg"
+                          onClick={() => {
+                            if (projectDetails?.attachment_id) {
+                              handleDownloadProject(projectDetails.attachment_id);
+                            }
+                          }}
+                          className="w-full"
+                          disabled={!projectDetails?.attachment_id}
+                        >
+                          <Download className="w-5 h-5 mr-2" />
+                          {projectT("download")}
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="primary"
+                          size="lg"
+                          onClick={() => {
+                            if (projectDetails?.project_slug) {
+                              handleBuyProject(projectDetails.project_slug);
+                            }
+                          }}
+                          className="w-full"
+                        >
+                          <ShoppingCart className="w-5 h-5 mr-2" />
+                          {projectT("buy")}
+                        </Button>
                       )}
                     </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    {isAuthenticated && projectDetails?.payment_status === "success" ? (
-                      <Button
-                        variant="primary"
-                        size="lg"
-                        onClick={() => {
-                          if (projectDetails?.attachment_id) {
-                            handleDownloadProject(projectDetails.attachment_id);
-                          }
-                        }}
-                        className="w-full"
-                        disabled={!projectDetails?.attachment_id}
-                      >
-                        <Download className="w-5 h-5 mr-2" />
-                        {projectT("download")}
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="primary"
-                        size="lg"
-                        onClick={() => {
-                          if (projectDetails?.project_slug) {
-                            handleBuyProject(projectDetails.project_slug);
-                          }
-                        }}
-                        className="w-full"
-                      >
-                        <ShoppingCart className="w-5 h-5 mr-2" />
-                        {projectT("buy")}
-                      </Button>
-                    )}
-                  </div>
-                </motion.div>
-              </>
-            )}
+                  </motion.div>
+                </>
+              )}
           </>
         ) : (
           <motion.div

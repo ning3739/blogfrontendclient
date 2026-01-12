@@ -176,6 +176,7 @@ const ProjectLists = ({
                       </div>
                       <div className="min-w-0 flex-1">
                         <button
+                          type="button"
                           onClick={() => handleActionClick("title_click", project.project_slug)}
                           className="text-xs lg:text-sm font-medium text-foreground-50 hover:text-primary-500 transition-colors cursor-pointer text-left truncate w-full"
                         >
@@ -291,6 +292,7 @@ const ProjectLists = ({
                   </div>
                   <div className="min-w-0 flex-1">
                     <button
+                      type="button"
                       onClick={() => handleActionClick("title_click", project.project_slug)}
                       className="text-sm font-medium text-foreground-50 hover:text-primary-500 transition-colors cursor-pointer text-left truncate w-full"
                     >
@@ -400,6 +402,7 @@ const ProjectLists = ({
                   </div>
                   <div className="min-w-0 flex-1">
                     <button
+                      type="button"
                       onClick={() => handleActionClick("title_click", project.project_slug)}
                       className="text-sm font-medium text-foreground-50 hover:text-primary-500 transition-colors cursor-pointer text-left truncate w-full"
                     >

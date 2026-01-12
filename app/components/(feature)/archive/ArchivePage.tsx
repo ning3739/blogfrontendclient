@@ -172,7 +172,7 @@ const ArchivePage: React.FC = () => {
                           className="group relative flex items-start"
                         >
                           {/* 左侧年份区域 */}
-                          <div className="shrink-0 relative z-10 flex items-center min-w-[80px] sm:min-w-[120px] md:min-w-[140px]">
+                          <div className="shrink-0 relative z-10 flex items-center min-w-20 sm:min-w-30 md:min-w-35">
                             {isFirstInYear ? (
                               <div className="flex items-center gap-2 sm:gap-3 w-full">
                                 {/* 年份标签 - 在时间线左侧 */}
@@ -185,7 +185,7 @@ const ArchivePage: React.FC = () => {
                                 {/* 年份时间点 - 时间线穿过此点 */}
                                 {/* 节点中心位置：年份区域右边界 - 节点宽度的一半 */}
                                 <div className="relative z-20 shrink-0 flex items-center justify-center">
-                                  <div className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full bg-primary-500 border-2 border-card-50 shadow-lg group-hover:bg-primary-400 group-hover:scale-110 transition-all duration-300" />
+                                  <div className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full bg-primary-500 border-2 border-card-50 shadow-lg group-hover:bg-primary-400 group-hover:scale-110 transition-[background-color,transform] duration-300" />
                                 </div>
                               </div>
                             ) : (
@@ -231,7 +231,7 @@ const ArchivePage: React.FC = () => {
                 <motion.button
                   onClick={handleLoadMore}
                   disabled={isLoadingMore}
-                  className="px-4 sm:px-6 py-2 sm:py-3 bg-primary-600 text-white rounded-sm hover:bg-primary-700 disabled:bg-background-300 disabled:text-foreground-500 transition-all duration-200 flex items-center gap-2 mx-auto text-sm sm:text-base min-h-[44px] sm:min-h-[48px]"
+                  className="px-4 sm:px-6 py-2 sm:py-3 bg-primary-600 text-white rounded-sm hover:bg-primary-700 disabled:bg-background-300 disabled:text-foreground-500 transition-colors duration-200 flex items-center gap-2 mx-auto text-sm sm:text-base min-h-11 sm:min-h-12"
                   whileHover={{
                     scale: 1.03,
                     transition: {
@@ -262,10 +262,10 @@ const ArchivePage: React.FC = () => {
                 >
                   {isLoadingMore && <Loader2 className="w-4 h-4 animate-spin" />}
                   <span className="hidden sm:inline">
-                    {isLoadingMore ? commonT("loading") : archiveT("loadMore")}
+                    {isLoadingMore ? commonT("loading") : commonT("loadMore")}
                   </span>
                   <span className="sm:hidden">
-                    {isLoadingMore ? commonT("loading") : archiveT("loadMore")}
+                    {isLoadingMore ? commonT("loading") : commonT("loadMore")}
                   </span>
                 </motion.button>
               </motion.div>

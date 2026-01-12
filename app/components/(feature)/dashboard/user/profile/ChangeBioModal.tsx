@@ -107,11 +107,15 @@ const ChangeBioModal: React.FC<ChangeBioModalProps> = ({
       <div className="space-y-4">
         {/* Bio Input */}
         <div>
-          <label className="block text-sm font-medium text-foreground-50 mb-2">
+          <label
+            htmlFor="bio-textarea"
+            className="block text-sm font-medium text-foreground-50 mb-2"
+          >
             {dashboardT("bio")}
           </label>
           <div className="relative">
             <textarea
+              id="bio-textarea"
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               placeholder={dashboardT("bioPlaceholder")}
@@ -120,7 +124,7 @@ const ChangeBioModal: React.FC<ChangeBioModalProps> = ({
                 isOverLimit
                   ? "border-error-500 focus:ring-error-500"
                   : "border-border-100 focus:ring-primary-500"
-              } rounded-sm text-foreground-100 placeholder-foreground-500 resize-none focus:outline-none focus:ring-2 transition-all`}
+              } rounded-sm text-foreground-100 placeholder-foreground-500 resize-none focus:outline-none focus:ring-2 transition-[border-color,box-shadow]`}
             />
           </div>
 

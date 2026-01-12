@@ -27,8 +27,8 @@ const lowlight = createLowlight(common);
 import bash from "highlight.js/lib/languages/bash";
 import csharp from "highlight.js/lib/languages/csharp";
 import dockerfile from "highlight.js/lib/languages/dockerfile";
-import html from "highlight.js/lib/languages/xml";
 import sql from "highlight.js/lib/languages/sql";
+import html from "highlight.js/lib/languages/xml";
 import yaml from "highlight.js/lib/languages/yaml";
 
 lowlight.register("html", html);
@@ -73,7 +73,7 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
         console.error(contentT("failedCopy"), err);
       }
     },
-    [contentT]
+    [contentT],
   );
 
   // 切换代码块折叠状态
@@ -87,23 +87,17 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
         preElement.style.maxHeight = "none";
         collapseButton.innerHTML = contentT("collapse");
         collapseButton.classList.remove("bg-primary-500");
-        collapseButton.classList.add(
-          "bg-background-500",
-          "hover:bg-background-400"
-        );
+        collapseButton.classList.add("bg-background-500", "hover:bg-background-400");
       } else {
         // 折叠
         preElement.classList.add("collapsed");
         preElement.style.maxHeight = "300px";
         collapseButton.innerHTML = contentT("expand");
-        collapseButton.classList.remove(
-          "bg-background-500",
-          "hover:bg-background-400"
-        );
+        collapseButton.classList.remove("bg-background-500", "hover:bg-background-400");
         collapseButton.classList.add("bg-primary-500");
       }
     },
-    [contentT]
+    [contentT],
   );
 
   const editor = useEditor({
@@ -177,8 +171,7 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
         if (!codeElement) return;
 
         // 获取语言信息
-        const language =
-          codeElement.className.match(/language-(\w+)/)?.[1] || "plaintext";
+        const language = codeElement.className.match(/language-(\w+)/)?.[1] || "plaintext";
 
         // 语言标签映射
         const languageMap: { [key: string]: string } = {
@@ -207,9 +200,7 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
         };
 
         // 获取代码内容并计算行数（移除末尾空行）
-        const codeText = (codeElement.textContent || "")
-          .replace(/\n+$/, "")
-          .replace(/\s+$/, "");
+        const codeText = (codeElement.textContent || "").replace(/\n+$/, "").replace(/\s+$/, "");
         const lines = codeText.split("\n");
         const lineCount = lines.length;
 
@@ -257,8 +248,7 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
         copyButton.className =
           "copy-button absolute top-2 right-2 px-2 py-1 text-xs bg-background-500 text-foreground-50 rounded hover:bg-background-400 transition-colors duration-200 opacity-100 z-10";
         copyButton.textContent = contentT("copy");
-        copyButton.onclick = () =>
-          copyCodeBlock(codeElement as HTMLElement, copyButton);
+        copyButton.onclick = () => copyCodeBlock(codeElement as HTMLElement, copyButton);
 
         // 创建折叠按钮（初始隐藏）
         const collapseButton = document.createElement("button");
@@ -270,8 +260,7 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
 
         // 调整代码容器的样式
         const codeContainer = document.createElement("div");
-        codeContainer.className =
-          "code-container relative pl-16 pr-4 pt-4 pb-4";
+        codeContainer.className = "code-container relative pl-16 pr-4 pt-4 pb-4";
         codeContainer.style.lineHeight = "1.5rem";
         codeContainer.style.whiteSpace = "pre";
         codeContainer.style.overflowX = "auto";
@@ -291,12 +280,7 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
 
         // 为 pre 元素添加样式和子元素
         const preHTMLElement = preElement as HTMLElement;
-        preHTMLElement.classList.add(
-          "relative",
-          "group",
-          "code-block-wrapper",
-          "rounded-sm"
-        );
+        preHTMLElement.classList.add("relative", "group", "code-block-wrapper", "rounded-sm");
         preHTMLElement.style.backgroundColor = "var(--color-background-200)";
         preHTMLElement.style.color = "var(--color-foreground-50)";
         preHTMLElement.style.border = "1px solid var(--color-border-200)";
@@ -322,10 +306,7 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
             preHTMLElement.classList.add("collapsed");
             preHTMLElement.style.maxHeight = "300px";
             collapseButton.textContent = contentT("expand");
-            collapseButton.classList.remove(
-              "bg-background-500",
-              "hover:bg-background-400"
-            );
+            collapseButton.classList.remove("bg-background-500", "hover:bg-background-400");
             collapseButton.classList.add("bg-primary-500");
           }
 
@@ -526,7 +507,7 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
           [&_.ProseMirror_pre]:relative
           [&_.ProseMirror_pre]:group
           [&_.ProseMirror_pre]:shadow-lg
-          [&_.ProseMirror_pre]:transition-all
+          [&_.ProseMirror_pre]:transition-shadow
           [&_.ProseMirror_pre]:duration-300
           [&_.ProseMirror_pre]:ease-in-out
           
@@ -628,19 +609,19 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
           
           /* 复制按钮样式 */
           [&_.ProseMirror_.copy-button]:z-10
-          [&_.ProseMirror_.copy-button]:transition-all
+          [&_.ProseMirror_.copy-button]:transition-opacity
           [&_.ProseMirror_.copy-button]:duration-200
           [&_.ProseMirror_.copy-button]:opacity-100
           
           /* 折叠按钮样式 */
           [&_.ProseMirror_.collapse-button]:z-10
-          [&_.ProseMirror_.collapse-button]:transition-all
+          [&_.ProseMirror_.collapse-button]:transition-opacity
           [&_.ProseMirror_.collapse-button]:duration-200
           [&_.ProseMirror_.collapse-button]:opacity-100
           
           /* 语言标签样式 */
           [&_.ProseMirror_.language-label]:z-10
-          [&_.ProseMirror_.language-label]:transition-all
+          [&_.ProseMirror_.language-label]:transition-opacity
           [&_.ProseMirror_.language-label]:duration-200
           [&_.ProseMirror_.language-label]:opacity-100
           [&_.ProseMirror_.language-label]:font-medium
@@ -739,7 +720,7 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
           [&_.ProseMirror_img]:shadow-md
           [&_.ProseMirror_img]:block
           [&_.ProseMirror_img]:cursor-pointer
-          [&_.ProseMirror_img]:transition-all
+          [&_.ProseMirror_img]:transition-[box-shadow,transform,filter]
           [&_.ProseMirror_img]:duration-300
           [&_.ProseMirror_img]:object-contain
           
@@ -769,7 +750,7 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
           [&_.ProseMirror_figure.image-figure_img]:shadow-md
           [&_.ProseMirror_figure.image-figure_img]:block
           [&_.ProseMirror_figure.image-figure_img]:cursor-pointer
-          [&_.ProseMirror_figure.image-figure_img]:transition-all
+          [&_.ProseMirror_figure.image-figure_img]:transition-[box-shadow,transform,filter]
           [&_.ProseMirror_figure.image-figure_img]:duration-300
           [&_.ProseMirror_figure.image-figure_img]:object-contain
           

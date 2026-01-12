@@ -74,13 +74,7 @@
   },
   "overrides": [
     {
-      "includes": [
-        "node_modules/**",
-        ".next/**",
-        "out/**",
-        "build/**",
-        "next-env.d.ts"
-      ],
+      "includes": ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts"],
       "linter": {
         "enabled": false
       },

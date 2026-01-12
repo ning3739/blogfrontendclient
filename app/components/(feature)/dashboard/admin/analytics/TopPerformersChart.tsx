@@ -58,6 +58,7 @@ export default function TopPerformersChart({
     index,
   }));
 
+  // biome-ignore lint/suspicious/noExplicitAny: Recharts event data type is not well-defined
   const handleBarClick = (data: any) => {
     if (data?.blog_slug && data?.section_slug) {
       router.push(`/${data.section_slug}/${data.blog_slug}`);
@@ -121,8 +122,8 @@ export default function TopPerformersChart({
               onClick={handleBarClick}
               style={{ cursor: "pointer" }}
             >
-              {chartData.map((_entry, index) => (
-                <Cell key={`cell-${index}`} fill={color} />
+              {chartData.map((entry) => (
+                <Cell key={`cell-${entry.name}-${entry.value}`} fill={color} />
               ))}
             </Bar>
           </BarChart>

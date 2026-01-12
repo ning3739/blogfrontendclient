@@ -23,7 +23,7 @@ import type { GetSeoItemResponse } from "@/app/types/seoServiceType";
 interface ProjectMetaDataProps {
   seoItems: GetSeoItemResponse[];
   loading: boolean;
-  error: any;
+  error: unknown;
   hasMore?: boolean;
   onLoadMore?: () => void;
   onSave?: (data: {
@@ -111,6 +111,7 @@ export const ProjectMetaData = ({
     initialData?.price,
     initialData?.title,
     initialData?.description,
+    initialData,
   ]);
 
   // 点击外部关闭下拉菜单
@@ -235,7 +236,12 @@ export const ProjectMetaData = ({
           <div className="space-y-6">
             {/* SEO 选择器 */}
             <div className="space-y-3">
-              <label className="block text-sm font-medium text-foreground-50">SEO 设置</label>
+              <label
+                htmlFor="project-seo-select"
+                className="block text-sm font-medium text-foreground-50"
+              >
+                SEO 设置
+              </label>
               <div className="relative" ref={dropdownRef}>
                 <div
                   className="w-full rounded-sm border border-border-100 bg-card-50 px-4 py-3 text-foreground-50 cursor-pointer hover:border-border-200 hover:bg-background-300"
@@ -352,7 +358,12 @@ export const ProjectMetaData = ({
             {/* 项目标题 */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <label className="block text-sm font-medium text-foreground-50">项目标题</label>
+                <label
+                  htmlFor="project-title"
+                  className="block text-sm font-medium text-foreground-50"
+                >
+                  项目标题
+                </label>
                 <span
                   className={`text-xs font-medium ${
                     title.length > 50 ? "text-error-500" : "text-foreground-400"
@@ -362,6 +373,7 @@ export const ProjectMetaData = ({
                 </span>
               </div>
               <input
+                id="project-title"
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -381,7 +393,12 @@ export const ProjectMetaData = ({
             {/* 项目描述 */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <label className="block text-sm font-medium text-foreground-50">项目描述</label>
+                <label
+                  htmlFor="project-description"
+                  className="block text-sm font-medium text-foreground-50"
+                >
+                  项目描述
+                </label>
                 <span
                   className={`text-xs font-medium ${
                     description.length > 500 ? "text-error-500" : "text-foreground-400"
@@ -391,6 +408,7 @@ export const ProjectMetaData = ({
                 </span>
               </div>
               <textarea
+                id="project-description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="请输入项目描述"
@@ -409,7 +427,12 @@ export const ProjectMetaData = ({
 
             {/* 项目类型选择器 */}
             <div className="space-y-3">
-              <label className="block text-sm font-medium text-foreground-50">项目类型</label>
+              <label
+                htmlFor="project-type"
+                className="block text-sm font-medium text-foreground-50"
+              >
+                项目类型
+              </label>
               <div className="grid grid-cols-2 gap-3">
                 {[
                   { value: 1, label: "Web应用" },
@@ -434,9 +457,15 @@ export const ProjectMetaData = ({
 
             {/* 价格设置 */}
             <div className="space-y-3">
-              <label className="block text-sm font-medium text-foreground-50">项目价格</label>
+              <label
+                htmlFor="project-price"
+                className="block text-sm font-medium text-foreground-50"
+              >
+                项目价格
+              </label>
               <div className="relative">
                 <input
+                  id="project-price"
                   type="number"
                   step="0.01"
                   min="0"
@@ -465,7 +494,12 @@ export const ProjectMetaData = ({
 
             {/* 封面图片选择器 */}
             <div className="space-y-3">
-              <label className="block text-sm font-medium text-foreground-50">封面图片</label>
+              <label
+                htmlFor="project-cover"
+                className="block text-sm font-medium text-foreground-50"
+              >
+                封面图片
+              </label>
               <div className="space-y-3">
                 {selectedCoverImageUrl ? (
                   <div className="relative group">
@@ -511,7 +545,12 @@ export const ProjectMetaData = ({
             {/* 文档选择器 - 仅在价格大于0时显示 */}
             {price !== null && price > 0 && (
               <div className="space-y-3">
-                <label className="block text-sm font-medium text-foreground-50">项目文件</label>
+                <label
+                  htmlFor="project-file"
+                  className="block text-sm font-medium text-foreground-50"
+                >
+                  项目文件
+                </label>
                 <div className="space-y-3">
                   {selectedDocumentUrl ? (
                     <div className="flex items-center justify-between p-4 border border-border-100 rounded-sm bg-card-50 hover:bg-background-300">

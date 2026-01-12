@@ -101,7 +101,7 @@ const Footer = () => {
                         className="text-foreground-300 hover:text-primary-600 transition-colors text-xs sm:text-sm relative group"
                       >
                         {link.name}
-                        <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-600 group-hover:w-full transition-all duration-300" />
+                        <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-600 group-hover:w-full transition-[width] duration-300" />
                       </Link>
                     </motion.li>
                   ))}

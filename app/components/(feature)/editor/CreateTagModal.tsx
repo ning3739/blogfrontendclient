@@ -68,7 +68,7 @@ const CreateTagModal = ({
 
     setIsLoading(true);
     try {
-      let response;
+      let response: Awaited<ReturnType<typeof tagService.createTag>>;
       if (tagId) {
         // 编辑模式
         response = await tagService.updateTag({
@@ -137,7 +137,10 @@ const CreateTagModal = ({
       footer={modalFooter}
     >
       <div>
-        <label className="block text-sm font-medium text-foreground-50 mb-2">
+        <label
+          htmlFor="chinese_title"
+          className="block text-sm font-medium text-foreground-50 mb-2"
+        >
           标签名称 <span className="text-error-500">*</span>
         </label>
         <InputField

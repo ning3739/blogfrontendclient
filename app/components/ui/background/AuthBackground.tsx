@@ -91,7 +91,7 @@ const AuthBackground = ({ children, imageType }: AuthBackgroundProps) => {
           fill
           sizes="50vw"
           priority
-          className="object-cover transition-all duration-500 ease-in-out group-hover:grayscale"
+          className="object-cover transition-[filter] duration-500 ease-in-out group-hover:grayscale"
         />
       </div>
     </div>

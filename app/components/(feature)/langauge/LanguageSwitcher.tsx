@@ -55,7 +55,7 @@ const LanguageSwitcher = () => {
             onClick={() => handleLanguageChange(option.value)}
             title={option.label}
             className={`
-              w-8 h-8 rounded-sm flex items-center justify-center transition-all duration-200
+              w-8 h-8 rounded-sm flex items-center justify-center transition-colors duration-200
               ${
                 isActive
                   ? "bg-primary-100 text-primary-600"

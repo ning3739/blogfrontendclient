@@ -1,4 +1,11 @@
 {
+  "notFoundPage": {
+    "title": "Page Not Found",
+    "description": "The page you are looking for may have been deleted, renamed, or is temporarily unavailable",
+    "backHome": "Back to Home",
+    "goBack": "Go Back",
+    "errorCode": "Error Code: 404 | Page Not Found"
+  },
   "common": {
     "loading": "Loading...",
     "loadFailed": "Load Failed",
@@ -11,6 +18,8 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "edit": "Edit",
+    "reply": "Reply",
+    "replies": "{count} replies",
     "status": "Status",
     "actions": "Actions",
     "previewMode": "Preview Mode",
@@ -24,6 +33,9 @@
     "back": "Back",
     "summary": "Summary",
     "noMoreContent": "No more content",
+    "loginRequired": "Please login to continue",
+    "beFirstToComment": "Be the first to comment!",
+    "loadMore": "Load More...",
     "share": {
       "shareButton": "Share",
       "download": "Download Card",
@@ -31,36 +43,15 @@
     }
   },
   "home": {
-    "common": {
-      "and": "and",
-      "dot": "."
-    },
     "roles": {
       "developer": "<Developer/>",
       "designer": "Designer",
       "detailOriented": "Detail-oriented",
       "perfectionist": "Perfectionist"
     },
-    "intro": {
-      "hi": "Hi, I'm",
-      "name": "XIAO LI",
-      "site": "This is my personal blog, documenting",
-      "tech": "Tech Exploration",
-      "design": "Design Thinking",
-      "life": "Life Insights"
-    },
-    "second": {
-      "iLovePrefix": "I love",
-      "coding": "coding",
-      "design": "design",
-      "believePrefix": ", and I believe great products come from an obsession with",
-      "details": "details"
-    },
-    "welcome": {
-      "prefix": "Welcome! I hope the words here bring you some",
-      "inspire": "inspiration",
-      "resonate": "resonance"
-    },
+    "intro": "<wave></wave> Hi, I'm <name>XIAO LI</name>! This is my personal blog, documenting <highlight>Tech Exploration</highlight>, <highlight>Design Thinking</highlight> and <highlight>Life Insights</highlight>.",
+    "passion": "I love <em>coding</em> and <em>design</em>, and I believe great products come from an obsession with <underline>details</underline>.",
+    "welcome": "Welcome! I hope the words here bring you some <em>inspiration</em> and <em>resonance</em>.",
     "popularPosts": "Popular Posts",
     "subscribeTitle": "Subscribe",
     "subscribeDescription": "If you like my content, please subscribe to support me 🫶",
@@ -151,25 +142,11 @@
   },
   "comment": {
     "inputPlaceholder": "Write your comment...",
-    "submit": "Submit",
-    "update": "Update",
-    "submitting": "Submitting...",
     "commentRequired": "Please enter a comment",
     "commentTooLong": "Comment cannot exceed 500 characters",
     "submitError": "Failed to submit, please try again",
     "noComments": "No comments yet, come and grab the sofa!",
-    "reply": "Reply",
-    "replies": "{count} replies",
-    "edit": "Edit",
-    "delete": "Delete",
-    "cancel": "Cancel",
-    "loading": "Loading...",
-    "loadFailed": "Load Failed",
-    "loadFailedMessage": "Unable to load comment list, please try again later",
-    "beFirstToComment": "Be the first to comment!",
-    "loadMoreComments": "Load More Comments...",
-    "updatedAt": "Updated at",
-    "loginRequired": "Please login to post a comment"
+    "loadFailedMessage": "Unable to load comment list, please try again later"
   },
   "blog": {
     "action": {
@@ -186,29 +163,10 @@
   },
   "forum": {
     "inputPlaceholder": "What do you want to say, or your suggestion, or your idea...",
-    "submit": "Submit",
-    "update": "Update",
-    "submitting": "Submitting...",
-    "commentRequired": "Please enter a comment",
-    "commentTooLong": "Comment cannot exceed 500 characters",
-    "submitError": "Failed to submit, please try again",
-    "noComments": "No comments yet, come and grab the sofa!",
-    "reply": "Reply",
-    "replies": "{count} replies",
-    "edit": "Edit",
-    "delete": "Delete",
-    "cancel": "Cancel",
-    "loading": "Loading...",
-    "loadFailed": "Load Failed",
-    "loadFailedMessage": "Unable to load forum details, please try again later",
     "forumNotFound": "Forum Not Found",
     "forumNotFoundMessage": "This forum does not exist or has been deleted",
     "loadCommentsFailed": "Failed to Load Comments",
-    "loadCommentsFailedMessage": "Unable to load comment list, please try again later",
-    "beFirstToComment": "Be the first to comment!",
-    "loadMoreComments": "Load More Comments...",
-    "updatedAt": "Updated at",
-    "loginRequired": "Please login to post a comment"
+    "loadCommentsFailedMessage": "Unable to load comment list, please try again later"
   },
   "friend": {
     "sitename": "Please enter your site name",
@@ -288,8 +246,7 @@
   },
   "archive": {
     "title": "Archive",
-    "description": "A collection of archive of the blog articles.",
-    "loadMore": "Load More..."
+    "description": "A collection of archive of the blog articles."
   },
   "user": {
     "userTitle": "User Details",
@@ -378,5 +335,47 @@
     "copyright": {
       "notice": "Reproduction must indicate the source and link, and comply with the {licenseText} agreement."
     }
+  },
+  "copyright": {
+    "title": "Copyright Notice",
+    "description": "Information about content ownership and usage rights on this website.",
+    "contentOwnership": {
+      "title": "Content Ownership",
+      "content": "All original content on this website, including but not limited to articles, images, code snippets, and designs, is owned by the site author unless otherwise stated.\n\nThird-party content used on this site is credited to its respective owners and is used in accordance with applicable licenses."
+    },
+    "sharingPolicy": {
+      "title": "Sharing & Reproduction",
+      "content": "You are welcome to share and reference content from this website under the following conditions:\n\n• Provide proper attribution with a link to the original article\n• Do not modify the content without permission\n• Non-commercial use only, unless explicitly authorized\n• Respect the CC BY-NC-SA 4.0 license where applicable"
+    },
+    "legalDisclaimer": {
+      "title": "Legal Disclaimer",
+      "content": "The information provided on this website is for general informational purposes only. While I strive to keep the content accurate and up-to-date, I make no warranties about the completeness, reliability, or suitability of the information.\n\nAny reliance you place on such information is at your own risk."
+    },
+    "lastUpdated": "Last updated: January 2025"
+  },
+  "privacyPolicy": {
+    "title": "Privacy Policy",
+    "description": "How we collect, use, and protect your personal information.",
+    "dataCollection": {
+      "title": "Data Collection",
+      "content": "We collect minimal personal information necessary to provide our services:\n\n• Account information (email, username) when you register\n• Usage data and analytics to improve user experience\n• Comments and content you voluntarily submit\n• Technical data such as IP address and browser type for security purposes"
+    },
+    "dataUsage": {
+      "title": "How We Use Your Data",
+      "content": "Your information is used to:\n\n• Provide and maintain our services\n• Send you updates and notifications (if subscribed)\n• Improve and personalize your experience\n• Protect against fraud and abuse\n• Comply with legal obligations"
+    },
+    "cookies": {
+      "title": "Cookies & Tracking",
+      "content": "We use cookies and similar technologies to:\n\n• Remember your preferences and settings\n• Authenticate your session\n• Analyze site traffic and usage patterns\n\nYou can control cookie settings through your browser. Disabling cookies may affect some site functionality."
+    },
+    "userRights": {
+      "title": "Your Rights",
+      "content": "You have the right to:\n\n• Access your personal data\n• Request correction of inaccurate data\n• Request deletion of your account and data\n• Opt out of marketing communications\n• Export your data in a portable format"
+    },
+    "contact": {
+      "title": "Contact Us",
+      "content": "If you have questions about this privacy policy or wish to exercise your rights, please contact us through the website's contact form or email.\n\nWe will respond to your request within a reasonable timeframe."
+    },
+    "lastUpdated": "Last updated: January 2025"
   }
 }

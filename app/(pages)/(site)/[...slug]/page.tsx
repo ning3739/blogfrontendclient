@@ -56,6 +56,24 @@ export async function generateMetadata({
       };
     }
 
+    if (pageSlug === "copyright") {
+      return {
+        title: "版权声明 | Copyright Notice",
+        description:
+          "关于本网站内容所有权和使用权的说明 | Information about content ownership and usage rights",
+        keywords: "版权声明, 内容使用, copyright, content usage, license",
+      };
+    }
+
+    if (pageSlug === "privacy-policy") {
+      return {
+        title: "隐私政策 | Privacy Policy",
+        description:
+          "我们如何收集、使用和保护您的个人信息 | How we collect, use, and protect your personal information",
+        keywords: "隐私政策, 数据保护, privacy policy, data protection, GDPR",
+      };
+    }
+
     try {
       const response = await sectionService.getSectionSeoBySlug({
         slug: pageSlug,

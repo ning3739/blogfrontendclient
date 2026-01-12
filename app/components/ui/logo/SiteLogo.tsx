@@ -57,7 +57,11 @@ const SiteLogo = ({ size = "md", asChild = false }: SiteLogoProps) => {
 
   if (pathname === "/login") {
     return (
-      <div onClick={handleHomepageClick} className="block group cursor-pointer">
+      <button
+        type="button"
+        onClick={handleHomepageClick}
+        className="block group cursor-pointer bg-transparent border-0 p-0"
+      >
         <motion.div className={sizeClasses.padding} whileTap={{ scale: 0.95 }}>
           <span className={`text-primary-600 ${sizeClasses.text} font-semibold`}>
             {isClicked ? "HELLO" : "HEY"}
@@ -86,7 +90,7 @@ const SiteLogo = ({ size = "md", asChild = false }: SiteLogoProps) => {
             </div>
           </div>
         </motion.div> */}
-      </div>
+      </button>
     );
   }
   const logoContent = (

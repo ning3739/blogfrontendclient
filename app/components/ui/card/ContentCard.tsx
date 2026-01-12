@@ -44,7 +44,7 @@ const ContentCard: React.FC<ContentCardProps> = ({ content, onClick }) => {
 
   return (
     <motion.div
-      className="rounded-sm overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group relative bg-card-100 border border-border-100 shadow-sm"
+      className="rounded-sm overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group relative bg-card-100 border border-border-100 shadow-sm"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}

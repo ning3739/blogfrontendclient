@@ -162,24 +162,22 @@ const Header = () => {
                 >
                   {section.children && section.children.length > 0 ? (
                     // 有子section的父section，不提供链接，只显示dropdown
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                    <button
                       onClick={(e) => {
                         e.preventDefault();
                         toggleSectionExpansion(section.section_id.toString());
                       }}
-                      className={`px-3 py-2 text-base font-semibold transition-colors duration-200 ${
+                      className={`px-3 py-2 text-base font-semibold transition-[color,transform] duration-200 hover:scale-105 active:scale-95 ${
                         isParentSectionActive(section)
                           ? "text-primary-600 border-b-2 border-primary-600"
                           : "text-foreground-200 hover:text-primary-600"
                       }`}
                     >
                       {section.title}
-                    </motion.button>
+                    </button>
                   ) : (
                     // 没有子section的section，提供正常链接
-                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <div className="hover:scale-105 active:scale-95 transition-transform duration-200">
                       <Link
                         href={`/${section.slug}`}
                         className={`px-3 py-2 text-base font-semibold transition-colors duration-200 ${
@@ -190,7 +188,7 @@ const Header = () => {
                       >
                         {section.title}
                       </Link>
-                    </motion.div>
+                    </div>
                   )}
 
                   {/* Dropdown for children sections */}
@@ -205,32 +203,19 @@ const Header = () => {
                           className="absolute top-full left-0 mt-1 w-48 bg-background-50 rounded-sm shadow-lg border border-border-50 z-10"
                         >
                           <div className="py-1">
-                            {section.children.map(
-                              (child: SectionListResponse, childIndex: number) => (
-                                <motion.div
-                                  key={child.section_id}
-                                  initial={{ opacity: 0, x: -10 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  whileHover={{ scale: 1.02 }}
-                                  whileTap={{ scale: 0.98 }}
-                                  transition={{
-                                    duration: 0.2,
-                                    delay: childIndex * 0.05,
-                                  }}
-                                >
-                                  <Link
-                                    href={`/${child.slug}`}
-                                    className={`block px-4 py-2 text-sm font-medium transition-colors duration-200 ${
-                                      isActiveLink(child.slug)
-                                        ? "text-primary-600 bg-primary-50"
-                                        : "text-foreground-200 hover:text-primary-600 hover:bg-background-100"
-                                    }`}
-                                  >
-                                    {child.title}
-                                  </Link>
-                                </motion.div>
-                              ),
-                            )}
+                            {section.children.map((child: SectionListResponse) => (
+                              <Link
+                                key={child.section_id}
+                                href={`/${child.slug}`}
+                                className={`block px-4 py-2 text-sm font-medium transition-[color,background-color,transform] duration-200 hover:scale-[1.02] active:scale-[0.98] ${
+                                  isActiveLink(child.slug)
+                                    ? "text-primary-600 bg-primary-50"
+                                    : "text-foreground-200 hover:text-primary-600 hover:bg-background-100"
+                                }`}
+                              >
+                                {child.title}
+                              </Link>
+                            ))}
                           </div>
                         </motion.div>
                       )}
@@ -248,16 +233,14 @@ const Header = () => {
             className="hidden md:flex items-center space-x-4"
           >
             {isAuthenticated ? (
-              <motion.div
-                className="relative group"
+              <div
+                className="relative group hover:scale-[1.02] transition-transform duration-200"
                 onMouseEnter={() => setDropdownMenuOpen(true)}
                 onMouseLeave={() => setDropdownMenuOpen(false)}
-                whileHover={{ scale: 1.02 }}
               >
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
+                <button
                   onClick={() => setDropdownMenuOpen(!dropdownMenuOpen)}
-                  className="flex items-center space-x-2 text-base font-semibold text-foreground-200 hover:text-primary-600 transition-colors duration-200"
+                  className="flex items-center space-x-2 text-base font-semibold text-foreground-200 hover:text-primary-600 transition-colors duration-200 active:scale-95"
                 >
                   {user?.avatar_url && user.avatar_url.trim() !== "" ? (
                     <Image
@@ -276,7 +259,7 @@ const Header = () => {
                   )}
                   <span className="hidden sm:block">{user?.username}</span>
                   <ChevronDown className="w-4 h-4" />
-                </motion.button>
+                </button>
 
                 {/* Dropdown Menu */}
                 <AnimatePresence>
@@ -310,25 +293,21 @@ const Header = () => {
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </motion.div>
+              </div>
             ) : (
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Link
-                  href="/login"
-                  className="inline-flex items-center px-4 py-2 text-base font-semibold text-white bg-primary-600 rounded-sm hover:bg-primary-700 transition-colors duration-200"
-                >
-                  {headerT("login")}
-                </Link>
-              </motion.div>
+              <Link
+                href="/login"
+                className="inline-flex items-center px-4 py-2 text-base font-semibold text-white bg-primary-600 rounded-sm hover:bg-primary-700 hover:scale-105 active:scale-95 transition-[background-color,transform] duration-200"
+              >
+                {headerT("login")}
+              </Link>
             )}
           </motion.div>
 
           {/* Mobile Menu Button */}
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
+          <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-foreground-200 hover:text-primary-600 transition-colors duration-200"
+            className="md:hidden p-2 text-foreground-200 hover:text-primary-600 hover:scale-110 active:scale-90 transition-[color,transform] duration-200"
           >
             <motion.div
               animate={{ rotate: mobileMenuOpen ? 90 : 0 }}
@@ -336,7 +315,7 @@ const Header = () => {
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </motion.div>
-          </motion.button>
+          </button>
         </div>
       </div>
 
@@ -351,7 +330,7 @@ const Header = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="fixed inset-0 bg-black bg-opacity-50 z-[60] md:hidden"
+                  className="fixed inset-0 bg-black bg-opacity-50 z-60 md:hidden"
                   onClick={() => setMobileMenuOpen(false)}
                 />
 
@@ -361,7 +340,7 @@ const Header = () => {
                   animate={{ x: 0 }}
                   exit={{ x: "-100%" }}
                   transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                  className="fixed left-0 top-0 h-full w-80 bg-background-50 shadow-xl z-[70] md:hidden"
+                  className="fixed left-0 top-0 h-full w-80 bg-background-50 shadow-xl z-70 md:hidden"
                 >
                   <div className="flex flex-col h-full">
                     {/* Header */}
@@ -392,13 +371,11 @@ const Header = () => {
                             >
                               {section.children && section.children.length > 0 ? (
                                 // 有子section的父section，可点击展开/收起
-                                <motion.button
-                                  whileHover={{ scale: 1.02 }}
-                                  whileTap={{ scale: 0.98 }}
+                                <button
                                   onClick={() =>
                                     toggleSectionExpansion(section.section_id.toString())
                                   }
-                                  className={`flex items-center justify-between w-full px-3 py-3 text-base font-medium transition-colors duration-200 rounded-sm ${
+                                  className={`flex items-center justify-between w-full px-3 py-3 text-base font-medium transition-[color,background-color,transform] duration-200 rounded-sm hover:scale-[1.02] active:scale-[0.98] ${
                                     isParentSectionActive(section)
                                       ? "text-primary-600 bg-primary-50"
                                       : "text-foreground-200 hover:text-primary-600 hover:bg-background-100"
@@ -412,22 +389,20 @@ const Header = () => {
                                         : ""
                                     }`}
                                   />
-                                </motion.button>
+                                </button>
                               ) : (
                                 // 没有子section的section，提供正常链接
-                                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                                  <Link
-                                    href={`/${section.slug}`}
-                                    className={`block px-3 py-3 text-base font-medium transition-colors duration-200 rounded-sm ${
-                                      isActiveLink(section.slug)
-                                        ? "text-primary-600 bg-primary-50"
-                                        : "text-foreground-200 hover:text-primary-600 hover:bg-background-100"
-                                    }`}
-                                    onClick={() => setMobileMenuOpen(false)}
-                                  >
-                                    {section.title}
-                                  </Link>
-                                </motion.div>
+                                <Link
+                                  href={`/${section.slug}`}
+                                  className={`block px-3 py-3 text-base font-medium transition-[color,background-color,transform] duration-200 rounded-sm hover:scale-[1.02] active:scale-[0.98] ${
+                                    isActiveLink(section.slug)
+                                      ? "text-primary-600 bg-primary-50"
+                                      : "text-foreground-200 hover:text-primary-600 hover:bg-background-100"
+                                  }`}
+                                  onClick={() => setMobileMenuOpen(false)}
+                                >
+                                  {section.title}
+                                </Link>
                               )}
 
                               {/* 子section展开内容 */}
@@ -440,33 +415,20 @@ const Header = () => {
                                     exit={{ opacity: 0, height: 0 }}
                                     className="ml-4 space-y-1 mt-1"
                                   >
-                                    {section.children.map(
-                                      (child: SectionListResponse, childIndex: number) => (
-                                        <motion.div
-                                          key={child.section_id}
-                                          initial={{ opacity: 0, x: -10 }}
-                                          animate={{ opacity: 1, x: 0 }}
-                                          transition={{
-                                            duration: 0.3,
-                                            delay: childIndex * 0.05,
-                                          }}
-                                          whileHover={{ scale: 1.02 }}
-                                          whileTap={{ scale: 0.98 }}
-                                        >
-                                          <Link
-                                            href={`/${child.slug}`}
-                                            className={`block px-3 py-2 text-sm transition-colors duration-200 rounded-sm ${
-                                              isActiveLink(child.slug)
-                                                ? "text-primary-600 bg-primary-50"
-                                                : "text-foreground-200 hover:text-primary-600 hover:bg-background-100"
-                                            }`}
-                                            onClick={() => setMobileMenuOpen(false)}
-                                          >
-                                            {child.title}
-                                          </Link>
-                                        </motion.div>
-                                      ),
-                                    )}
+                                    {section.children.map((child: SectionListResponse) => (
+                                      <Link
+                                        key={child.section_id}
+                                        href={`/${child.slug}`}
+                                        className={`block px-3 py-2 text-sm transition-[color,background-color,transform] duration-200 rounded-sm hover:scale-[1.02] active:scale-[0.98] ${
+                                          isActiveLink(child.slug)
+                                            ? "text-primary-600 bg-primary-50"
+                                            : "text-foreground-200 hover:text-primary-600 hover:bg-background-100"
+                                        }`}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                      >
+                                        {child.title}
+                                      </Link>
+                                    ))}
                                   </motion.div>
                                 )}
                             </motion.div>
@@ -506,28 +468,24 @@ const Header = () => {
                           </div>
 
                           <div className="space-y-1">
-                            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                              <Link
-                                href="/dashboard"
-                                className="flex items-center px-3 py-3 text-sm text-foreground-200 hover:bg-background-100 hover:text-primary-600 transition-colors duration-200 rounded-sm"
-                                onClick={() => setMobileMenuOpen(false)}
-                              >
-                                <Settings className="w-4 h-4 mr-3" />
-                                {headerT("dashboard")}
-                              </Link>
-                            </motion.div>
-                            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                              <button
-                                onClick={() => {
-                                  accountLogout();
-                                  setMobileMenuOpen(false);
-                                }}
-                                className="flex items-center w-full px-3 py-3 text-sm text-foreground-200 hover:bg-background-100 hover:text-error-500 transition-colors duration-200 rounded-sm"
-                              >
-                                <LogOut className="w-4 h-4 mr-3" />
-                                {headerT("logout")}
-                              </button>
-                            </motion.div>
+                            <Link
+                              href="/dashboard"
+                              className="flex items-center px-3 py-3 text-sm text-foreground-200 hover:bg-background-100 hover:text-primary-600 hover:scale-[1.02] active:scale-[0.98] transition-[color,background-color,transform] duration-200 rounded-sm"
+                              onClick={() => setMobileMenuOpen(false)}
+                            >
+                              <Settings className="w-4 h-4 mr-3" />
+                              {headerT("dashboard")}
+                            </Link>
+                            <button
+                              onClick={() => {
+                                accountLogout();
+                                setMobileMenuOpen(false);
+                              }}
+                              className="flex items-center w-full px-3 py-3 text-sm text-foreground-200 hover:bg-background-100 hover:text-error-500 hover:scale-[1.02] active:scale-[0.98] transition-[color,background-color,transform] duration-200 rounded-sm"
+                            >
+                              <LogOut className="w-4 h-4 mr-3" />
+                              {headerT("logout")}
+                            </button>
                           </div>
                         </motion.div>
                       )}
@@ -540,15 +498,13 @@ const Header = () => {
                           transition={{ duration: 0.4, delay: 0.3 }}
                           className="border-t border-border-50 p-4"
                         >
-                          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                            <Link
-                              href="/login"
-                              className="block w-full text-center px-4 py-3 text-sm font-medium text-white bg-primary-600 rounded-sm hover:bg-primary-700 transition-colors duration-200"
-                              onClick={() => setMobileMenuOpen(false)}
-                            >
-                              {headerT("login")}
-                            </Link>
-                          </motion.div>
+                          <Link
+                            href="/login"
+                            className="block w-full text-center px-4 py-3 text-sm font-medium text-white bg-primary-600 rounded-sm hover:bg-primary-700 hover:scale-[1.02] active:scale-[0.98] transition-[background-color,transform] duration-200"
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            {headerT("login")}
+                          </Link>
                         </motion.div>
                       )}
                     </div>

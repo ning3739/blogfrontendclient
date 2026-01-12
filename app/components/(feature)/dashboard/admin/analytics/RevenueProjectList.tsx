@@ -41,7 +41,7 @@ export default function RevenueProjectList({
           <Link
             key={project.project_slug}
             href={`/projects/${project.project_slug}`}
-            className="flex items-center justify-between p-3 sm:p-4 rounded-sm bg-background-50 hover:bg-background-100 hover:shadow-sm transition-all w-full group"
+            className="flex items-center justify-between p-3 sm:p-4 rounded-sm bg-background-50 hover:bg-background-100 hover:shadow-sm transition-[background-color,box-shadow] w-full group"
           >
             <div className="flex items-center gap-3 flex-1 min-w-0 overflow-hidden">
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary-100 text-primary-600 font-bold text-sm shrink-0 group-hover:bg-primary-200 transition-colors">

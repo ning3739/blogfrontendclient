@@ -18,7 +18,6 @@ import type { GetRecentPopulorBlogResponse } from "@/app/types/blogServiceType";
 const HomeDetails = () => {
   const [emojiIndex, setEmojiIndex] = React.useState(0);
   const [isHovering, setIsHovering] = React.useState(false);
-  const [isWaving, setIsWaving] = React.useState(false);
   const emojis = ["🎯", "✨", "🔥", "💎", "⚡", "🌟", "💪", "🚀"];
   const router = useRouter();
   const commonT = useTranslations("common");
@@ -73,11 +72,6 @@ const HomeDetails = () => {
 
   const handleEmojiClick = () => {
     setEmojiIndex((prev) => (prev + 1) % emojis.length);
-  };
-
-  const handleWaveClick = () => {
-    setIsWaving(true);
-    setTimeout(() => setIsWaving(false), 600);
   };
 
   return (
@@ -143,7 +137,7 @@ const HomeDetails = () => {
           >
             {homeT("roles.developer")},
           </motion.span>
-          <span className="relative inline-block font-mono px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 border-2 border-solid hover:border-dashed border-primary-400 transition-all duration-300">
+          <span className="relative inline-block font-mono px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 border-2 border-solid hover:border-dashed border-primary-400 transition-none duration-300">
             {homeT("roles.designer")}
             {/* 四个角的小方块手柄 */}
             <span className="absolute -top-1 -left-1 w-2 h-2 bg-background-50 border border-primary-400"></span>
@@ -179,7 +173,7 @@ const HomeDetails = () => {
 
       {/* 介绍文字 */}
       <div
-        className="mb-4 sm:mb-6 md:mb-8 text-xs sm:text-sm md:text-base leading-snug max-w-3xl text-center sm:text-left relative"
+        className="mb-4 sm:mb-6 md:mb-8 text-xs sm:text-sm md:text-base leading-relaxed max-w-3xl text-center sm:text-left relative"
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
       >
@@ -192,110 +186,62 @@ const HomeDetails = () => {
         />
 
         <div className="relative z-10 space-y-4">
+          {/* 第一段：自我介绍 */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.8 }}
             className="text-foreground-200"
           >
-            <motion.span
-              className="inline-block text-2xl sm:text-3xl mr-2 cursor-pointer select-none"
-              onClick={handleWaveClick}
-              animate={
-                isWaving
-                  ? {
-                      rotate: [0, 14, -8, 14, -4, 10, 0],
-                    }
-                  : {}
-              }
-              transition={{ duration: 0.6, ease: "easeInOut" }}
-              whileHover={{ scale: 1.1 }}
-            >
-              👋
-            </motion.span>
-            <span className="font-medium text-foreground-50">
-              {homeT("intro.hi")}
-              <span className="relative inline-block mx-1 text-primary-400 font-semibold">
-                {homeT("intro.name")}
-              </span>
-              ！
-            </span>
-            {homeT("intro.site")}
-            <br />
-            <motion.span
-              className="inline-block mx-1 px-2 py-0.5 bg-primary-500/20 hover:bg-primary-500/30 text-primary-400 rounded font-medium transition-colors"
-              whileHover={{ scale: 1.05 }}
-            >
-              {homeT("intro.tech")}
-            </motion.span>
-            、
-            <motion.span
-              className="inline-block mx-1 px-2 py-0.5 bg-primary-500/20 hover:bg-primary-500/30 text-primary-400 rounded font-medium transition-colors"
-              whileHover={{ scale: 1.05 }}
-            >
-              {homeT("intro.design")}
-            </motion.span>
-            {homeT("common.and")}
-            <motion.span
-              className="inline-block mx-1 mt-2 px-2 py-0.5 bg-primary-500/20 hover:bg-primary-500/30 text-primary-400 rounded font-medium transition-colors"
-              whileHover={{ scale: 1.05 }}
-            >
-              {homeT("intro.life")}
-            </motion.span>
-            {homeT("common.dot")}
+            {homeT.rich("intro", {
+              wave: () => <span className="text-2xl sm:text-3xl mr-1">👋</span>,
+              name: (chunks) => <span className="text-primary-400 font-semibold">{chunks}</span>,
+              highlight: (chunks) => (
+                <span className="inline-block mx-0.5 px-2 py-0.5 bg-primary-500/20 hover:bg-primary-500/30 text-primary-400 rounded font-medium transition-colors">
+                  {chunks}
+                </span>
+              ),
+            })}
           </motion.p>
 
+          {/* 第二段：热爱与信念 */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.0 }}
             className="text-foreground-200"
           >
-            {homeT("second.iLovePrefix")}
-            <span className="inline-block mx-1 text-primary-400 font-semibold">
-              {homeT("second.coding")}
-            </span>
-            {homeT("common.and")}
-            <span className="inline-block mx-1 text-primary-400 font-semibold">
-              {homeT("second.design")}
-            </span>
-            {homeT("second.believePrefix")}
-            <span className="relative inline-block mx-1">
-              <span className="text-primary-400 font-semibold">{homeT("second.details")}</span>
-              <motion.span
-                className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary-400"
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: isHovering ? 1 : 0 }}
-                transition={{ duration: 0.3 }}
-              />
-            </span>
-            {homeT("common.dot")}
+            {homeT.rich("passion", {
+              em: (chunks) => <span className="text-primary-400 font-semibold">{chunks}</span>,
+              underline: (chunks) => (
+                <span className="relative inline-block">
+                  <span className="text-primary-400 font-semibold">{chunks}</span>
+                  <motion.span
+                    className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-primary-400"
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: isHovering ? 1 : 0 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </span>
+              ),
+            })}
           </motion.p>
 
-          <motion.div
+          {/* 第三段：欢迎语 */}
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.2 }}
             className="text-foreground-200"
           >
-            <p>
-              {homeT("welcome.prefix")}
-              <motion.span
-                className="inline-block mx-1 text-primary-400 font-medium hover:text-primary-300 hover:scale-110 transition-all"
-                whileHover={{ scale: 1.1 }}
-              >
-                {homeT("welcome.inspire")}
-              </motion.span>
-              {homeT("common.and")}
-              <motion.span
-                className="inline-block mx-1 text-primary-400 font-medium hover:text-primary-300 hover:scale-110 transition-all"
-                whileHover={{ scale: 1.1 }}
-              >
-                {homeT("welcome.resonate")}
-              </motion.span>
-              {homeT("common.dot")}
-            </p>
-          </motion.div>
+            {homeT.rich("welcome", {
+              em: (chunks) => (
+                <span className="text-primary-400 font-medium hover:text-primary-300 transition-colors">
+                  {chunks}
+                </span>
+              ),
+            })}
+          </motion.p>
         </div>
       </div>
 

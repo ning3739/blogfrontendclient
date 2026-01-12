@@ -218,12 +218,13 @@ const ChangeAvatarModal: React.FC<ChangeAvatarModalProps> = ({ isOpen, onClose, 
             {/* Zoom Control */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-foreground-200">
+                <label htmlFor="zoom-slider" className="text-sm font-medium text-foreground-200">
                   {dashboardT("zoom")}
                 </label>
                 <span className="text-xs text-foreground-300">{zoom.toFixed(1)}x</span>
               </div>
               <input
+                id="zoom-slider"
                 type="range"
                 min={1}
                 max={3}

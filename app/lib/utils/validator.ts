@@ -1,12 +1,13 @@
 interface ValidationResult {
   isValid: boolean;
   errorCode?: string;
-  params?: Record<string, any>;
+  params?: Record<string, string | number>;
 }
 
 /**
  * 验证器类，用于邮箱和密码验证
  * 返回错误代码，由调用方处理翻译
+ * biome-ignore lint/complexity/noStaticOnlyClass: This class provides a namespace for validation functions and is used throughout the codebase
  */
 export class Validator {
   /**
@@ -209,7 +210,7 @@ export class Validator {
    */
   static getValidationErrorMessage(
     result: ValidationResult,
-    validationT: (key: string, params?: any) => string,
+    validationT: (key: string, params?: Record<string, string | number>) => string,
   ): string {
     if (!result.errorCode) return "输入信息有误";
 
@@ -226,7 +227,7 @@ export class Validator {
    */
   static validateAndShowError(
     result: ValidationResult,
-    validationT: (key: string, params?: any) => string,
+    validationT: (key: string, params?: Record<string, string | number>) => string,
     toast: { error: (message: string) => void },
   ): boolean {
     if (!result.isValid && result.errorCode) {

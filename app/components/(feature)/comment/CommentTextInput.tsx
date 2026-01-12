@@ -11,11 +11,29 @@ import InputField from "@/app/components/ui/input/InputField";
 import { useAuth } from "@/app/contexts/hooks/useAuth";
 import blogService from "@/app/lib/services/blogService";
 import boardService from "@/app/lib/services/boardService";
+import type { BlogCommentItem } from "@/app/types/blogServiceType";
+import type { BoardCommentItem } from "@/app/types/boardServiceType";
 
 // 评论类型枚举
 export enum CommentType {
   BLOG = "blog",
   BOARD = "board",
+}
+
+// 评论项联合类型
+type CommentItem = BlogCommentItem | BoardCommentItem;
+
+// 评论列表响应数据结构
+interface CommentListData {
+  comments: CommentItem[];
+  cursor?: string;
+  has_next?: boolean;
+}
+
+// SWR 响应包装类型
+interface SWRResponse {
+  success?: boolean;
+  data?: CommentListData;
 }
 
 // 基础评论输入组件属性
@@ -62,6 +80,7 @@ const CommentTextInput = (props: CommentTextInputProps) => {
 
   // 获取翻译
   const commentT = useTranslations("comment");
+  const commonT = useTranslations("common");
   const { user } = useAuth();
 
   const [comment, setComment] = useState(initialComment || "");
@@ -114,15 +133,16 @@ const CommentTextInput = (props: CommentTextInputProps) => {
           onOptimisticEdit(commentId, comment.trim());
         } else {
           await mutate(
-            (key: any) =>
+            (key: unknown) =>
               typeof key === "string" &&
               (key.startsWith(`/blog/get-blog-comment-lists/${targetId}`) ||
                 key.startsWith(`/board/get-board-comment-lists/${targetId}`)),
-            (current: any) => {
-              const base = current?.success ? current.data : current;
+            (current: SWRResponse | CommentListData | undefined) => {
+              if (!current) return current;
+              const base = (current as SWRResponse)?.data ?? (current as CommentListData);
               if (!base) return current;
-              const updateText = (items: any[]): any[] =>
-                items.map((c: any) => {
+              const updateText = (items: CommentItem[]): CommentItem[] =>
+                items.map((c) => {
                   if (c.comment_id === commentId) {
                     return {
                       ...c,
@@ -139,13 +159,13 @@ const CommentTextInput = (props: CommentTextInputProps) => {
                 ...base,
                 comments: updateText(base.comments || []),
               };
-              return current?.success ? { ...current, data: next } : next;
+              return (current as SWRResponse)?.success ? { ...current, data: next } : next;
             },
             false,
           );
         }
         // 编辑评论
-        let response;
+        let response: Awaited<ReturnType<typeof blogService.updateBlogComment>>;
         if (type === CommentType.BLOG) {
           response = await blogService.updateBlogComment({
             comment_id: commentId,
@@ -169,7 +189,7 @@ const CommentTextInput = (props: CommentTextInputProps) => {
         } else {
           // 乐观插入：全局匹配所有分页 key（在父评论所在页插入；顶层仅第一页插入）
           const tempId = -Date.now();
-          const optimisticItem: any = {
+          const optimisticItem: CommentItem = {
             comment_id: tempId,
             comment: comment.trim(),
             children: [],
@@ -178,22 +198,24 @@ const CommentTextInput = (props: CommentTextInputProps) => {
             avatar_url: user?.avatar_url ?? "/images/default-avatar.png",
             city: user?.city ?? "",
             user_role: user?.role ?? "user",
+            parent_id: parent_id ?? 0,
             created_at: new Date().toISOString(),
-            updated_at: null,
+            updated_at: undefined,
           };
           await mutate(
-            (key: any) =>
+            (key: unknown) =>
               typeof key === "string" &&
               (key.startsWith(`/blog/get-blog-comment-lists/${targetId}`) ||
                 key.startsWith(`/board/get-board-comment-lists/${targetId}`)),
-            (current: any, key?: string) => {
-              const base = current?.success ? current.data : current;
+            (current: SWRResponse | CommentListData | undefined, key?: string) => {
+              if (!current) return current;
+              const base = (current as SWRResponse)?.data ?? (current as CommentListData);
               if (!base) return current;
               let nextComments = base.comments || [];
               if (parent_id) {
-                const tryInsert = (items: any[]): [any[], boolean] => {
+                const tryInsert = (items: CommentItem[]): [CommentItem[], boolean] => {
                   let inserted = false;
-                  const mapped = items.map((c: any) => {
+                  const mapped = items.map((c) => {
                     if (c.comment_id === parent_id) {
                       const children = Array.isArray(c.children) ? c.children : [];
                       inserted = true;
@@ -219,13 +241,13 @@ const CommentTextInput = (props: CommentTextInputProps) => {
                 }
               }
               const next = { ...base, comments: nextComments };
-              return current?.success ? { ...current, data: next } : next;
+              return (current as SWRResponse)?.success ? { ...current, data: next } : next;
             },
             false,
           );
         }
 
-        let response;
+        let response: Awaited<ReturnType<typeof blogService.createBlogComment>>;
         if (type === CommentType.BLOG) {
           response = await blogService.createBlogComment({
             blog_id: targetId,
@@ -269,8 +291,12 @@ const CommentTextInput = (props: CommentTextInputProps) => {
     }
   };
 
-  // 获取翻译文本
+  // 获取翻译文本 - 优先使用 comment 特有翻译，否则使用 common 通用翻译
   const getTranslation = (key: string) => {
+    const commonKeys = ["submit", "submitting", "update", "cancel", "loginRequired"];
+    if (commonKeys.includes(key)) {
+      return commonT(key);
+    }
     return commentT(key);
   };
 

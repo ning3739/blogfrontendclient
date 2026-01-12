@@ -1,5 +1,6 @@
 "use client";
 
+import "mapbox-gl/dist/mapbox-gl.css";
 import { MapPin, Users, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
@@ -21,6 +22,7 @@ function PopupContent({
     <div className="p-4 sm:p-5 min-w-[200px] relative">
       {onClose && (
         <button
+          type="button"
           onClick={onClose}
           className="absolute top-2 right-2 p-1 text-foreground-300 hover:text-foreground-50 hover:bg-background-100 rounded-sm transition-colors"
           aria-label="关闭"
@@ -57,6 +59,7 @@ export default function UserLocationMap({
   error,
 }: UserLocationMapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
+  // biome-ignore lint/suspicious/noExplicitAny: Mapbox map instance type is complex and not exported
   const map = useRef<any>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
 
@@ -290,7 +293,7 @@ export default function UserLocationMap({
     return (
       <ErrorDisplay
         title="加载失败"
-        message={(error as any)?.message || "无法加载用户位置数据"}
+        message={(error as { message?: string })?.message || "无法加载用户位置数据"}
         type="error"
       />
     );

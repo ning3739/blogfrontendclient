@@ -9,7 +9,8 @@ export const swrConfig: SWRConfiguration = {
   revalidateOnReconnect: true,
   errorRetryCount: 3,
   errorRetryInterval: 1000,
-  dedupingInterval: 500, // 减少去重间隔，加快数据更新
+  dedupingInterval: 2000, // 增加去重间隔，减少重复请求
+  focusThrottleInterval: 5000, // 限制 focus 重验证频率
   shouldRetryOnError: (error) => error?.status !== 401,
 };
 

@@ -118,13 +118,17 @@ function UpdateFriendModel({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="更新友链类型" size="sm" footer={modalFooter}>
       <div>
-        <label className="block text-sm font-medium text-foreground-50 mb-2">
+        <label
+          htmlFor="friend-type-select"
+          className="block text-sm font-medium text-foreground-50 mb-2"
+        >
           选择类型 <span className="text-error-500">*</span>
         </label>
         <select
+          id="friend-type-select"
           value={selectedType}
           onChange={(e) => setSelectedType(parseInt(e.target.value, 10))}
-          className="w-full rounded-sm border border-border-100 bg-background-50 px-4 py-3 text-foreground-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 hover:border-foreground-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full rounded-sm border border-border-100 bg-background-50 px-4 py-3 text-foreground-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-[border-color,box-shadow] duration-200 hover:border-foreground-300 disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={isSubmitting}
         >
           <option value={FriendType.featured}>推荐站点</option>

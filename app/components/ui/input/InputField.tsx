@@ -39,7 +39,7 @@ const InputField = forwardRef<HTMLTextAreaElement | HTMLInputElement, InputField
   ) => {
     const baseClassName =
       className ||
-      "w-full rounded-sm border border-border-100 bg-background-50 px-4 py-3 text-foreground-50 placeholder:text-foreground-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 hover:border-foreground-300";
+      "w-full rounded-sm border border-border-100 bg-background-50 px-4 py-3 text-foreground-50 placeholder:text-foreground-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-[border-color,box-shadow] duration-200 hover:border-foreground-300";
 
     return (
       <div className="relative">

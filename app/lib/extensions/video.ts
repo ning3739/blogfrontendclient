@@ -119,7 +119,7 @@ export const Video = Node.create<VideoOptions>({
           "max-w-full h-auto",
           "shadow-lg",
           "border border-border-100",
-          "transition-all duration-300 ease-in-out",
+          "transition-[opacity,transform] duration-300 ease-in-out",
           "focus:outline-none",
           "cursor-pointer",
         ].join(" "),

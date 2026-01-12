@@ -273,8 +273,9 @@ const MediaUploadModal = ({ isOpen, onClose, onUploadSuccess }: MediaUploadModal
       maxHeight="max-h-[80vh]"
     >
       {/* Upload Area */}
-      <div
-        className={`border-2 border-dashed rounded-sm p-8 text-center transition-colors ${
+      <button
+        type="button"
+        className={`w-full border-2 border-dashed rounded-sm p-8 text-center transition-colors bg-transparent ${
           isDragOver
             ? "border-primary-500 bg-primary-50"
             : "border-border-200 hover:border-border-300"
@@ -282,6 +283,7 @@ const MediaUploadModal = ({ isOpen, onClose, onUploadSuccess }: MediaUploadModal
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
+        onClick={() => fileInputRef.current?.click()}
       >
         <Upload className="w-12 h-12 text-foreground-300 mx-auto mb-4" />
         <p className="text-foreground-200 mb-3">拖拽文件到此处或点击选择文件</p>
@@ -337,15 +339,6 @@ const MediaUploadModal = ({ isOpen, onClose, onUploadSuccess }: MediaUploadModal
           </div>
         </div>
         <p className="text-xs text-foreground-300 mb-4">单个文件最大 80MB，超出将无法上传</p>
-        <Button
-          onClick={() => fileInputRef.current?.click()}
-          variant="outline"
-          size="md"
-          disabled={isUploading}
-          className="mt-1 px-8 py-2 text-sm font-medium min-w-[190px]"
-        >
-          选择文件
-        </Button>
         <input
           ref={fileInputRef}
           type="file"
@@ -354,7 +347,7 @@ const MediaUploadModal = ({ isOpen, onClose, onUploadSuccess }: MediaUploadModal
           className="hidden"
           accept=".jpg,.jpeg,.png,.gif,.mp4,.avi,.mov,.mkv,.mp3,.wav,.aac,.pdf,.docx,.xlsx,.ppt,.pptx,.txt,.zip,.gz"
         />
-      </div>
+      </button>
 
       {/* File List */}
       {files.length > 0 && (
@@ -408,6 +401,7 @@ const MediaUploadModal = ({ isOpen, onClose, onUploadSuccess }: MediaUploadModal
                       {/* Remove Button */}
                       {fileItem.status !== "uploading" && (
                         <button
+                          type="button"
                           onClick={() => removeFile(fileItem.id)}
                           className="text-foreground-300 hover:text-error-500 transition-colors"
                         >
@@ -422,7 +416,7 @@ const MediaUploadModal = ({ isOpen, onClose, onUploadSuccess }: MediaUploadModal
                     <div className="mt-2">
                       <div className="w-full bg-border-100 rounded-full h-2">
                         <div
-                          className="bg-primary-500 h-2 rounded-full transition-all duration-300"
+                          className="bg-primary-500 h-2 rounded-full transition-[width] duration-300"
                           style={{ width: `${fileItem.progress}%` }}
                         />
                       </div>

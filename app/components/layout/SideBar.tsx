@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { LogOut, PanelLeft, PanelRight, X } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import React from "react";
 import SiteLogo from "@/app/components/ui/logo/SiteLogo";
 import { useAuth } from "@/app/contexts/hooks/useAuth";
@@ -20,67 +20,52 @@ interface SidebarItemProps {
   item: MenuItem;
   index: number;
   isCollapsed: boolean;
-  onClick: (path: string) => void;
+  onNavigate?: () => void;
 }
 
-const SidebarItem: React.FC<SidebarItemProps> = ({ item, index, isCollapsed, onClick }) => {
+const SidebarItem = React.memo<SidebarItemProps>(({ item, index, isCollapsed, onNavigate }) => {
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{
-        delay: index * 0.03,
-        duration: 0.6,
-        ease: [0.23, 1, 0.32, 1],
-        type: "spring",
-        stiffness: 100,
-        damping: 15,
-      }}
-      onClick={() => onClick(item.path)}
+    <Link
+      href={item.path}
+      prefetch={true}
+      onClick={onNavigate}
       className={clsx(
-        "group flex items-center cursor-pointer transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]",
+        "group flex items-center cursor-pointer",
+        "transition-[background-color,transform] duration-200 ease-out",
         isCollapsed ? "justify-center py-4 mx-1" : "px-4 py-3 mx-2 space-x-3",
         item.active
           ? "bg-primary-50 text-primary-600 border-l-4 border-primary-500 rounded-sm font-semibold"
-          : "hover:bg-background-100 text-foreground-200 hover:text-foreground-50 rounded-lg",
+          : "hover:bg-background-100 text-foreground-200 hover:text-foreground-50 hover:translate-x-1 rounded-lg",
       )}
     >
       <item.icon
         className={clsx(
-          "transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]",
-          isCollapsed ? "w-5 h-5" : "w-5 h-5",
+          "w-5 h-5 transition-transform duration-200",
           item.active
-            ? "text-primary-600 scale-105"
-            : "text-foreground-300 group-hover:text-foreground-50 group-hover:scale-102",
+            ? "text-primary-600"
+            : "text-foreground-300 group-hover:text-foreground-50 group-hover:scale-110",
         )}
       />
       {!isCollapsed && (
         <span
           className={clsx(
-            "text-sm transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]",
-            item.active ? "font-semibold scale-102" : "font-medium",
+            "text-sm transition-colors duration-200",
+            item.active ? "font-semibold" : "font-medium",
           )}
         >
           {item.label}
         </span>
       )}
-    </motion.div>
+    </Link>
   );
-};
+});
+
+SidebarItem.displayName = "SidebarItem";
 
 const SideBar: React.FC<SideBarProps> = ({ isOpen = true, onClose }) => {
   const { user, accountLogout } = useAuth();
-  const router = useRouter();
   const [isCollapsed, setIsCollapsed] = React.useState(false);
   const menuItems = useSidebarRoutes();
-
-  const handleMenuClick = (path: string) => {
-    router.push(path);
-    // Close mobile sidebar after navigation
-    if (onClose) {
-      onClose();
-    }
-  };
 
   const renderMenuItems = () => (
     <nav className="space-y-1">
@@ -90,7 +75,7 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen = true, onClose }) => {
           item={item}
           index={index}
           isCollapsed={isCollapsed}
-          onClick={handleMenuClick}
+          onNavigate={onClose}
         />
       ))}
     </nav>
@@ -101,7 +86,8 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen = true, onClose }) => {
       {/* Desktop Sidebar - Always visible on larger screens */}
       <aside
         className={clsx(
-          "hidden lg:block h-screen sticky top-0 bg-card-50 border-r border-border-50 transition-all duration-300",
+          "hidden lg:block h-screen sticky top-0 bg-card-50 border-r border-border-50",
+          "transition-[width] duration-300 ease-out",
           isCollapsed ? "w-16" : "w-64",
         )}
       >
@@ -109,14 +95,12 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen = true, onClose }) => {
           {/* Logo/Title & Collapse Button */}
           <div className="py-6 px-4 border-b border-border-50 flex items-center justify-between">
             {!isCollapsed && <SiteLogo size="lg" />}
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
+            <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="p-2 text-foreground-300 hover:text-foreground-100 transition-colors duration-200"
+              className="p-2 text-foreground-300 hover:text-foreground-100 hover:scale-110 transition-[color,transform,background-color] duration-200 hover:bg-background-100 rounded-lg"
             >
               {isCollapsed ? <PanelRight className="w-5 h-5" /> : <PanelLeft className="w-5 h-5" />}
-            </motion.button>
+            </button>
           </div>
 
           {/* Navigation */}
@@ -131,7 +115,7 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen = true, onClose }) => {
           >
             <div
               className={clsx(
-                "flex hover:bg-background-200 rounded-lg cursor-pointer transition-all duration-200 group",
+                "flex hover:bg-background-200 rounded-lg cursor-pointer transition-colors duration-200 group",
                 isCollapsed ? "justify-center p-3" : "items-center space-x-3 p-3",
               )}
             >
@@ -162,7 +146,7 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen = true, onClose }) => {
               )}
               <LogOut
                 className={clsx(
-                  "text-foreground-400 hover:text-error-500 transition-colors duration-200 cursor-pointer",
+                  "text-foreground-400 hover:text-error-500 hover:scale-110 transition-[color,transform] duration-200 cursor-pointer",
                   isCollapsed ? "w-7 h-7" : "w-5 h-5",
                 )}
                 onClick={accountLogout}
@@ -180,7 +164,8 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen = true, onClose }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm"
             onClick={onClose}
           />
 
@@ -189,8 +174,8 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen = true, onClose }) => {
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed left-0 top-0 h-full w-80 bg-card-50 z-50 lg:hidden overflow-y-auto"
+            transition={{ duration: 0.25, ease: [0.32, 0.72, 0, 1] }}
+            className="fixed left-0 top-0 h-full w-80 bg-card-50 z-50 lg:hidden overflow-y-auto shadow-2xl"
           >
             <div className="h-full flex flex-col">
               {/* Close Button & Logo */}
@@ -199,14 +184,12 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen = true, onClose }) => {
                   <SiteLogo size="md" />
                 </div>
 
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
+                <button
                   onClick={onClose}
-                  className="p-2 text-foreground-200 hover:text-foreground-100 transition-colors rounded-lg hover:bg-background-100"
+                  className="p-2 text-foreground-200 hover:text-foreground-100 hover:scale-110 transition-[color,transform,background-color] duration-200 rounded-lg hover:bg-background-100"
                 >
                   <X className="w-6 h-6" />
-                </motion.button>
+                </button>
               </div>
 
               {/* Navigation */}
@@ -214,7 +197,7 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen = true, onClose }) => {
 
               {/* User Info & Logout */}
               <div className="border-t border-border-50 p-4 bg-background-100">
-                <div className="flex items-center space-x-3 p-3 hover:bg-background-100 rounded-lg cursor-pointer transition-all duration-200 group">
+                <div className="flex items-center space-x-3 p-3 hover:bg-background-200 rounded-lg cursor-pointer transition-colors duration-200 group">
                   <div className="w-10 h-10 bg-background-200 rounded-full flex items-center justify-center">
                     {user?.avatar_url ? (
                       <Image
@@ -237,7 +220,7 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen = true, onClose }) => {
                     <p className="text-xs text-foreground-400 truncate">{user?.email}</p>
                   </div>
                   <LogOut
-                    className="w-4 h-4 text-foreground-400 hover:text-error-500 transition-colors duration-200 cursor-pointer"
+                    className="w-4 h-4 text-foreground-400 hover:text-error-500 hover:scale-110 transition-[color,transform] duration-200 cursor-pointer"
                     onClick={accountLogout}
                   />
                 </div>

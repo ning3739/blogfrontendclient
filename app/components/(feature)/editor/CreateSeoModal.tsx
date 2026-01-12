@@ -74,7 +74,7 @@ export const CreateSeoModal = ({
     setIsLoading(true);
 
     try {
-      let response;
+      let response: Awaited<ReturnType<typeof seoService.createSeo>>;
       if (seoId) {
         // 编辑模式
         response = await seoService.updateSeo({
@@ -144,7 +144,10 @@ export const CreateSeoModal = ({
     >
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-foreground-50 mb-2">
+          <label
+            htmlFor="chinese_title"
+            className="block text-sm font-medium text-foreground-50 mb-2"
+          >
             标题 <span className="text-error-500">*</span>
           </label>
           <InputField
@@ -158,7 +161,10 @@ export const CreateSeoModal = ({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-foreground-50 mb-2">
+          <label
+            htmlFor="chinese_description"
+            className="block text-sm font-medium text-foreground-50 mb-2"
+          >
             描述 <span className="text-error-500">*</span>
           </label>
           <InputField
@@ -173,7 +179,10 @@ export const CreateSeoModal = ({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-foreground-50 mb-2">
+          <label
+            htmlFor="chinese_keywords"
+            className="block text-sm font-medium text-foreground-50 mb-2"
+          >
             关键词 <span className="text-error-500">*</span>
           </label>
           <InputField

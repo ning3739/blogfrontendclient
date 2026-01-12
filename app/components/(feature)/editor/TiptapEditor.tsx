@@ -385,7 +385,7 @@ export default function TiptapEditor({
           [&_.ProseMirror_figure.audio-figure]:w-fit
           [&_.ProseMirror_figure.audio-figure]:max-w-full
           [&_.ProseMirror_figure.audio-figure]:cursor-pointer
-          [&_.ProseMirror_figure.audio-figure]:transition-all
+          [&_.ProseMirror_figure.audio-figure]:transition-[outline]
           
           /* 音频容器选中状态 */
           [&_.ProseMirror_.ProseMirror-selectednode_figure.audio-figure]:outline-2

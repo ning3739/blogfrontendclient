@@ -25,8 +25,8 @@ class HttpClient {
   // Token刷新相关的锁和队列
   private isRefreshing = false;
   private failedQueue: Array<{
-    resolve: (value?: any) => void;
-    reject: (error?: any) => void;
+    resolve: (value?: unknown) => void;
+    reject: (error?: unknown) => void;
   }> = [];
   // 刷新次数限制（防止无限重试）
   private refreshRetryCount = 0;
@@ -181,7 +181,11 @@ class HttpClient {
         // 【自动刷新】处理401错误 - 根据endpoint类型决定是否需要token刷新
         // 说明：这是使用过程中的透明刷新，当 API 返回 401 时自动触发
         // 与 authContext 中的主动刷新（页面加载时）互补，确保会话持续性
-        if (error.response?.status === 401 && originalRequest && !(originalRequest as any)._retry) {
+        if (
+          error.response?.status === 401 &&
+          originalRequest &&
+          !(originalRequest as unknown as { _retry?: boolean })._retry
+        ) {
           const url = originalRequest.url || "";
 
           // 定义不需要重试的端点
@@ -244,7 +248,7 @@ class HttpClient {
           }
 
           // 标记请求为已重试，防止重复处理
-          (originalRequest as any)._retry = true;
+          (originalRequest as unknown as { _retry: boolean })._retry = true;
           // 设置刷新锁，防止并发刷新
           this.isRefreshing = true;
           // 增加刷新计数
@@ -261,25 +265,25 @@ class HttpClient {
             this.isRefreshing = false;
 
             // 重新发送原始请求，如果再次401则登出
-            return this.axiosInstance(originalRequest).catch((retryError: any) => {
+            return this.axiosInstance(originalRequest).catch((retryError: unknown) => {
               // 如果刷新后的请求仍然返回401，说明token仍有问题
-              if (retryError?.response?.status === 401) {
+              if ((retryError as AxiosError)?.response?.status === 401) {
                 // 重置计数并登出
                 this.refreshRetryCount = 0;
                 this.logoutAndClearTokens();
               }
               return Promise.reject(retryError);
             });
-          } catch (refreshError: any) {
+          } catch (refreshError: unknown) {
             // 刷新失败，处理队列中的所有请求
             this.processQueue(refreshError);
             this.isRefreshing = false;
 
             // 获取刷新失败的状态码
             const refreshStatus =
-              refreshError?.status ||
-              refreshError?.response?.status ||
-              (refreshError?.request ? 0 : 500);
+              (refreshError as AxiosError)?.status ||
+              (refreshError as AxiosError)?.response?.status ||
+              ((refreshError as AxiosError)?.request ? 0 : 500);
 
             // 判断刷新失败的原因
             const shouldLogout = this.shouldLogoutOnRefreshFailure(refreshStatus);
@@ -298,7 +302,8 @@ class HttpClient {
               status: refreshStatus,
               error: this.getRefreshErrorMessage(
                 refreshStatus,
-                refreshError?.error || refreshError?.response?.data?.error,
+                (refreshError as ErrorResponse)?.error ||
+                  ((refreshError as AxiosError)?.response?.data as ErrorResponse)?.error,
               ),
             };
             return Promise.reject(errorResponse);
@@ -413,7 +418,7 @@ class HttpClient {
    * 处理等待刷新完成的请求队列
    * @param error 如果刷新失败，传入错误对象；如果刷新成功，传入null
    */
-  private processQueue(error: any) {
+  private processQueue(error: unknown) {
     this.failedQueue.forEach((promise) => (error ? promise.reject(error) : promise.resolve()));
     this.failedQueue = [];
   }
@@ -450,7 +455,7 @@ class HttpClient {
         message: "Success",
         data: response.data as T,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       // 拦截器已经将错误统一格式化为 ErrorResponse
       // 这里直接返回错误对象而不是抛出，这样调用方可以统一处理
       return error as ErrorResponse;
@@ -524,7 +529,7 @@ class HttpClient {
    */
   async download(
     url: string,
-    params?: Record<string, any>,
+    params?: Record<string, unknown>,
   ): Promise<{ success: boolean; message: string }> {
     try {
       const response = await this.axiosInstance.get(url, {
@@ -557,7 +562,7 @@ class HttpClient {
       window.URL.revokeObjectURL(downloadUrl);
 
       return { success: true, message: "文件下载成功" };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("下载失败:", error);
       throw error;
     }

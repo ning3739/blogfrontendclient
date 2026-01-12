@@ -1,17 +1,56 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
-import ArchivePage from "@/app/components/(feature)/archive/ArchivePage";
-import BlogDetails from "@/app/components/(feature)/blog/BlogDetails";
-import BlogPage from "@/app/components/(feature)/blog/BlogPage";
-import ForumPage from "@/app/components/(feature)/forum/ForumPage";
-import FriendPage from "@/app/components/(feature)/friend/FriendPage";
-import ProjectDetails from "@/app/components/(feature)/project/ProjectDetails";
-import ProjectPage from "@/app/components/(feature)/project/ProjectPage";
-import TagDetails from "@/app/components/(feature)/tag/TagDetails";
-import TagPage from "@/app/components/(feature)/tag/TagPage";
-import UserPage from "@/app/components/(feature)/user/UserPage";
+import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
 import { useSectionDetailsBySlug } from "@/app/contexts/hooks/useSection";
+
+const Loading = () => (
+  <div className="flex items-center justify-center min-h-[50vh]">
+    <LoadingSpinner variant="wave" message="" />
+  </div>
+);
+
+// 使用 dynamic 懒加载页面组件，减少初始 bundle 大小
+const ArchivePage = dynamic(() => import("@/app/components/(feature)/archive/ArchivePage"), {
+  loading: Loading,
+});
+const BlogDetails = dynamic(() => import("@/app/components/(feature)/blog/BlogDetails"), {
+  loading: Loading,
+});
+const BlogPage = dynamic(() => import("@/app/components/(feature)/blog/BlogPage"), {
+  loading: Loading,
+});
+const ForumPage = dynamic(() => import("@/app/components/(feature)/forum/ForumPage"), {
+  loading: Loading,
+});
+const FriendPage = dynamic(() => import("@/app/components/(feature)/friend/FriendPage"), {
+  loading: Loading,
+});
+const ProjectDetails = dynamic(() => import("@/app/components/(feature)/project/ProjectDetails"), {
+  loading: Loading,
+});
+const ProjectPage = dynamic(() => import("@/app/components/(feature)/project/ProjectPage"), {
+  loading: Loading,
+});
+const TagDetails = dynamic(() => import("@/app/components/(feature)/tag/TagDetails"), {
+  loading: Loading,
+});
+const TagPage = dynamic(() => import("@/app/components/(feature)/tag/TagPage"), {
+  loading: Loading,
+});
+const UserPage = dynamic(() => import("@/app/components/(feature)/user/UserPage"), {
+  loading: Loading,
+});
+const CopyrightPage = dynamic(() => import("@/app/components/(feature)/content/CopyrightPage"), {
+  loading: Loading,
+});
+const PrivacyPolicyPage = dynamic(
+  () => import("@/app/components/(feature)/content/PrivacyPolicyPage"),
+  {
+    loading: Loading,
+  },
+);
 
 export default function ClientPage({ params }: { params: { slug: string[] } }) {
   const { slug } = params;
@@ -36,6 +75,8 @@ export default function ClientPage({ params }: { params: { slug: string[] } }) {
       "blogroll",
       "about",
       "user",
+      "copyright",
+      "privacy-policy",
     ];
 
     if (!levelOneRoutes.includes(pageSlug)) {
@@ -53,6 +94,14 @@ export default function ClientPage({ params }: { params: { slug: string[] } }) {
 
     if (pageSlug === "user") {
       return <UserPage />;
+    }
+
+    if (pageSlug === "copyright") {
+      return <CopyrightPage />;
+    }
+
+    if (pageSlug === "privacy-policy") {
+      return <PrivacyPolicyPage />;
     }
 
     return (
