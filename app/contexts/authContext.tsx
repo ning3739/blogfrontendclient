@@ -138,18 +138,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       const { access_token, refresh_token } = response.data;
 
-      // 【异常情况1】两个 token 都无效 - 清除 cookie
+      // 【正常情况1】两个 token 都无效 - 直接设置未登录，不调用 logout
+      // 说明：用户本来就没登录，或者 token 已经过期被后端清除了
       if (!access_token && !refresh_token) {
-        try {
-          await authService.accountLogout();
-        } catch (logoutError) {
-          // 静默失败
-        }
         setIsAuthenticated(false);
         return;
       }
 
-      // 【异常情况2】有 access_token 但没有 refresh_token - 这是不正常的状态
+      // 【异常情况】有 access_token 但没有 refresh_token - 这是不正常的状态
       // 说明：refresh_token 可能在数据库中被删除了，access_token 过期后无法刷新
       // 处理：清除所有 cookie，要求用户重新登录
       if (access_token && !refresh_token) {
@@ -183,7 +179,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
       }
 
-      // 【正常情况】两个 token 都有效
+      // 【正常情况2】两个 token 都有效
       setIsAuthenticated(access_token && refresh_token);
     } catch (error) {
       setIsAuthenticated(false);
