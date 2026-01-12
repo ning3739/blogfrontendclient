@@ -138,16 +138,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       const { access_token, refresh_token } = response.data;
 
-      // 【正常情况1】两个 token 都无效 - 直接设置未登录，不调用 logout
-      // 说明：用户本来就没登录，或者 token 已经过期被后端清除了
+      // 【情况1】两个 token 都无效 - 用户未登录
       if (!access_token && !refresh_token) {
         setIsAuthenticated(false);
         return;
       }
 
-      // 【异常情况】有 access_token 但没有 refresh_token - 这是不正常的状态
-      // 说明：refresh_token 可能在数据库中被删除了，access_token 过期后无法刷新
-      // 处理：清除所有 cookie，要求用户重新登录
+      // 【情况2】有 AT 但无 RT - 异常状态，清除 cookie
+      // 说明：RT 在数据库中被删除，AT 过期后无法刷新，必须重新登录
       if (access_token && !refresh_token) {
         try {
           await authService.accountLogout();
@@ -158,71 +156,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return;
       }
 
-      // 【主动刷新】只有 refresh_token，没有 access_token - 尝试刷新
+      // 【情况3】只有 RT 无 AT - 正常状态，等待 API 调用时自动刷新
+      // 说明：AT 已过期，但 RT 还有效，Client.ts 会在首次 API 调用时自动刷新
       if (!access_token && refresh_token) {
-        try {
-          const refreshResponse = await authService.generateAccessToken();
-
-          if (refreshResponse.status === 200) {
-            setIsAuthenticated(true);
-            return;
-          }
-        } catch (refreshError) {
-          // 刷新失败，清除过期的 cookie
-          try {
-            await authService.accountLogout();
-          } catch (logoutError) {
-            // 静默失败
-          }
-          setIsAuthenticated(false);
-          return;
-        }
+        // 不主动刷新，让 Client.ts 的拦截器处理
+        // 这样保持单一职责，token 刷新统一在 HTTP 层处理
+        setIsAuthenticated(true); // RT 有效就认为已登录
+        return;
       }
 
-      // 【正常情况2】两个 token 都有效
-      setIsAuthenticated(access_token && refresh_token);
+      // 【情况4】两个 token 都有效 - 正常状态
+      setIsAuthenticated(true);
     } catch (error) {
       setIsAuthenticated(false);
     }
-  }, []); // 空依赖数组，避免 Fast Refresh 问题
+  }, []);
 
   // 在组件挂载时检查认证状态
   useEffect(() => {
     checkAuthStatus();
   }, [checkAuthStatus]);
-
-  // 监听用户活动，在用户活跃时刷新 token
-  useEffect(() => {
-    if (!isAuthenticated) return;
-
-    let lastRefreshTime = Date.now();
-    const REFRESH_INTERVAL = 10 * 60 * 1000; // 10 分钟
-
-    const handleUserActivity = async () => {
-      const now = Date.now();
-      // 如果距离上次刷新超过 10 分钟，且用户有活动，则刷新
-      if (now - lastRefreshTime > REFRESH_INTERVAL) {
-        try {
-          await authService.generateAccessToken();
-          lastRefreshTime = now;
-        } catch (error) {
-          console.warn("Activity-based token refresh failed:", error);
-        }
-      }
-    };
-
-    // 监听用户活动事件
-    const events = ["mousedown", "keydown", "scroll", "touchstart"];
-    events.forEach((event) => {
-      window.addEventListener(event, handleUserActivity, { passive: true });
-    });
-
-    return () => {
-      events.forEach((event) => {
-        window.removeEventListener(event, handleUserActivity);
-      });
-    };
-  }, [isAuthenticated]);
 
   const value: AuthContextType = useMemo(
     () => ({
