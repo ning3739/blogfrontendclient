@@ -85,6 +85,7 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
         // 展开
         preElement.classList.remove("collapsed");
         preElement.style.maxHeight = "none";
+        preElement.style.overflowY = "hidden";
         collapseButton.innerHTML = contentT("collapse");
         collapseButton.classList.remove("bg-primary-500");
         collapseButton.classList.add("bg-background-500", "hover:bg-background-400");
@@ -92,6 +93,7 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
         // 折叠
         preElement.classList.add("collapsed");
         preElement.style.maxHeight = "300px";
+        preElement.style.overflowY = "hidden";
         collapseButton.innerHTML = contentT("expand");
         collapseButton.classList.remove("bg-background-500", "hover:bg-background-400");
         collapseButton.classList.add("bg-primary-500");
@@ -226,7 +228,8 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
         codeElement.style.display = "block";
         codeElement.style.lineHeight = "1.5rem";
         codeElement.style.height = `${exactHeight}px`;
-        codeElement.style.overflow = "hidden";
+        codeElement.style.width = "max-content";
+        codeElement.style.minWidth = "100%";
 
         // 创建行号容器
         const lineNumbersContainer = document.createElement("div");
@@ -260,10 +263,9 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
 
         // 调整代码容器的样式
         const codeContainer = document.createElement("div");
-        codeContainer.className = "code-container relative pl-16 pr-4 pt-4 pb-4";
+        codeContainer.className = "code-container relative pl-16 pt-4 pb-4";
         codeContainer.style.lineHeight = "1.5rem";
         codeContainer.style.whiteSpace = "pre";
-        codeContainer.style.overflowX = "auto";
         codeContainer.style.fontFamily =
           'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
 
@@ -277,6 +279,9 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
         codeElement.style.whiteSpace = "pre";
         codeElement.style.margin = "0";
         codeElement.style.padding = "0";
+        codeElement.style.paddingRight = "1rem";
+        codeElement.style.width = "max-content";
+        codeElement.style.minWidth = "100%";
 
         // 为 pre 元素添加样式和子元素
         const preHTMLElement = preElement as HTMLElement;
@@ -284,11 +289,15 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
         preHTMLElement.style.backgroundColor = "var(--color-background-200)";
         preHTMLElement.style.color = "var(--color-foreground-50)";
         preHTMLElement.style.border = "1px solid var(--color-border-200)";
-        preHTMLElement.style.overflow = "hidden";
+        preHTMLElement.style.overflowX = "auto";
+        preHTMLElement.style.overflowY = "hidden";
         preHTMLElement.style.position = "relative";
         preHTMLElement.style.padding = "0";
         preHTMLElement.style.fontFamily =
           'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
+        
+        // 使用 scrollbar-gutter 避免内容跳动，但只在需要时显示滚动条
+        preHTMLElement.style.scrollbarGutter = "stable";
 
         // 检测高度和宽度并应用相应功能
         setTimeout(() => {
@@ -305,6 +314,7 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
             // 应用折叠状态
             preHTMLElement.classList.add("collapsed");
             preHTMLElement.style.maxHeight = "300px";
+            preHTMLElement.style.overflowY = "hidden";
             collapseButton.textContent = contentT("expand");
             collapseButton.classList.remove("bg-background-500", "hover:bg-background-400");
             collapseButton.classList.add("bg-primary-500");
@@ -315,11 +325,6 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
           const languagePosition = hasCollapseButton ? "right-32" : "right-16";
           languageLabel.className = `language-label absolute top-2 ${languagePosition} px-2 py-1 text-xs bg-primary-500 text-white rounded-sm font-medium z-10`;
           languageLabel.textContent = languageMap[language] || language;
-
-          // 检测宽度并启用水平滚动
-          if (width > clientWidth) {
-            preHTMLElement.style.overflow = "auto";
-          }
 
           // 添加语言标签
           preElement.appendChild(languageLabel);
@@ -497,7 +502,8 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
           [&_.ProseMirror_pre]:rounded-sm
           [&_.ProseMirror_pre]:p-0
           [&_.ProseMirror_pre]:my-4
-          [&_.ProseMirror_pre]:overflow-hidden
+          [&_.ProseMirror_pre]:overflow-x-auto
+          [&_.ProseMirror_pre]:overflow-y-hidden
           [&_.ProseMirror_pre]:text-left
           [&_.ProseMirror_pre]:whitespace-pre
           [&_.ProseMirror_pre]:font-mono
@@ -511,6 +517,14 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
           [&_.ProseMirror_pre]:duration-300
           [&_.ProseMirror_pre]:ease-in-out
           
+          /* 代码块滚动条样式 */
+          [&_.ProseMirror_pre::-webkit-scrollbar]:h-2
+          [&_.ProseMirror_pre::-webkit-scrollbar-track]:bg-background-300
+          [&_.ProseMirror_pre::-webkit-scrollbar-track]:rounded-sm
+          [&_.ProseMirror_pre::-webkit-scrollbar-thumb]:bg-border-200
+          [&_.ProseMirror_pre::-webkit-scrollbar-thumb]:rounded-sm
+          [&_.ProseMirror_pre::-webkit-scrollbar-thumb]:hover:bg-border-300
+          
           /* 代码块内的 code 标签 */
           [&_.ProseMirror_pre_code]:bg-transparent
           [&_.ProseMirror_pre_code]:p-0
@@ -519,7 +533,6 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
           [&_.ProseMirror_pre_code]:before:content-['']
           [&_.ProseMirror_pre_code]:after:content-['']
           [&_.ProseMirror_pre_code]:block
-          [&_.ProseMirror_pre_code]:overflow-x-auto
           [&_.ProseMirror_pre_code]:leading-6
           [&_.ProseMirror_pre_code]:text-sm
           [&_.ProseMirror_pre_code]:font-mono
@@ -578,12 +591,10 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
           
           /* 代码容器样式 */
           [&_.ProseMirror_.code-container]:pl-16
-          [&_.ProseMirror_.code-container]:pr-4
           [&_.ProseMirror_.code-container]:py-4
           [&_.ProseMirror_.code-container]:min-h-0
           [&_.ProseMirror_.code-container]:leading-6
           [&_.ProseMirror_.code-container]:whitespace-pre
-          [&_.ProseMirror_.code-container]:overflow-x-auto
           
           /* 行号样式 */
           [&_.ProseMirror_.line-numbers]:select-none

@@ -59,7 +59,7 @@ const AuthBackground = ({ children, imageType }: AuthBackgroundProps) => {
   return (
     <div className="bg-background-100  min-h-screen flex flex-row">
       {/* 左侧：auth表单 */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-12 relative min-h-screen">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-12 pt-24 lg:pt-12 relative min-h-screen">
         {/* SiteLogo - 水平居中显示 */}
         <div className="absolute top-8 left-1/2 lg:left-1/6 transform -translate-x-1/2 lg:-translate-x-1/6 z-20">
           <div className="block lg:hidden">
