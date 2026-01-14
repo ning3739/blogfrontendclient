@@ -142,14 +142,10 @@ const TOC = () => {
                       item.level === 1
                         ? "py-3 px-4 font-semibold text-foreground-50 text-sm"
                         : item.level === 2
-                          ? "py-2.5 px-4 ml-6 font-medium text-foreground-100 text-sm border-l-2 border-border-100"
-                          : "py-2 px-4 ml-10 text-foreground-200 text-xs border-l-2 border-border-100"
+                          ? "py-2.5 px-4 ml-6 font-medium text-foreground-100 text-sm"
+                          : "py-2 px-4 ml-10 text-foreground-200 text-xs"
                     }
-                    ${
-                      isActive
-                        ? "bg-primary-50 border-primary-200 shadow-sm"
-                        : "hover:bg-card-100 hover:shadow-sm"
-                    }
+                    ${isActive ? "bg-primary-50 shadow-sm" : "hover:bg-card-100 hover:shadow-sm"}
                   `}
                   onClick={() => {
                     // 通过 data-id 查找元素并滚动
