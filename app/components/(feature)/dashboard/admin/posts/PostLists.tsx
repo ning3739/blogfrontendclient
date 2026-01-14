@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  AlertTriangle,
   Archive,
   ArchiveRestore,
   Edit,
@@ -20,6 +21,8 @@ import { useFormatter, useLocale } from "next-intl";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import PostInfoModel from "@/app/components/(feature)/dashboard/admin/posts/PostInfoModel";
+import { Button } from "@/app/components/ui/button/butten";
+import Modal from "@/app/components/ui/modal/Modal";
 import OffsetPagination from "@/app/components/ui/pagination/OffsetPagination";
 import BlogService from "@/app/lib/services/blogService";
 import { handleDateFormat } from "@/app/lib/utils/handleDateFormat";
@@ -40,10 +43,58 @@ const PostLists = ({ postItems, pagination, setCurrentPage, onDataChange }: Post
   const [optimisticPosts, setOptimisticPosts] = useState<BlogItemDashboardResponse[]>(postItems);
   const [blogInfoModel, setBlogInfoModel] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState<BlogItemDashboardResponse | null>(null);
+  const [deleteConfirmModal, setDeleteConfirmModal] = useState(false);
+  const [blogToDelete, setBlogToDelete] = useState<BlogItemDashboardResponse | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string>("");
   // Update optimistic posts when postItems prop changes
   useEffect(() => {
     setOptimisticPosts(postItems);
   }, [postItems]);
+
+  const handleConfirmDelete = async () => {
+    if (!blogToDelete) return;
+
+    setIsDeleting(true);
+    setDeleteError(""); // Clear previous error
+    const blogSlug = blogToDelete.blog_slug;
+    const postId = blogToDelete.blog_id;
+
+    try {
+      // Call API first
+      const response = await BlogService.deleteBlog({
+        blog_id: postId,
+      });
+
+      if (response.status === 200) {
+        // Optimistic update - remove from UI after successful API call
+        setOptimisticPosts((prevPosts) => prevPosts.filter((p) => p.blog_slug !== blogSlug));
+
+        toast.success("message" in response ? response.message : "文章删除成功");
+
+        // Close modal
+        setDeleteConfirmModal(false);
+        setBlogToDelete(null);
+        setDeleteError("");
+
+        // Refresh list after successful deletion
+        if (onDataChange) {
+          onDataChange();
+        }
+      } else {
+        // Show error message from backend in modal
+        const errorMsg = "error" in response ? response.error : "删除文章失败";
+        setDeleteError(errorMsg);
+      }
+    } catch (err) {
+      // Handle errors from httpClient (ErrorResponse type)
+      const error = err as { status?: number; error?: string };
+      const errorMsg = error.error || "删除文章失败，请稍后重试";
+      setDeleteError(errorMsg);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const handleActionClick = async (
     action: string,
@@ -112,31 +163,10 @@ const PostLists = ({ postItems, pagination, setCurrentPage, onDataChange }: Post
         setOptimisticPosts(postItems);
       }
     } else if (action === "delete") {
-      // Handle blog deletion
-      try {
-        // Optimistic update - immediately remove from UI
-        setOptimisticPosts((prevPosts) => prevPosts.filter((p) => p.blog_slug !== blogSlug));
-
-        // Call API in background
-        const response = await BlogService.deleteBlog({
-          blog_id: postId,
-        });
-
-        if (response.status === 200) {
-          toast.success("message" in response ? response.message : "Blog deleted");
-          // Refresh list after successful deletion
-          if (onDataChange) {
-            onDataChange();
-          }
-        } else {
-          toast.error("error" in response ? response.error : "Failed to delete blog");
-          setOptimisticPosts(postItems);
-        }
-      } catch (error) {
-        // Rollback on error
-        console.error("Failed to delete blog:", error);
-        toast.error("Failed to delete blog");
-        setOptimisticPosts(postItems);
+      // Show confirmation modal
+      if (post) {
+        setBlogToDelete(post);
+        setDeleteConfirmModal(true);
       }
     }
   };
@@ -772,6 +802,93 @@ const PostLists = ({ postItems, pagination, setCurrentPage, onDataChange }: Post
         }}
         blogData={selectedBlog}
       />
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={deleteConfirmModal}
+        onClose={() => {
+          if (!isDeleting) {
+            setDeleteConfirmModal(false);
+            setBlogToDelete(null);
+            setDeleteError("");
+          }
+        }}
+        title="确认删除文章"
+        size="md"
+        closeOnOverlayClick={!isDeleting}
+        footer={
+          <>
+            <Button
+              onClick={() => {
+                setDeleteConfirmModal(false);
+                setBlogToDelete(null);
+                setDeleteError("");
+              }}
+              variant="outline"
+              disabled={isDeleting}
+            >
+              取消
+            </Button>
+            <Button
+              onClick={handleConfirmDelete}
+              disabled={isDeleting}
+              className="bg-error-400 hover:bg-error-500 focus:ring-error-500"
+            >
+              {isDeleting ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                  <span>删除中...</span>
+                </>
+              ) : (
+                <span>确认删除</span>
+              )}
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          {/* Error Message Display */}
+          {deleteError && (
+            <div className="p-3 bg-error-50 rounded-sm border border-error-100">
+              <div className="flex items-start space-x-2">
+                <AlertTriangle className="w-4 h-4 text-error-400 flex-shrink-0 mt-0.5" />
+                <p className="text-xs sm:text-sm text-error-500 font-medium">{deleteError}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Warning Icon and Description */}
+          <div className="flex items-start space-x-3">
+            <div className="flex-shrink-0 w-10 h-10 rounded-sm bg-error-50 flex items-center justify-center">
+              <AlertTriangle className="w-5 h-5 text-error-400" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm text-foreground-200 leading-relaxed">
+                您确定要删除这篇文章吗？删除后将无法恢复，所有相关数据（包括评论、统计数据等）都将被永久删除。
+              </p>
+            </div>
+          </div>
+
+          {/* Item Name Display */}
+          {blogToDelete && (
+            <div className="p-3 bg-background-100 rounded-sm border border-border-100">
+              <p className="text-sm font-medium text-foreground-100 break-words">
+                {blogToDelete.blog_title}
+              </p>
+            </div>
+          )}
+
+          {/* Warning Message */}
+          <div className="p-3 bg-warning-50 rounded-sm border border-warning-100">
+            <div className="flex items-start space-x-2">
+              <AlertTriangle className="w-4 h-4 text-warning-500 flex-shrink-0 mt-0.5" />
+              <p className="text-xs sm:text-sm text-warning-500 font-medium">
+                此操作无法撤销，删除后数据将永久丢失！
+              </p>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

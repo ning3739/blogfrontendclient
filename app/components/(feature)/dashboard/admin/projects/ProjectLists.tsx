@@ -1,12 +1,14 @@
 "use client";
 
-import { Archive, Edit, Eye, FolderOpen, Globe, Trash2 } from "lucide-react";
+import { AlertTriangle, Archive, Edit, Eye, FolderOpen, Globe, Trash2 } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useFormatter, useLocale } from "next-intl";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { Button } from "@/app/components/ui/button/butten";
+import Modal from "@/app/components/ui/modal/Modal";
 import OffsetPagination from "@/app/components/ui/pagination/OffsetPagination";
 import ProjectService from "@/app/lib/services/projectService";
 import { handleDateFormat } from "@/app/lib/utils/handleDateFormat";
@@ -31,11 +33,60 @@ const ProjectLists = ({
   const router = useRouter();
   const [optimisticProjects, setOptimisticProjects] =
     useState<ProjectItemDashboardResponse[]>(projectItems);
+  const [deleteConfirmModal, setDeleteConfirmModal] = useState(false);
+  const [projectToDelete, setProjectToDelete] = useState<ProjectItemDashboardResponse | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string>("");
 
   // Update optimistic projects when projectItems prop changes
   useEffect(() => {
     setOptimisticProjects(projectItems);
   }, [projectItems]);
+
+  const handleConfirmDelete = async () => {
+    if (!projectToDelete) return;
+
+    setIsDeleting(true);
+    setDeleteError(""); // Clear previous error
+    const projectId = projectToDelete.project_id;
+
+    try {
+      // Call API first
+      const response = await ProjectService.deleteProject({
+        project_id: projectId,
+      });
+
+      if (response.status === 200) {
+        // Optimistic update - remove from UI after successful API call
+        setOptimisticProjects((prevProjects) =>
+          prevProjects.filter((p) => p.project_id !== projectId),
+        );
+
+        toast.success("message" in response ? response.message : "项目删除成功");
+
+        // Close modal
+        setDeleteConfirmModal(false);
+        setProjectToDelete(null);
+        setDeleteError("");
+
+        // Refresh list after successful delete to update pagination/total count
+        if (onDataChange) {
+          onDataChange();
+        }
+      } else {
+        // Show error message from backend in modal
+        const errorMsg = "error" in response ? response.error : "删除项目失败";
+        setDeleteError(errorMsg);
+      }
+    } catch (err) {
+      // Handle errors from httpClient (ErrorResponse type)
+      const error = err as { status?: number; error?: string };
+      const errorMsg = error.error || "删除项目失败，请稍后重试";
+      setDeleteError(errorMsg);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const handleActionClick = async (action: string, projectSlug: string) => {
     // Find project by slug
@@ -97,30 +148,10 @@ const ProjectLists = ({
         setOptimisticProjects(projectItems);
       }
     } else if (action === "delete") {
-      // Optimistic update - immediately remove from UI
-      setOptimisticProjects(optimisticProjects.filter((p) => p.project_id !== projectId));
-
-      try {
-        // Call API in background
-        const response = await ProjectService.deleteProject({
-          project_id: projectId,
-        });
-
-        if (response.status === 200) {
-          toast.success("message" in response ? response.message : "Project deleted");
-          // Refresh list after successful delete to update pagination/total count
-          if (onDataChange) {
-            onDataChange();
-          }
-        } else {
-          toast.error("error" in response ? response.error : "Failed to delete project");
-          setOptimisticProjects(projectItems);
-        }
-      } catch (error) {
-        // Rollback on error
-        console.error("Failed to delete project:", error);
-        toast.error("Failed to delete project");
-        setOptimisticProjects(projectItems);
+      // Show confirmation modal
+      if (project) {
+        setProjectToDelete(project);
+        setDeleteConfirmModal(true);
       }
     }
   };
@@ -499,6 +530,93 @@ const ProjectLists = ({
           />
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={deleteConfirmModal}
+        onClose={() => {
+          if (!isDeleting) {
+            setDeleteConfirmModal(false);
+            setProjectToDelete(null);
+            setDeleteError("");
+          }
+        }}
+        title="确认删除项目"
+        size="md"
+        closeOnOverlayClick={!isDeleting}
+        footer={
+          <>
+            <Button
+              onClick={() => {
+                setDeleteConfirmModal(false);
+                setProjectToDelete(null);
+                setDeleteError("");
+              }}
+              variant="outline"
+              disabled={isDeleting}
+            >
+              取消
+            </Button>
+            <Button
+              onClick={handleConfirmDelete}
+              disabled={isDeleting}
+              className="bg-error-400 hover:bg-error-500 focus:ring-error-500"
+            >
+              {isDeleting ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                  <span>删除中...</span>
+                </>
+              ) : (
+                <span>确认删除</span>
+              )}
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          {/* Error Message Display */}
+          {deleteError && (
+            <div className="p-3 bg-error-50 rounded-sm border border-error-100">
+              <div className="flex items-start space-x-2">
+                <AlertTriangle className="w-4 h-4 text-error-400 flex-shrink-0 mt-0.5" />
+                <p className="text-xs sm:text-sm text-error-500 font-medium">{deleteError}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Warning Icon and Description */}
+          <div className="flex items-start space-x-3">
+            <div className="flex-shrink-0 w-10 h-10 rounded-sm bg-error-50 flex items-center justify-center">
+              <AlertTriangle className="w-5 h-5 text-error-400" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm text-foreground-200 leading-relaxed">
+                您确定要删除这个项目吗？删除后将无法恢复，所有相关数据都将被永久删除。如果项目有支付记录，将无法删除。
+              </p>
+            </div>
+          </div>
+
+          {/* Item Name Display */}
+          {projectToDelete && (
+            <div className="p-3 bg-background-100 rounded-sm border border-border-100">
+              <p className="text-sm font-medium text-foreground-100 break-words">
+                {projectToDelete.project_name}
+              </p>
+            </div>
+          )}
+
+          {/* Warning Message */}
+          <div className="p-3 bg-warning-50 rounded-sm border border-warning-100">
+            <div className="flex items-start space-x-2">
+              <AlertTriangle className="w-4 h-4 text-warning-500 flex-shrink-0 mt-0.5" />
+              <p className="text-xs sm:text-sm text-warning-500 font-medium">
+                此操作无法撤销，删除后数据将永久丢失！
+              </p>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
