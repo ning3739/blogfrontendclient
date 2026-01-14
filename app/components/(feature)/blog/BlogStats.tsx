@@ -19,12 +19,10 @@ const BlogStats = ({ blogId, isSaved: initialIsSaved }: { blogId: number; isSave
     `/blog/get-blog-stats/${blogId}`,
   );
 
-  // 同步外部传入的 isSaved 状态
   useEffect(() => {
     setIsSaved(initialIsSaved);
   }, [initialIsSaved]);
 
-  // 从 cookie 读取初始点赞状态
   useEffect(() => {
     setIsLiked(isBlogLiked(blogId));
   }, [blogId]);

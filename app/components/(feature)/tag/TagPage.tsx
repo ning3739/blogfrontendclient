@@ -95,7 +95,7 @@ const TagPage = () => {
               },
             },
             data: words,
-          } as any,
+          } as echarts.WordCloudSeriesOption,
         ],
       };
 
@@ -107,6 +107,7 @@ const TagPage = () => {
 
       // Add click event listener for navigation
       chartRef.current.off("click");
+      // biome-ignore lint/suspicious/noExplicitAny: ECharts event type is complex and varies by chart type
       chartRef.current.on("click", (params: any) => {
         if (params.data?.slug) {
           router.push(`/tag/${params.data.slug}`);

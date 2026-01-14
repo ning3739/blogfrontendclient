@@ -61,3 +61,8 @@ export interface GetPaymentRecordsItems {
   };
   attachment_id?: number;
 }
+
+// Create Payment Intent 响应类型
+export interface CreatePaymentIntentResponse {
+  client_secret: string;
+}

@@ -39,7 +39,6 @@ const VideoPreview = ({
     };
   }, [isOpen, onClose]);
 
-  // 关闭时暂停视频
   useEffect(() => {
     if (!isOpen && videoRef.current) {
       videoRef.current.pause();

@@ -17,7 +17,6 @@ const ImagePreview = ({ isOpen, imageUrl, imageAlt = "Preview", onClose }: Image
   const [scale, setScale] = useState(1);
   const [rotation, setRotation] = useState(0);
 
-  // 重置状态
   useEffect(() => {
     if (isOpen) {
       setScale(1);

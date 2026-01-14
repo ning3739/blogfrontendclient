@@ -89,15 +89,14 @@ export const usePostEditor = ({
     }
 
     try {
-      // 创建新博客
       if (type === "blog" && !blogSlug) {
         const response = await blogService.createBlog({
-          section_id: blogMetaData.selectedSectionId!,
-          seo_id: blogMetaData.selectedSeoId!,
+          section_id: blogMetaData.selectedSectionId ?? 0,
+          seo_id: blogMetaData.selectedSeoId ?? 0,
           chinese_title: blogMetaData.title,
           chinese_description: blogMetaData.description,
           chinese_content: content || { type: "doc", content: [] },
-          cover_id: blogMetaData.selectedCoverImageId!,
+          cover_id: blogMetaData.selectedCoverImageId ?? 0,
           blog_tags: blogMetaData.selectedTags,
         });
 
@@ -110,8 +109,8 @@ export const usePostEditor = ({
       else if (type === "update" && blogSlug) {
         const response = await blogService.updateBlog({
           blog_slug: blogSlug,
-          seo_id: blogMetaData.selectedSeoId!,
-          cover_id: blogMetaData.selectedCoverImageId!,
+          seo_id: blogMetaData.selectedSeoId ?? 0,
+          cover_id: blogMetaData.selectedCoverImageId ?? 0,
           chinese_title: blogMetaData.title,
           chinese_description: blogMetaData.description,
           chinese_content: content || { type: "doc", content: [] },

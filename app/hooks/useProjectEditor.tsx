@@ -43,7 +43,7 @@ const parseContent = (content: TiptapContent): JSONContent | null => {
 export const useProjectEditor = ({
   type,
   projectSlug,
-  sectionId,
+  sectionId: _sectionId,
   projectSectionId,
   content,
   setContent,
@@ -110,7 +110,6 @@ export const useProjectEditor = ({
 
   const handleProjectSave = async (): Promise<void> => {
     try {
-      // 创建新项目
       if (type === "project" && !projectSlug) {
         const validation = validateProjectData();
         if (!validation.isValid) {
@@ -122,7 +121,7 @@ export const useProjectEditor = ({
           project_type: projectMetaData.projectType.toString(),
           section_id: projectSectionId || null,
           seo_id: projectMetaData.selectedSeoId || null,
-          cover_id: projectMetaData.selectedCoverImageId!,
+          cover_id: projectMetaData.selectedCoverImageId ?? 0,
           chinese_title: projectMetaData.title,
           chinese_description: projectMetaData.description,
           chinese_content: content || { type: "doc", content: [] },
@@ -150,7 +149,7 @@ export const useProjectEditor = ({
           project_type: projectMetaData.projectType.toString(),
           section_id: projectSectionId || null,
           seo_id: projectMetaData.selectedSeoId || null,
-          cover_id: projectMetaData.selectedCoverImageId!,
+          cover_id: projectMetaData.selectedCoverImageId ?? 0,
           chinese_title: projectMetaData.title,
           chinese_description: projectMetaData.description,
           chinese_content: content || { type: "doc", content: [] },

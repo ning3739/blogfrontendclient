@@ -1,7 +1,8 @@
 import { mergeAttributes, Node } from "@tiptap/core";
+import type { HTMLAttributes } from "react";
 
 export interface AudioOptions {
-  HTMLAttributes: Record<string, any>;
+  HTMLAttributes: HTMLAttributes<HTMLElement>;
 }
 
 export interface AudioAttrs {
@@ -98,7 +99,7 @@ export const Audio = Node.create<AudioOptions>({
     ];
   },
 
-  renderHTML({ HTMLAttributes, node }) {
+  renderHTML({ node }) {
     const { caption, textAlign, autoplay, loop, ...restAttrs } = node.attrs;
 
     const audioAttrs = mergeAttributes(

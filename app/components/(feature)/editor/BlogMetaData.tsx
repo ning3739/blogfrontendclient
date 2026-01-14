@@ -128,14 +128,11 @@ export const BlogMetaData = ({
   useEffect(() => {
     if (tagLists?.items) {
       if (currentTagPage === 1) {
-        // 第一页，直接设置
         setAllTagItems(tagLists.items);
       } else {
-        // 后续页面，累积添加
         setAllTagItems((prev) => [...prev, ...tagLists.items]);
       }
 
-      // 检查是否还有更多数据
       setHasMoreTag(tagLists.pagination?.has_next || false);
     }
   }, [tagLists, currentTagPage]);
@@ -160,7 +157,6 @@ export const BlogMetaData = ({
     }
   }, [type, selectedTags, allTagItems, hasMoreTag, isTagLoading, handleLoadMoreTag]);
 
-  // 点击外部关闭下拉菜单
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (seoDropdownRef.current && !seoDropdownRef.current.contains(event.target as Node)) {

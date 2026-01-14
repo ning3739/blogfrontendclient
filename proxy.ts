@@ -9,15 +9,12 @@ export default async function proxy(request: NextRequest) {
   const isAuthPage = AUTH_PAGES.some((page) => pathname.startsWith(page));
   const isProtectedPage = PROTECTED_PAGES.some((page) => pathname.startsWith(page));
 
-  // 简单快速的 cookie 检查（不验证有效性）
   const hasAuthCookies = () => {
     const accessToken = request.cookies.get("access_token");
     const refreshToken = request.cookies.get("refresh_token");
     return !!(accessToken || refreshToken);
   };
 
-  // 处理认证页面：有 cookie 就重定向到首页
-  // 详细的有效性检查由 AuthContext 负责
   if (isAuthPage) {
     if (hasAuthCookies()) {
       const response = NextResponse.redirect(new URL("/", request.url));
@@ -26,8 +23,6 @@ export default async function proxy(request: NextRequest) {
     }
   }
 
-  // 处理受保护页面：没有 cookie 就重定向到登录页
-  // 详细的有效性检查由 AuthContext 负责
   if (isProtectedPage) {
     if (!hasAuthCookies()) {
       const response = NextResponse.redirect(new URL("/login", request.url));

@@ -104,12 +104,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             },
           });
 
-          if (!("data" in blogsResponse)) {
+          if (!("data" in blogsResponse) || !blogsResponse.data) {
             console.error(`Failed to fetch blogs for section ${section.slug} page ${page}`);
             break;
           }
 
-          const blogs = (blogsResponse.data?.items as BlogSitemapItem[]) || [];
+          const responseData = blogsResponse.data as {
+            items?: BlogSitemapItem[];
+            pagination?: { total_pages?: number };
+          };
+          const blogs = responseData.items || [];
 
           if (blogs.length === 0) {
             hasMore = false;
@@ -126,7 +130,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           blogRoutes.push(...sectionBlogRoutes);
 
           // 检查是否还有更多页
-          const totalPages = blogsResponse.data?.pagination?.total_pages || 1;
+          const totalPages = responseData.pagination?.total_pages || 1;
           hasMore = page < totalPages;
           page++;
         }
@@ -150,12 +154,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           },
         });
 
-        if (!("data" in projectsResponse)) {
+        if (!("data" in projectsResponse) || !projectsResponse.data) {
           console.error(`Failed to fetch projects page ${page}`);
           break;
         }
 
-        const projects = (projectsResponse.data?.items as ProjectSitemapItem[]) || [];
+        const projectData = projectsResponse.data as {
+          items?: ProjectSitemapItem[];
+          pagination?: { total_pages?: number };
+        };
+        const projects = projectData.items || [];
 
         if (projects.length === 0) {
           hasMore = false;
@@ -172,7 +180,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         projectRoutes.push(...pageProjectRoutes);
 
         // 检查是否还有更多页
-        const totalPages = projectsResponse.data?.pagination?.total_pages || 1;
+        const totalPages = projectData.pagination?.total_pages || 1;
         hasMore = page < totalPages;
         page++;
       }
@@ -195,12 +203,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           },
         });
 
-        if (!("data" in tagsResponse)) {
+        if (!("data" in tagsResponse) || !tagsResponse.data) {
           console.error(`Failed to fetch tags page ${page}`);
           break;
         }
 
-        const tags = tagsResponse.data?.items || [];
+        const tagData = tagsResponse.data as {
+          items?: TagSitemapItem[];
+          pagination?: { total_pages?: number };
+        };
+        const tags = tagData.items || [];
 
         if (tags.length === 0) {
           hasMore = false;
@@ -217,7 +229,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         tagRoutes.push(...pageTagRoutes);
 
         // 检查是否还有更多页
-        const totalPages = tagsResponse.data?.pagination?.total_pages || 1;
+        const totalPages = tagData.pagination?.total_pages || 1;
         hasMore = page < totalPages;
         page++;
       }

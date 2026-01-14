@@ -70,7 +70,13 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen = true, onClose }) => {
   const renderMenuItems = () => (
     <nav className="space-y-1">
       {menuItems.map((item, index) => (
-        <SidebarItem key={item.label} item={item} index={index} isCollapsed={isCollapsed} onNavigate={onClose} />
+        <SidebarItem
+          key={item.label}
+          item={item}
+          index={index}
+          isCollapsed={isCollapsed}
+          onNavigate={onClose}
+        />
       ))}
     </nav>
   );

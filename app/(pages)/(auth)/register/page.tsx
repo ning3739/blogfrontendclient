@@ -17,21 +17,17 @@ export default function RegisterPage() {
   const placeholderT = useTranslations("auth.placeholder");
   const validationT = useTranslations("auth.validation");
 
-  // 表单状态
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  // 加载状态
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSendingCode, setIsSendingCode] = useState(false);
 
-  // 验证码倒计时
   const [countdown, setCountdown] = useState(0);
 
-  // 倒计时效果
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (countdown > 0) {
@@ -44,22 +40,18 @@ export default function RegisterPage() {
     };
   }, [countdown]);
 
-  // 前端表单验证（格式验证），API业务逻辑错误由UI层处理toast
   const validateForm = () => {
     const result = Validator.validateRegisterForm(username, email, code, password);
 
     return Validator.validateAndShowError(result, validationT, toast);
   };
 
-  // 发送验证码
   const handleSendCode = async () => {
-    // 验证用户名
     const usernameValidation = Validator.validateUsername(username);
     if (!Validator.validateAndShowError(usernameValidation, validationT, toast)) {
       return;
     }
 
-    // 验证邮箱
     const emailValidation = Validator.validateEmail(email);
     if (!Validator.validateAndShowError(emailValidation, validationT, toast)) {
       return;
@@ -70,7 +62,6 @@ export default function RegisterPage() {
       const response = await authService.sendVerificationCode({ email });
       if (response.status === 200) {
         toast.success("message" in response ? response.message : "Verification code sent");
-        // 开始60秒倒计时
         setCountdown(60);
       } else {
         toast.error("error" in response ? response.error : "Failed to send verification code");
@@ -82,7 +73,6 @@ export default function RegisterPage() {
     }
   };
 
-  // 处理注册提交
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -101,7 +91,6 @@ export default function RegisterPage() {
 
     if (response.status === 200) {
       toast.success("message" in response ? response.message : authT("registerSuccess"));
-      // 注册成功后静默自动登录（不显示登录成功的toast）
       await silentAccountLogin({ email, password });
     } else {
       toast.error("error" in response ? response.error : "Failed to create account");

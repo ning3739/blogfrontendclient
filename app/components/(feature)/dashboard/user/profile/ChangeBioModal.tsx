@@ -26,7 +26,6 @@ const ChangeBioModal: React.FC<ChangeBioModalProps> = ({
   const dashboardT = useTranslations("dashboard.myProfile");
   const commonT = useTranslations("common");
 
-  // 当模态框打开或 currentBio 改变时更新 bio
   useEffect(() => {
     if (isOpen) {
       setBio(currentBio);

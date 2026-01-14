@@ -4,7 +4,9 @@ import type {
   DeleteBlogCommentRequest,
   DeleteBlogRequest,
   GetBlogCommentListsRequest,
+  GetBlogCommentListsResponse,
   GetBlogDetailsSeoRequest,
+  GetBlogDetailsSeoResponse,
   GetBlogSummaryRequest,
   GetBlogTTSRequest,
   LikeBlogButtonRequest,
@@ -13,6 +15,7 @@ import type {
   UpdateBlogRequest,
   UpdateBlogStatusRequest,
 } from "@/app/types/blogServiceType";
+import type { APIResponse } from "@/app/types/clientType";
 
 import httpClient from "../http/client";
 
@@ -23,21 +26,25 @@ class BlogService {
 
   async createBlog(payload: CreateBlogRequest) {
     const response = await httpClient.post("/blog/admin/create-blog", payload);
-    if (response.status === 200 && "data" in response) {
-      this.redirectToPreview(response.data);
+    if (response.status === 200 && "data" in response && response.data) {
+      this.redirectToPreview(response.data as string);
     }
     return response;
   }
 
   async updateBlog(payload: UpdateBlogRequest) {
     const response = await httpClient.patch("/blog/admin/update-blog", payload);
-    if (response.status === 200 && "data" in response) {
-      this.redirectToPreview(response.data);
+    if (response.status === 200 && "data" in response && response.data) {
+      this.redirectToPreview(response.data as string);
     }
     return response;
   }
-  async getBlogDetailsSeo(payload: GetBlogDetailsSeoRequest) {
-    return httpClient.get(`/blog/get-blog-details-seo/${payload.blog_slug}`);
+  async getBlogDetailsSeo(
+    payload: GetBlogDetailsSeoRequest,
+  ): Promise<APIResponse<GetBlogDetailsSeoResponse>> {
+    return httpClient.get<GetBlogDetailsSeoResponse>(
+      `/blog/get-blog-details-seo/${payload.blog_slug}`,
+    );
   }
 
   async getBlogTTS(payload: GetBlogTTSRequest) {
@@ -48,10 +55,15 @@ class BlogService {
     return httpClient.get(`/blog/get-blog-summary/${payload.blog_id}`);
   }
 
-  async getBlogCommentLists(payload: GetBlogCommentListsRequest) {
-    return httpClient.get(`/blog/get-blog-comment-lists/${payload.blog_id}`, {
-      params: { limit: payload.limit, cursor: payload.cursor },
-    });
+  async getBlogCommentLists(
+    payload: GetBlogCommentListsRequest,
+  ): Promise<APIResponse<GetBlogCommentListsResponse>> {
+    return httpClient.get<GetBlogCommentListsResponse>(
+      `/blog/get-blog-comment-lists/${payload.blog_id}`,
+      {
+        params: { limit: payload.limit, cursor: payload.cursor },
+      },
+    );
   }
 
   async createBlogComment(payload: CreateBlogCommentRequest) {

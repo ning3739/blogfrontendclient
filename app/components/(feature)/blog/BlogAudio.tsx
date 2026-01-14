@@ -31,7 +31,6 @@ const BlogAudio = ({ shouldPlay, onPlayStateChange, audioData }: BlogAudioProps)
     }
   }, [shouldPlay, audioData?.tts, onPlayStateChange]);
 
-  // 处理播放状态变化
   const handlePlay = () => {
     onPlayStateChange(true);
   };

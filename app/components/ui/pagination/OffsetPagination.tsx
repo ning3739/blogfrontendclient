@@ -44,7 +44,6 @@ const OffsetPagination: React.FC<OffsetPaginationProps> = ({
         pages.push("...");
       }
 
-      // 显示当前页附近的页码
       const start = Math.max(2, current_page - 1);
       const end = Math.min(total_pages - 1, current_page + 1);
 
@@ -129,7 +128,9 @@ const OffsetPagination: React.FC<OffsetPaginationProps> = ({
             {/* 页码按钮容器 */}
             <div className="flex items-center space-x-1">
               {pageNumbers.map((page, index) => (
-                <React.Fragment key={index}>
+                <React.Fragment
+                  key={typeof page === "number" ? `page-${page}` : `ellipsis-${index}`}
+                >
                   {page === "..." ? (
                     <span className="px-2 sm:px-3 py-2 text-xs sm:text-sm text-foreground-400">
                       ⋯

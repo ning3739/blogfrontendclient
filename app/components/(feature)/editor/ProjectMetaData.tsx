@@ -79,7 +79,6 @@ export const ProjectMetaData = ({
   const [seoSearchTerm, setSeoSearchTerm] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // 当 initialData 更新时，更新所有状态
   useEffect(() => {
     // 只有当 initialData 有实际数据时才更新（检查 title 或 selectedSeoId 是否有值）
     if (initialData && (initialData.title || initialData.selectedSeoId)) {
@@ -115,7 +114,6 @@ export const ProjectMetaData = ({
     initialData,
   ]);
 
-  // 点击外部关闭下拉菜单
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {

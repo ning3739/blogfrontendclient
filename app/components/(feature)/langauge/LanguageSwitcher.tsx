@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo } from "react";
 import httpClient from "@/app/lib/http/client";
+import { setCookie } from "@/app/lib/utils/cookie";
 
 const LanguageSwitcher = () => {
   const t = useTranslations("languageSwitcher");
@@ -32,11 +33,13 @@ const LanguageSwitcher = () => {
     if (newLocale === locale) return;
 
     try {
-      // 设置 cookie
-      document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
-      // 触发 httpClient 的语言变化事件
+      setCookie("NEXT_LOCALE", newLocale, {
+        days: 365,
+        path: "/",
+        sameSite: "lax",
+        secure: true,
+      });
       httpClient.triggerLocaleChange(newLocale);
-      // 使用完整页面刷新确保所有内容都更新为新语言
       window.location.reload();
     } catch (error) {
       console.error("Error changing language:", error);

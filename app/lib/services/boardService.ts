@@ -2,9 +2,11 @@ import type {
   CreateBoardCommentRequest,
   DeleteBoardCommentRequest,
   GetBoardCommentListsRequest,
+  GetBoardCommentListsResponse,
   UpdateBoardCommentRequest,
   UpdateBoardRequest,
 } from "@/app/types/boardServiceType";
+import type { APIResponse } from "@/app/types/clientType";
 import httpClient from "../http/client";
 
 class BoardService {
@@ -24,10 +26,15 @@ class BoardService {
     return httpClient.delete(`/board/delete-board-comment/${payload.board_comment_id}`);
   }
 
-  async getBoardCommentLists(payload: GetBoardCommentListsRequest) {
-    return httpClient.get(`/board/get-board-comment-lists/${payload.board_id}`, {
-      params: { limit: payload.limit, cursor: payload.cursor },
-    });
+  async getBoardCommentLists(
+    payload: GetBoardCommentListsRequest,
+  ): Promise<APIResponse<GetBoardCommentListsResponse>> {
+    return httpClient.get<GetBoardCommentListsResponse>(
+      `/board/get-board-comment-lists/${payload.board_id}`,
+      {
+        params: { limit: payload.limit, cursor: payload.cursor },
+      },
+    );
   }
 }
 

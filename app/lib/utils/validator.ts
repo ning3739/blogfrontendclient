@@ -140,13 +140,11 @@ export class Validator {
     password: string,
     passwordMinLength: number = 8,
   ): ValidationResult {
-    // 验证用户名
     const usernameResult = Validator.validateUsername(username);
     if (!usernameResult.isValid) {
       return usernameResult;
     }
 
-    // 验证邮箱
     const emailResult = Validator.validateEmail(email);
     if (!emailResult.isValid) {
       return emailResult;
@@ -158,7 +156,6 @@ export class Validator {
       return codeResult;
     }
 
-    // 验证密码
     const passwordResult = Validator.validatePassword(password, passwordMinLength);
     if (!passwordResult.isValid) {
       return passwordResult;
@@ -181,7 +178,6 @@ export class Validator {
     password: string,
     passwordMinLength: number = 8,
   ): ValidationResult {
-    // 验证邮箱
     const emailResult = Validator.validateEmail(email);
     if (!emailResult.isValid) {
       return emailResult;
@@ -193,7 +189,6 @@ export class Validator {
       return codeResult;
     }
 
-    // 验证密码
     const passwordResult = Validator.validatePassword(password, passwordMinLength);
     if (!passwordResult.isValid) {
       return passwordResult;

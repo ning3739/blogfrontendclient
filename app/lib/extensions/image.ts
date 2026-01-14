@@ -33,7 +33,7 @@ export const Image = TiptapImage.extend({
     };
   },
 
-  renderHTML({ HTMLAttributes, node }) {
+  renderHTML({ node }) {
     const { caption, textAlign, ...imgAttrs } = node.attrs;
 
     const figureAttrs = {

@@ -17,9 +17,11 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog, onClick, className = "" }) =>
   const commonT = useTranslations("common");
 
   return (
-    <div
+    <button
+      type="button"
       onClick={onClick}
-      className={`group relative bg-card-50 border border-border-50 rounded-sm p-6 sm:p-7 hover:border-primary-300/60 hover:shadow-lg hover:-translate-y-1 transition-[border-color,box-shadow,transform] duration-300 cursor-pointer overflow-hidden ${className}`}
+      aria-label={`Read blog: ${blog.blog_title}`}
+      className={`group relative bg-card-50 border border-border-50 rounded-sm p-6 sm:p-7 hover:border-primary-300/60 hover:shadow-lg hover:-translate-y-1 transition-[border-color,box-shadow,transform] duration-300 cursor-pointer overflow-hidden w-full text-left ${className}`}
     >
       {/* 左侧装饰条 */}
       <div className="absolute left-0 top-0 bottom-0 w-1 bg-linear-to-b from-primary-500/0 via-primary-500/50 to-primary-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -79,7 +81,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog, onClick, className = "" }) =>
 
       {/* 悬停时的背景渐变效果 */}
       <div className="absolute inset-0 bg-linear-to-r from-primary-500/0 via-primary-500/3 to-primary-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-sm pointer-events-none" />
-    </div>
+    </button>
   );
 };
 

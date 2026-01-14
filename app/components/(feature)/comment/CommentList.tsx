@@ -13,8 +13,8 @@ import { useAuth } from "@/app/hooks/useAuth";
 import blogService from "@/app/lib/services/blogService";
 import boardService from "@/app/lib/services/boardService";
 import { handleDateFormat } from "@/app/lib/utils/handleDateFormat";
-import type { BlogCommentItem } from "@/app/types/blogServiceType";
-import type { BoardCommentItem } from "@/app/types/boardServiceType";
+import type { BlogCommentItem, GetBlogCommentListsResponse } from "@/app/types/blogServiceType";
+import type { BoardCommentItem, GetBoardCommentListsResponse } from "@/app/types/boardServiceType";
 import type { APIResponse } from "@/app/types/clientType";
 import CommentTextInput, { CommentType } from "./CommentTextInput";
 
@@ -69,7 +69,7 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
   // 处理删除评论
   const handleDelete = async (commentId: number) => {
     try {
-      let response: APIResponse<null>;
+      let response: APIResponse<unknown>;
       if (type === CommentType.BLOG) {
         response = await blogService.deleteBlogComment({
           comment_id: commentId,
@@ -105,13 +105,7 @@ const CommentList = ({ type, targetId, isAuthenticated }: CommentListProps) => {
 
     setIsLoadingMore(true);
     try {
-      let response: APIResponse<{
-        comments: CommentItem[];
-        pagination: {
-          next_cursor: string | null;
-          has_next: boolean;
-        };
-      }>;
+      let response: APIResponse<GetBlogCommentListsResponse | GetBoardCommentListsResponse>;
       if (type === CommentType.BLOG) {
         response = await blogService.getBlogCommentLists({
           blog_id: targetId,

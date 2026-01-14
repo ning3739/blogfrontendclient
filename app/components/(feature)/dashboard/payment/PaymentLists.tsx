@@ -38,13 +38,11 @@ const PaymentLists: React.FC<PaymentListsProps> = ({
     null,
   );
 
-  // 处理查看详情点击
   const handleViewDetails = (record: GetPaymentRecordsItems) => {
     setSelectedPaymentRecord(record);
     setIsDetailModalOpen(true);
   };
 
-  // 关闭详情模态框
   const handleCloseDetailModal = () => {
     setIsDetailModalOpen(false);
     setSelectedPaymentRecord(null);

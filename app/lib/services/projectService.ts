@@ -18,16 +18,16 @@ class ProjectService {
 
   async updateProject(payload: UpdateProjectRequest) {
     const response = await httpClient.patch("/project/admin/update-project", payload);
-    if (response.status === 200 && "data" in response) {
-      this.redirectToPreview(response.data);
+    if (response.status === 200 && "data" in response && response.data) {
+      this.redirectToPreview(response.data as string);
     }
     return response;
   }
 
   async createProject(payload: CreateProjectRequest) {
     const response = await httpClient.post("/project/admin/create-project", payload);
-    if (response.status === 200 && "data" in response) {
-      this.redirectToPreview(response.data);
+    if (response.status === 200 && "data" in response && response.data) {
+      this.redirectToPreview(response.data as string);
     }
     return response;
   }

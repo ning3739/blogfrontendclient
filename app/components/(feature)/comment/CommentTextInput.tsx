@@ -104,7 +104,6 @@ const CommentTextInput = (props: CommentTextInputProps) => {
     }
   };
 
-  // 提交评论
   const handleSubmit = async () => {
     if (!comment.trim()) {
       toast.error(getTranslation("commentRequired"));
@@ -183,7 +182,6 @@ const CommentTextInput = (props: CommentTextInputProps) => {
           toast.error("error" in response ? response.error : "Failed to update comment");
         }
       } else {
-        // 创建新评论
         if (onOptimisticCreate) {
           onOptimisticCreate(comment.trim(), parent_id);
         } else {

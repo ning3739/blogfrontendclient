@@ -28,3 +28,9 @@ export interface ResetLoggedInUserPasswordRequest extends Password {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AccountLoginRequest extends Email, Password {}
+
+// Check Auth Token 响应类型
+export interface CheckAuthTokenResponse {
+  access_token: boolean;
+  refresh_token: boolean;
+}

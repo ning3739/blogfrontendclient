@@ -19,7 +19,6 @@ import { Audio } from "@/app/lib/extensions/audio";
 import { Image } from "@/app/lib/extensions/image";
 import { Video } from "@/app/lib/extensions/video";
 
-// 创建 lowlight 实例
 const lowlight = createLowlight(common);
 
 export default function TiptapEditor({

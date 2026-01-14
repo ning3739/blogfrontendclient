@@ -86,7 +86,6 @@ export default function MenuBar({ editor }: MenuBarProps) {
   const captionInputRef = useRef<HTMLInputElement>(null);
   const linkInputRef = useRef<HTMLInputElement>(null);
 
-  // 点击外部关闭下拉菜单
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -224,14 +223,12 @@ export default function MenuBar({ editor }: MenuBarProps) {
     setIsLanguageDropdownOpen(false);
   };
 
-  // 创建带语言的代码块
   const createCodeBlockWithLanguage = (language: string) => {
     editor.chain().focus().toggleCodeBlock().updateAttributes("codeBlock", { language }).run();
     setIsLanguageDropdownOpen(false);
     setShowLanguageSelector(false);
   };
 
-  // 处理代码块按钮点击
   const handleCodeBlockClick = () => {
     if (editor.isActive("codeBlock")) {
       // 如果已经在代码块内，则退出代码块

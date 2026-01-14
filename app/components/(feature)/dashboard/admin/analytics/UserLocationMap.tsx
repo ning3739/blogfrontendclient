@@ -141,7 +141,6 @@ export default function UserLocationMap({
         map.current.removeSource("user-locations");
       }
 
-      // 创建 GeoJSON 数据
       const geojsonData = {
         type: "FeatureCollection",
         features: locations.map((location, index) => ({
@@ -245,11 +244,9 @@ export default function UserLocationMap({
             coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
           }
 
-          // 创建 popup 容器
           const popupNode = document.createElement("div");
           const userCount = cityStats.find((s) => s.city === city)?.count || 1;
 
-          // 创建并显示 popup
           const popup = new mapboxgl.default.Popup({
             closeButton: false,
             closeOnClick: true,

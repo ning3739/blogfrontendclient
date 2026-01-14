@@ -28,7 +28,6 @@ const CreateTagModal = ({
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  // 重置表单当模态框关闭时
   useEffect(() => {
     if (!isOpen) {
       setFormData({
@@ -42,7 +41,6 @@ const CreateTagModal = ({
     }
   }, [isOpen, initialData]);
 
-  // ESC键关闭模态框
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -76,7 +74,6 @@ const CreateTagModal = ({
           chinese_title: formData.chinese_title.trim(),
         });
       } else {
-        // 创建模式
         response = await tagService.createTag({
           chinese_title: formData.chinese_title.trim(),
         });
@@ -85,8 +82,9 @@ const CreateTagModal = ({
       // tagService 中的 handleToastResponse 已经处理了 toast 显示
       if ("data" in response && response.data) {
         // 调用成功回调
-        if (onSuccess) {
-          onSuccess(response.data.tag_id);
+        if (onSuccess && tagId) {
+          // 编辑模式：使用现有的 tagId
+          onSuccess(tagId);
         }
         onClose();
       } else {

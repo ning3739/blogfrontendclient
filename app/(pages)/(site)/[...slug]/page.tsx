@@ -3,6 +3,9 @@ import blogService from "@/app/lib/services/blogService";
 import projectService from "@/app/lib/services/projectService";
 import sectionService from "@/app/lib/services/sectionService";
 import { formatTagTitle } from "@/app/lib/utils/formatTagTitle";
+import type { GetBlogDetailsSeoResponse } from "@/app/types/blogServiceType";
+import type { GetProjectDetailsSeoResponse } from "@/app/types/projectServiceType";
+import type { GetSectionSeoResponse } from "@/app/types/sectionServiceType";
 import ClientPage from "./clientpage";
 
 export async function generateMetadata({
@@ -80,7 +83,7 @@ export async function generateMetadata({
       });
 
       if ("data" in response && response.data) {
-        const section = response.data;
+        const section = response.data as GetSectionSeoResponse;
         return {
           title: `${section.title.zh} | ${section.title.en}`,
           description: `${section.description.zh} | ${section.description.en}`,
@@ -111,7 +114,7 @@ export async function generateMetadata({
         });
 
         if ("data" in blogResponse && blogResponse.data) {
-          const blog = blogResponse.data;
+          const blog = blogResponse.data as GetBlogDetailsSeoResponse;
           return {
             title: `${blog.title.zh} | ${blog.title.en}`,
             description: `${blog.description.zh} | ${blog.description.en}`,
@@ -126,7 +129,7 @@ export async function generateMetadata({
         });
 
         if ("data" in projectResponse && projectResponse.data) {
-          const project = projectResponse.data;
+          const project = projectResponse.data as GetProjectDetailsSeoResponse;
           return {
             title: `${project.title.zh} | ${project.title.en}`,
             description: `${project.description.zh} | ${project.description.en}`,

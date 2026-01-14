@@ -82,6 +82,15 @@ export interface BlogCommentItem {
   children?: BlogCommentItem[];
 }
 
+// Blog 评论列表响应类型
+export interface GetBlogCommentListsResponse {
+  comments: BlogCommentItem[];
+  pagination: {
+    next_cursor: string | null;
+    has_next: boolean;
+  };
+}
+
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface SaveBlogButtonRequest extends BlogID {}
 
@@ -250,4 +259,20 @@ export interface GetBlogEditorDetailsResponse {
   chinese_description: string;
   chinese_content: TiptapContent;
   blog_tags: BlogTag[];
+}
+
+// Blog SEO 响应类型
+export interface GetBlogDetailsSeoResponse {
+  title: {
+    zh: string;
+    en: string;
+  };
+  description: {
+    zh: string;
+    en: string;
+  };
+  keywords: {
+    zh: string;
+    en: string;
+  };
 }

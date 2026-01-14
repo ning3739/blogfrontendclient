@@ -25,7 +25,7 @@ export default function UserPage() {
     error,
   } = useSWR<UserResponse>(
     userId && !Number.isNaN(userId) ? `user/other/get-other-user-profile/${userId}` : null,
-    async () => {
+    async (): Promise<UserResponse> => {
       if (!userId || Number.isNaN(userId)) {
         throw new Error("Invalid user ID");
       }
@@ -33,9 +33,12 @@ export default function UserPage() {
         user_id: userId,
       });
       if ("data" in response && response.data) {
-        return response.data;
+        return response.data as UserResponse;
       }
       throw new Error("Failed to fetch user profile");
+    },
+    {
+      revalidateOnFocus: false,
     },
   );
 

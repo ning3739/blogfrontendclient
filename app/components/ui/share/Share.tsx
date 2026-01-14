@@ -23,32 +23,38 @@ const Share: React.FC<ShareProps> = ({ url, title, createdAtText }) => {
 
   const commonT = useTranslations("common");
 
-  const drawRoundedRect = (
-    ctx: CanvasRenderingContext2D,
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    radius: number,
-  ) => {
-    const r = Math.min(radius, width / 2, height / 2);
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + width, y, x + width, y + height, r);
-    ctx.arcTo(x + width, y + height, x, y + height, r);
-    ctx.arcTo(x, y + height, x, y, r);
-    ctx.arcTo(x, y, x + width, y, r);
-    ctx.closePath();
-  };
+  const drawRoundedRect = useCallback(
+    (
+      ctx: CanvasRenderingContext2D,
+      x: number,
+      y: number,
+      width: number,
+      height: number,
+      radius: number,
+    ) => {
+      const r = Math.min(radius, width / 2, height / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + width, y, x + width, y + height, r);
+      ctx.arcTo(x + width, y + height, x, y + height, r);
+      ctx.arcTo(x, y + height, x, y, r);
+      ctx.arcTo(x, y, x + width, y, r);
+      ctx.closePath();
+    },
+    [],
+  );
 
-  const loadImage = (src: string): Promise<HTMLImageElement> =>
-    new Promise((resolve, reject) => {
-      const img = new window.Image();
-      img.crossOrigin = "anonymous";
-      img.onload = () => resolve(img);
-      img.onerror = reject;
-      img.src = src;
-    });
+  const loadImage = useCallback(
+    (src: string): Promise<HTMLImageElement> =>
+      new Promise((resolve, reject) => {
+        const img = new window.Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      }),
+    [],
+  );
 
   const _wrapText = (
     ctx: CanvasRenderingContext2D,
@@ -76,36 +82,34 @@ const Share: React.FC<ShareProps> = ({ url, title, createdAtText }) => {
     return y + (lines.length - 1) * lineHeight;
   };
 
-  const getWrappedLines = (
-    ctx: CanvasRenderingContext2D,
-    text: string,
-    maxWidth: number,
-  ): string[] => {
-    if (!text) return [];
-    // Split into tokens; for CJK text without spaces, fall back to per-character
-    const hasSpace = /\s/.test(text);
-    const tokens = hasSpace ? text.split(/\s+/) : Array.from(text);
-    const space = hasSpace ? " " : "";
-    const lines: string[] = [];
-    let line = "";
-    for (let i = 0; i < tokens.length; i++) {
-      const next = line ? line + space + tokens[i] : tokens[i];
-      if (ctx.measureText(next).width > maxWidth && line) {
-        lines.push(line);
-        line = tokens[i];
-      } else {
-        line = next;
+  const getWrappedLines = useCallback(
+    (ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] => {
+      if (!text) return [];
+      const hasSpace = /\s/.test(text);
+      const tokens = hasSpace ? text.split(/\s+/) : Array.from(text);
+      const space = hasSpace ? " " : "";
+      const lines: string[] = [];
+      let line = "";
+      for (let i = 0; i < tokens.length; i++) {
+        const next = line ? line + space + tokens[i] : tokens[i];
+        if (ctx.measureText(next).width > maxWidth && line) {
+          lines.push(line);
+          line = tokens[i];
+        } else {
+          line = next;
+        }
       }
-    }
-    if (line) lines.push(line);
-    return lines;
-  };
+      if (line) lines.push(line);
+      return lines;
+    },
+    [],
+  );
 
-  const getThemeColor = (varName: string, fallback: string): string => {
+  const getThemeColor = useCallback((varName: string, fallback: string): string => {
     if (typeof window === "undefined") return fallback;
     const cssValue = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
     return cssValue || fallback;
-  };
+  }, []);
 
   const handleDownload = useCallback(async () => {
     try {
@@ -289,18 +293,10 @@ const Share: React.FC<ShareProps> = ({ url, title, createdAtText }) => {
     } catch (e) {
       console.error(e);
     }
-  }, [
-    createdAtText,
-    safeTitle,
-    url, // Clip to banner rounded rect
-    drawRoundedRect,
-    getThemeColor,
-    getWrappedLines,
-    loadImage,
-  ]);
+  }, [createdAtText, safeTitle, url, drawRoundedRect, getThemeColor, getWrappedLines, loadImage]);
 
   useEffect(() => {
-    // 只在模态框打开且url存在时才生成QRCode，提高性能
+    // Generate QR code only when modal is open
     if (!isOpen || !url) return;
 
     let mounted = true;
@@ -385,6 +381,7 @@ const Share: React.FC<ShareProps> = ({ url, title, createdAtText }) => {
                   </div>
                   <div className="w-20 h-20 rounded-sm border border-border-100 bg-card-100 flex items-center justify-center">
                     {qrPreviewDataUrl ? (
+                      // biome-ignore lint/performance/noImgElement: QR code preview generated from Canvas, not suitable for Next.js Image
                       <img src={qrPreviewDataUrl} alt="QR Code" className="w-[72px] h-[72px]" />
                     ) : (
                       <span className="text-[10px] text-foreground-300">生成中</span>

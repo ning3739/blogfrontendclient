@@ -1,12 +1,16 @@
+import type { APIResponse } from "@/app/types/clientType";
 import type {
   CreatePaymentIntentRequest,
+  CreatePaymentIntentResponse,
   GetPaymentRecordsRequest,
 } from "@/app/types/paymentServiceType";
 import httpClient from "../http/client";
 
 class PaymentService {
-  async createPaymentIntent(payload: CreatePaymentIntentRequest) {
-    return httpClient.post("/payment/create-payment-intent", payload);
+  async createPaymentIntent(
+    payload: CreatePaymentIntentRequest,
+  ): Promise<APIResponse<CreatePaymentIntentResponse>> {
+    return httpClient.post<CreatePaymentIntentResponse>("/payment/create-payment-intent", payload);
   }
 
   async stripeWebhook() {

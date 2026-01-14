@@ -81,3 +81,19 @@ export interface GetProjectEditorDetailsResponse {
   chinese_description: string;
   chinese_content: TiptapContent;
 }
+
+// Project SEO 响应类型
+export interface GetProjectDetailsSeoResponse {
+  title: {
+    zh: string;
+    en: string;
+  };
+  description: {
+    zh: string;
+    en: string;
+  };
+  keywords: {
+    zh: string;
+    en: string;
+  };
+}

@@ -14,24 +14,23 @@ import type {
 } from "@/app/types/clientType";
 
 /**
- * HTTP客户端类，封装axios并提供i18n支持
- * 与backend-server的i18n机制完全对应
+ * HTTP 客户端 - 封装 axios，提供 i18n 和自动 token 刷新
  */
 class HttpClient {
   private axiosInstance: AxiosInstance;
   private currentLocale: SupportedLocale = "en";
   private onAuthFailure?: () => void;
   private localeChangeListeners: Set<() => void> = new Set();
-  // Token刷新相关的锁和队列
+  // Token 刷新锁和队列
   private isRefreshing = false;
   private failedQueue: Array<{
     resolve: (value?: unknown) => void;
     reject: (error?: unknown) => void;
   }> = [];
-  // 刷新次数限制（防止无限重试）
+  // 刷新重试限制
   private refreshRetryCount = 0;
   private readonly MAX_REFRESH_RETRIES = 2;
-  // 事件监听器引用（用于清理）
+  // 事件监听器（用于清理）
   private localeChangeHandler?: (event: Event) => void;
 
   constructor(baseURL?: string) {
@@ -39,12 +38,10 @@ class HttpClient {
       baseURL:
         baseURL || process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.heyxiaoli.com/api/v1",
       timeout: 10000,
-      withCredentials: true, // 重要：确保包含httpOnly cookie
+      withCredentials: true, // 携带 httpOnly cookie
       headers: {
         "Content-Type": "application/json",
       },
-      // 禁用代理检测以避免url.parse()的使用， 生产环境需要开启代理
-      proxy: false,
     });
 
     this.setupInterceptors();
@@ -52,49 +49,51 @@ class HttpClient {
   }
 
   /**
-   * 设置当前语言环境
+   * 设置语言
    */
   setLocale(locale: string) {
     const newLocale = this.normalizeLocale(locale);
     if (newLocale !== this.currentLocale) {
       this.currentLocale = newLocale;
-      // 通知所有监听器语言已变化
       this.notifyLocaleChange();
     }
   }
 
   /**
-   * 获取当前语言环境
+   * 获取当前语言
    */
   getLocale(): SupportedLocale {
     return this.currentLocale;
   }
 
   /**
-   * 标准化语言代码，与后端保持一致
+   * 标准化语言代码（zh-CN/zh-TW → zh, en-US/en-GB → en）
    */
   private normalizeLocale(locale: string): SupportedLocale {
-    return locale.toLowerCase().startsWith("zh") ? "zh" : "en";
+    const lower = locale.toLowerCase();
+    if (lower.startsWith("zh")) return "zh";
+    if (lower.startsWith("en")) return "en";
+    return "en";
   }
 
   /**
-   * 从浏览器获取当前语言环境
+   * 从浏览器获取语言（优先级：Cookie > 浏览器设置）
    */
   private getLocaleFromBrowser(): SupportedLocale {
     if (typeof window === "undefined") return "en";
 
-    // 1. 优先从cookie读取
+    // 1. Cookie
     const cookieMatch = document.cookie.match(/NEXT_LOCALE=([^;]+)/);
     if (cookieMatch) {
       return this.normalizeLocale(cookieMatch[1]);
     }
 
-    // 2. 从浏览器语言设置获取
+    // 2. 浏览器设置
     return this.normalizeLocale(navigator.language || "en");
   }
 
   /**
-   * 设置语言变化监听
+   * 监听语言变化事件
    */
   private setupLocaleListener() {
     if (typeof window === "undefined") return;
@@ -122,7 +121,7 @@ class HttpClient {
   }
 
   /**
-   * 通知所有监听器语言已变化
+   * 通知所有监听器
    */
   private notifyLocaleChange() {
     this.localeChangeListeners.forEach((listener) => listener());
@@ -142,26 +141,18 @@ class HttpClient {
   }
 
   /**
-   * 设置拦截器
+   * 设置请求/响应拦截器
    */
   private setupInterceptors() {
-    // 请求拦截器
+    // 请求拦截器：自动设置语言
     this.axiosInstance.interceptors.request.use(
       (config) => {
-        // 自动检测并设置语言
         const locale = this.getLocaleFromBrowser();
         this.currentLocale = locale;
 
-        // 设置X-Language请求头（后端优先识别）
+        // 设置 X-Language（后端优先识别）
+        // Accept-Language 由浏览器自动发送，无需手动设置
         config.headers["X-Language"] = locale;
-
-        // 设置Accept-Language请求头（后端备用识别）
-        config.headers["Accept-Language"] =
-          locale === "zh" ? "zh-CN,zh;q=0.9,en;q=0.8" : "en-US,en;q=0.9";
-
-        // httpOnly cookie会自动包含在请求中，无需手动设置Authorization头
-        // 确保credentials设置为'include'以包含cookie
-        config.withCredentials = true;
 
         return config;
       },
@@ -170,7 +161,7 @@ class HttpClient {
       },
     );
 
-    // 响应拦截器
+    // 响应拦截器：自动刷新 token + 统一错误处理
     this.axiosInstance.interceptors.response.use(
       (response: AxiosResponse<APIResponse>) => {
         return response;
@@ -178,9 +169,7 @@ class HttpClient {
       async (error: AxiosError<ErrorResponse>) => {
         const originalRequest = error.config;
 
-        // 【自动刷新】处理401错误 - 根据endpoint类型决定是否需要token刷新
-        // 说明：这是使用过程中的透明刷新，当 API 返回 401 时自动触发
-        // 与 authContext 中的主动刷新（页面加载时）互补，确保会话持续性
+        // 处理 401：自动刷新 token
         if (
           error.response?.status === 401 &&
           originalRequest &&
@@ -188,27 +177,9 @@ class HttpClient {
         ) {
           const url = originalRequest.url || "";
 
-          // 定义不需要重试的端点
-          // 说明：
-          // 1. /auth/generate-access-token 必须保留（防止无限循环）
-          // 2. 其他端点可删除（逻辑上都能处理），但保留可以避免401时的无效刷新
-          const noRetryEndpoints = [
-            // 认证相关的公开端点（登录、注册等不需要token）
-            "/auth/send-verification-code",
-            "/auth/send-reset-code",
-            "/auth/create-user-account",
-            "/auth/reset-user-password",
-            "/auth/account-login",
-            "/auth/check-auth-token",
-            "/auth/github-login",
-            "/auth/google-login",
-            "/auth/account-logout",
+          // 刷新端点本身返回 401 时不重试（防止死循环）
+          const noRetryEndpoints = ["/auth/generate-access-token"];
 
-            // 特殊端点（防止无限循环）
-            "/auth/generate-access-token", // ⚠️ 必须保留，否则会死循环
-          ];
-
-          // 如果是不需要重试的端点，直接返回401错误
           if (noRetryEndpoints.some((endpoint) => url.includes(endpoint))) {
             const errorResponse: ErrorResponse = {
               status: error.response?.status || 401,
@@ -217,24 +188,21 @@ class HttpClient {
             return Promise.reject(errorResponse);
           }
 
-          // 如果正在刷新token，将请求加入队列等待刷新完成
+          // 正在刷新：加入队列等待
           if (this.isRefreshing) {
             return new Promise((resolve, reject) => {
               this.failedQueue.push({ resolve, reject });
             })
               .then(() => {
-                // 刷新成功后，重新发送原始请求
                 return this.axiosInstance(originalRequest);
               })
               .catch((err) => {
-                // 刷新失败，返回错误
                 return Promise.reject(err);
               });
           }
 
-          // 检查刷新次数限制
+          // 超过重试次数：直接登出
           if (this.refreshRetryCount >= this.MAX_REFRESH_RETRIES) {
-            // 超过最大重试次数，直接登出
             this.refreshRetryCount = 0;
             await this.logoutAndClearTokens();
             const errorResponse: ErrorResponse = {
@@ -247,57 +215,45 @@ class HttpClient {
             return Promise.reject(errorResponse);
           }
 
-          // 标记请求为已重试，防止重复处理
+          // 开始刷新
           (originalRequest as unknown as { _retry: boolean })._retry = true;
-          // 设置刷新锁，防止并发刷新
           this.isRefreshing = true;
-          // 增加刷新计数
           this.refreshRetryCount++;
 
           try {
-            // 尝试刷新token
+            // 刷新 token
             await this.axiosInstance.patch("/auth/generate-access-token");
 
-            // 刷新成功，重置计数
+            // 刷新成功
             this.refreshRetryCount = 0;
-            // 处理队列中的所有请求
             this.processQueue(null);
             this.isRefreshing = false;
 
-            // 重新发送原始请求，如果再次401则登出
+            // 重试原请求
             return this.axiosInstance(originalRequest).catch((retryError: unknown) => {
-              // 如果刷新后的请求仍然返回401，说明token仍有问题
               if ((retryError as AxiosError)?.response?.status === 401) {
-                // 重置计数并登出
                 this.refreshRetryCount = 0;
                 this.logoutAndClearTokens();
               }
               return Promise.reject(retryError);
             });
           } catch (refreshError: unknown) {
-            // 刷新失败，处理队列中的所有请求
+            // 刷新失败
             this.processQueue(refreshError);
             this.isRefreshing = false;
 
-            // 获取刷新失败的状态码
             const refreshStatus =
               (refreshError as AxiosError)?.status ||
               (refreshError as AxiosError)?.response?.status ||
               ((refreshError as AxiosError)?.request ? 0 : 500);
 
-            // 判断刷新失败的原因
             const shouldLogout = this.shouldLogoutOnRefreshFailure(refreshStatus);
 
             if (shouldLogout) {
-              // Token失效或不存在，需要登出
               this.refreshRetryCount = 0;
               await this.logoutAndClearTokens();
-            } else {
-              // 网络错误或服务器错误，不立即登出，允许用户重试
-              // 注意：这里不重置 refreshRetryCount，下次仍会检查重试次数
             }
 
-            // 统一返回 ErrorResponse 格式
             const errorResponse: ErrorResponse = {
               status: refreshStatus,
               error: this.getRefreshErrorMessage(
@@ -310,28 +266,23 @@ class HttpClient {
           }
         }
 
-        // 处理其他类型的错误，统一返回 ErrorResponse 格式
+        // 处理其他错误：统一格式化为 ErrorResponse
         let errorResponse: ErrorResponse;
 
         if (error.response) {
-          // 服务器响应了错误状态码
           const errorData = error.response.data;
-
-          // 如果后端返回了本地化的错误消息，直接使用
           if (errorData?.error) {
             errorResponse = {
               status: errorData.status || error.response.status,
               error: errorData.error,
             };
           } else {
-            // 后端没有返回标准格式，包装一下
             errorResponse = {
               status: error.response.status,
               error: error.message || "An error occurred",
             };
           }
         } else if (error.request) {
-          // 网络错误（请求已发送但没有收到响应）
           errorResponse = {
             status: 0,
             error:
@@ -340,7 +291,6 @@ class HttpClient {
                 : "Network connection failed. Please check your network.",
           };
         } else {
-          // 请求配置错误或其他错误
           errorResponse = {
             status: 0,
             error:
@@ -356,37 +306,20 @@ class HttpClient {
   }
 
   /**
-   * 判断刷新失败时是否应该登出
-   * @param status 刷新请求返回的状态码
-   * @returns true表示需要登出，false表示可能是网络错误，可以重试
+   * 判断刷新失败时是否需要登出
    */
   private shouldLogoutOnRefreshFailure(status: number): boolean {
-    // 401: token无效/过期
-    // 404: refresh token不存在（已被删除或过期）
-    // 403: 权限不足（可能是token被撤销）
-    if (status === 401 || status === 404 || status === 403) {
-      return true;
-    }
-
-    // 429: 速率限制（暂时不登出，但会受重试次数限制）
-    // 0: 网络错误（不登出，允许重试）
-    // 500+: 服务器错误（不登出，允许重试）
-    return false;
+    // 401/403/404: token 无效，需要登出
+    // 0/429/5xx: 网络或服务器错误，允许重试
+    return status === 401 || status === 404 || status === 403;
   }
 
   /**
-   * 获取刷新token失败时的错误消息（支持本地化）
-   * @param status 错误状态码
-   * @param serverMessage 服务器返回的错误消息
-   * @returns 本地化的错误消息
+   * 获取刷新失败的错误消息（本地化）
    */
   private getRefreshErrorMessage(status: number, serverMessage?: string): string {
-    // 优先使用服务器返回的错误消息
-    if (serverMessage) {
-      return serverMessage;
-    }
+    if (serverMessage) return serverMessage;
 
-    // 根据状态码返回本地化消息
     const isZh = this.currentLocale === "zh";
 
     switch (status) {
@@ -415,8 +348,7 @@ class HttpClient {
   }
 
   /**
-   * 处理等待刷新完成的请求队列
-   * @param error 如果刷新失败，传入错误对象；如果刷新成功，传入null
+   * 处理刷新队列
    */
   private processQueue(error: unknown) {
     this.failedQueue.forEach((promise) => (error ? promise.reject(error) : promise.resolve()));
@@ -424,83 +356,87 @@ class HttpClient {
   }
 
   /**
-   * 通用请求方法
+   * 通用请求
    */
-  async request<T = any>(
+  async request<T = unknown>(
     method: HttpMethod,
     url: string,
     options: RequestOptions = {},
   ): Promise<APIResponse<T>> {
-    try {
-      const config: AxiosRequestConfig = {
-        method,
-        url,
-        headers: options.headers,
-        params: options.params,
-        data: options.data,
-        timeout: options.timeout,
-        onUploadProgress: options.uploadProgress,
-      };
+    const config: AxiosRequestConfig = {
+      method,
+      url,
+      headers: options.headers,
+      params: options.params,
+      data: options.data,
+      timeout: options.timeout,
+      onUploadProgress: options.uploadProgress,
+    };
 
-      const response = await this.axiosInstance.request<APIResponse<T>>(config);
+    const response = await this.axiosInstance.request<APIResponse<T>>(config);
 
-      // 确保返回成功响应
-      if (response.data && "message" in response.data) {
-        return response.data as SuccessResponse<T>;
-      }
-
-      // 如果响应格式不符合预期，包装一下
-      return {
-        status: response.status,
-        message: "Success",
-        data: response.data as T,
-      };
-    } catch (error: unknown) {
-      // 拦截器已经将错误统一格式化为 ErrorResponse
-      // 这里直接返回错误对象而不是抛出，这样调用方可以统一处理
-      return error as ErrorResponse;
+    if (response.data && "message" in response.data) {
+      return response.data as SuccessResponse<T>;
     }
+
+    return {
+      status: response.status,
+      message: "Success",
+      data: response.data as T,
+    };
   }
 
   /**
-   * GET请求
+   * GET 请求
    */
-  async get<T = any>(url: string, options?: RequestOptions): Promise<APIResponse<T>> {
+  async get<T = unknown>(url: string, options?: RequestOptions): Promise<APIResponse<T>> {
     return this.request<T>("GET", url, options);
   }
 
   /**
-   * POST请求
+   * POST 请求
    */
-  async post<T = any>(url: string, data?: any, options?: RequestOptions): Promise<APIResponse<T>> {
+  async post<T = unknown>(
+    url: string,
+    data?: RequestOptions["data"],
+    options?: RequestOptions,
+  ): Promise<APIResponse<T>> {
     return this.request<T>("POST", url, { ...options, data });
   }
 
   /**
-   * PUT请求
+   * PUT 请求
    */
-  async put<T = any>(url: string, data?: any, options?: RequestOptions): Promise<APIResponse<T>> {
+  async put<T = unknown>(
+    url: string,
+    data?: RequestOptions["data"],
+    options?: RequestOptions,
+  ): Promise<APIResponse<T>> {
     return this.request<T>("PUT", url, { ...options, data });
   }
 
   /**
-   * DELETE请求
+   * DELETE 请求
    */
-  async delete<T = any>(url: string, options?: RequestOptions): Promise<APIResponse<T>> {
+  async delete<T = unknown>(url: string, options?: RequestOptions): Promise<APIResponse<T>> {
     return this.request<T>("DELETE", url, options);
   }
 
   /**
-   * PATCH请求
+   * PATCH 请求
    */
-  async patch<T = any>(url: string, data?: any, options?: RequestOptions): Promise<APIResponse<T>> {
+  async patch<T = unknown>(
+    url: string,
+    data?: RequestOptions["data"],
+    options?: RequestOptions,
+  ): Promise<APIResponse<T>> {
     return this.request<T>("PATCH", url, { ...options, data });
   }
 
   /**
    * 文件上传
    */
-  async upload<T = any>(
+  async upload<T = unknown>(
     url: string,
     file: File | FormData,
     options?: RequestOptions,
@@ -527,45 +463,41 @@ class HttpClient {
   /**
    * 文件下载
    */
-  async download(
-    url: string,
-    params?: Record<string, unknown>,
-  ): Promise<{ success: boolean; message: string }> {
-    try {
-      const response = await this.axiosInstance.get(url, {
-        params,
-        responseType: "blob",
-        headers: {
-          Accept: "application/octet-stream",
-        },
-      });
+  async download(url: string, params?: Record<string, unknown>): Promise<APIResponse<void>> {
+    const response = await this.axiosInstance.get(url, {
+      params,
+      responseType: "blob",
+      headers: {
+        Accept: "application/octet-stream",
+      },
+    });
 
-      // 从响应头获取文件名
-      const contentDisposition = response.headers["content-disposition"];
-      let filename = "download";
-      if (contentDisposition) {
-        const filenameMatch = contentDisposition.match(/filename="([^"]+)"/);
-        if (filenameMatch) {
-          filename = filenameMatch[1];
-        }
+    // 获取文件名
+    const contentDisposition = response.headers["content-disposition"];
+    let filename = "download";
+    if (contentDisposition) {
+      const filenameMatch = contentDisposition.match(/filename="([^"]+)"/);
+      if (filenameMatch) {
+        filename = filenameMatch[1];
       }
-
-      // 创建blob URL并触发下载
-      const blob = new Blob([response.data]);
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(downloadUrl);
-
-      return { success: true, message: "文件下载成功" };
-    } catch (error: unknown) {
-      console.error("下载失败:", error);
-      throw error;
     }
+
+    // 触发下载
+    const blob = new Blob([response.data]);
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(downloadUrl);
+
+    return {
+      status: 200,
+      message: this.currentLocale === "zh" ? "文件下载成功" : "File downloaded successfully",
+      data: undefined,
+    };
   }
 
   /**
@@ -576,46 +508,38 @@ class HttpClient {
   }
 
   /**
-   * 调用后端logout并清除cookie中的token
+   * 登出并清除 token
    */
   private async logoutAndClearTokens() {
     try {
-      // 调用后端logout接口，删除cookie中的access token和refresh token
-      // 注意：前端JavaScript无法直接删除httpOnly cookie，必须通过后端接口
+      // 调用后端接口删除 httpOnly cookie
       await this.axiosInstance.delete("/auth/account-logout");
-    } catch (error) {
-      // 即使logout接口调用失败也要继续执行本地清理
-      console.warn("Backend logout failed:", error);
+    } catch {
+      // 即使失败也继续本地清理
     } finally {
-      // 执行本地登出处理
       this.handleAuthFailure();
     }
   }
 
   /**
-   * 处理认证失败 - 清除状态并跳转登录页
+   * 处理认证失败
    */
   private handleAuthFailure() {
-    // 优先使用自定义回调
     if (this.onAuthFailure) {
       this.onAuthFailure();
       return;
     }
 
-    // 默认处理逻辑
     if (typeof window !== "undefined") {
-      // 清除可能的本地存储数据
       localStorage.removeItem("user");
       sessionStorage.clear();
 
-      // 触发自定义事件，通知应用层处理登出
       window.dispatchEvent(
         new CustomEvent("auth:logout", {
           detail: { reason: "token_expired" },
         }),
       );
 
-      // 跳转到登录页（如果当前不在登录页）
       if (!window.location.pathname.includes("/login")) {
         window.location.href = "/login";
       }
@@ -623,38 +547,31 @@ class HttpClient {
   }
 
   /**
-   * 获取axios实例（用于高级用法）
+   * 获取 axios 实例（高级用法）
    */
   getAxiosInstance(): AxiosInstance {
     return this.axiosInstance;
   }
 
   /**
-   * 清理资源 - 移除事件监听器和请求队列
-   * 主要用于组件卸载或应用关闭时清理资源，防止内存泄漏
+   * 清理资源（防止内存泄漏）
    */
   destroy() {
-    // 清理事件监听器
     if (typeof window !== "undefined" && this.localeChangeHandler) {
       window.removeEventListener("locale:changed", this.localeChangeHandler);
       this.localeChangeHandler = undefined;
     }
 
-    // 清理请求队列
     const destroyError = new Error("HttpClient destroyed");
     this.failedQueue.forEach((promise) => promise.reject(destroyError));
     this.failedQueue = [];
 
-    // 重置刷新相关状态
     this.isRefreshing = false;
     this.refreshRetryCount = 0;
-
-    // 清理语言变化监听器
     this.localeChangeListeners.clear();
   }
 }
 
-// 创建默认实例
 const httpClient = new HttpClient();
 
 export default httpClient;

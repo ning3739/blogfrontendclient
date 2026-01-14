@@ -17,7 +17,6 @@ import useSection from "@/app/hooks/useSection";
 import type { SectionListItem } from "@/app/types/sectionServiceType";
 import type { GetSeoItemResponse } from "@/app/types/seoServiceType";
 
-// 懒加载 TiptapEditor，减少初始加载大小
 const TiptapEditor = dynamic(() => import("@/app/components/(feature)/editor/TiptapEditor"), {
   loading: () => (
     <div className="bg-card-50 border border-border-50 rounded-sm shadow-sm p-8 min-h-[500px] flex items-center justify-center">
@@ -43,7 +42,6 @@ export default function EditorPage() {
   const [hasMoreSeo, setHasMoreSeo] = useState<boolean>(false);
   const [content, setContent] = useState<JSONContent | null>(null);
 
-  // 获取 SEO 列表
   const {
     data: seoLists,
     isLoading: isSeoLoading,
@@ -51,28 +49,22 @@ export default function EditorPage() {
     mutate: refreshSeoLists,
   } = useSWR([`/seo/admin/get-seo-lists?page=${currentSeoPage}&size=20`, locale]);
 
-  // 处理 SEO 列表加载更多
   const handleLoadMoreSeo = () => {
     setCurrentSeoPage((prev) => prev + 1);
   };
 
-  // 当 SEO 数据更新时，累积到 allSeoItems 中
   useEffect(() => {
     if (seoLists?.items) {
       if (currentSeoPage === 1) {
-        // 第一页，直接设置
         setAllSeoItems(seoLists.items);
       } else {
-        // 后续页面，累积添加
         setAllSeoItems((prev) => [...prev, ...seoLists.items]);
       }
 
-      // 检查是否还有更多数据
       setHasMoreSeo(seoLists.pagination?.has_next || false);
     }
   }, [seoLists, currentSeoPage]);
 
-  // 使用项目编辑 Hook
   const { projectMetaData, isProjectLoading, handleProjectMetaDataSave, handleProjectSave } =
     useProjectEditor({
       type,
@@ -83,7 +75,6 @@ export default function EditorPage() {
       setContent,
     });
 
-  // 使用博客编辑 Hook
   const { blogMetaData, isBlogLoading, handleBlogMetaDataSave, handleBlogSave } = usePostEditor({
     type,
     blogSlug,
@@ -95,18 +86,15 @@ export default function EditorPage() {
 
   const handleContentChange = (json: JSONContent) => {
     setContent(json);
-    // 可以在这里添加其他逻辑，比如自动保存到后端
   };
 
   const handleSave = async () => {
     try {
-      // 处理项目保存
       if (type === "project" || (type === "update" && projectSlug)) {
         await handleProjectSave();
         return;
       }
 
-      // 处理博客保存
       if (type === "blog" || (type === "update" && blogSlug)) {
         await handleBlogSave();
         return;

@@ -34,7 +34,6 @@ function UpdateFriendModel({
     }
   }, [isOpen, currentType]);
 
-  // ESC键关闭模态框
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {

@@ -73,7 +73,6 @@ const Header = () => {
     });
   };
 
-  // 关闭移动菜单当路由变化时
   useEffect(() => {
     setMobileMenuOpen(false);
     setDropdownMenuOpen(false);
@@ -241,6 +240,7 @@ const Header = () => {
             className="hidden md:flex items-center space-x-4"
           >
             {isAuthenticated ? (
+              // biome-ignore lint/a11y/noStaticElementInteractions: Container for dropdown menu, mouse events are necessary for UX
               <div
                 className="relative group hover:scale-[1.02] transition-transform duration-200"
                 onMouseEnter={() => setDropdownMenuOpen(true)}

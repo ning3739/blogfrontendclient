@@ -65,7 +65,6 @@ const ArchivePage: React.FC = () => {
     }
   }, [moreBlogsData]);
 
-  // 处理加载更多按钮点击
   const handleLoadMore = () => {
     if (!hasNext || isLoadingMore || !cursor) return;
     setLoadMoreCursor(cursor);

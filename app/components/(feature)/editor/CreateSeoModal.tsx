@@ -47,7 +47,6 @@ export const CreateSeoModal = ({
     }
   }, [isOpen, initialData]);
 
-  // ESC键关闭模态框
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -84,7 +83,6 @@ export const CreateSeoModal = ({
           chinese_keywords: formData.chinese_keywords,
         });
       } else {
-        // 创建模式
         response = await seoService.createSeo(formData as CreateSeoRequest);
       }
 
@@ -93,8 +91,9 @@ export const CreateSeoModal = ({
           "message" in response ? response.message : seoId ? "SEO updated" : "SEO created",
         );
         // 调用成功回调
-        if (onSuccess) {
-          onSuccess(response.data.seo_id || seoId);
+        if (onSuccess && seoId) {
+          // 更新模式：使用现有的 seoId
+          onSuccess(seoId);
         }
         onClose();
       } else {

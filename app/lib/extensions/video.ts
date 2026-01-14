@@ -1,7 +1,8 @@
 import { mergeAttributes, Node } from "@tiptap/core";
+import type { HTMLAttributes } from "react";
 
 export interface VideoOptions {
-  HTMLAttributes: Record<string, any>;
+  HTMLAttributes: HTMLAttributes<HTMLElement>;
 }
 
 export interface VideoAttrs {
@@ -109,7 +110,7 @@ export const Video = Node.create<VideoOptions>({
     ];
   },
 
-  renderHTML({ HTMLAttributes, node }) {
+  renderHTML({ node }) {
     const { caption, textAlign, autoplay, loop, ...restAttrs } = node.attrs;
 
     const videoAttrs = mergeAttributes(

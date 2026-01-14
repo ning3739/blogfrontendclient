@@ -47,7 +47,6 @@ const HomeDetails = () => {
     },
   ];
 
-  // 获取热门博客数据
   const {
     data: blogLists,
     isLoading,
@@ -173,17 +172,15 @@ const HomeDetails = () => {
       </div>
 
       {/* 介绍文字 */}
-      <div
-        className="mb-4 sm:mb-6 md:mb-8 text-xs sm:text-sm md:text-base leading-relaxed max-w-3xl text-center sm:text-left relative"
-        onMouseEnter={() => setIsHovering(true)}
-        onMouseLeave={() => setIsHovering(false)}
-      >
+      <div className="mb-4 sm:mb-6 md:mb-8 text-xs sm:text-sm md:text-base leading-relaxed max-w-3xl text-center sm:text-left relative">
         {/* 背景装饰 */}
         <motion.div
           className="absolute -inset-3 bg-linear-to-r from-primary-500/5 via-primary-400/10 to-primary-500/5 rounded-2xl blur-xl"
           initial={{ opacity: 0.6 }}
           animate={{ opacity: isHovering ? 1 : 0.6 }}
           transition={{ duration: 0.3 }}
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
         />
 
         <div className="relative z-10 space-y-4">

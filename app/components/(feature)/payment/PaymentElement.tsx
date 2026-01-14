@@ -1,6 +1,7 @@
 "use client";
 
 import { Elements } from "@stripe/react-stripe-js";
+import type { Stripe } from "@stripe/stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
@@ -20,7 +21,7 @@ const PaymentElement = ({
   final_amount,
 }: CreatePaymentIntentRequest) => {
   const { theme } = useTheme();
-  const [stripePromise, setStripePromise] = useState<any>(null);
+  const [stripePromise, setStripePromise] = useState<Stripe | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

@@ -25,46 +25,37 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 防止重复提交
     if (loading || isSubmitting) {
       return;
     }
 
-    // 使用 Validator 进行表单验证
     const validationResult = Validator.validateLoginForm(email, password, 8);
 
     if (!Validator.validateAndShowError(validationResult, validationT, toast)) {
       return;
     }
 
-    // 设置提交状态
     setIsSubmitting(true);
 
     try {
-      // 执行登录
       await accountLogin({
         email: Validator.cleanEmail(email),
         password,
       });
     } finally {
-      // 无论成功或失败都清除提交状态
       setIsSubmitting(false);
     }
   };
 
-  // Google 登录处理函数
   const handleGoogleLogin = () => {
     if (loading) return;
 
-    // 直接调用重定向函数，不需要异步处理
     googleLogin();
   };
 
-  // GitHub 登录处理函数
   const handleGithubLogin = () => {
     if (loading) return;
 
-    // 直接调用重定向函数，不需要异步处理
     githubLogin();
   };
 

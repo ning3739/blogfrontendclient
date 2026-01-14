@@ -1,11 +1,13 @@
 import type {
   AccountLoginRequest,
+  CheckAuthTokenResponse,
   CreateUserAccountRequest,
   ResetLoggedInUserPasswordRequest,
   ResetUserPasswordRequest,
   SendResetCodeRequest,
   SendVerificationCodeRequest,
 } from "@/app/types/authServiceType";
+import type { APIResponse } from "@/app/types/clientType";
 import httpClient from "../http/client";
 
 class AuthService {
@@ -51,8 +53,8 @@ class AuthService {
     return httpClient.delete("/auth/account-logout");
   }
 
-  async checkAuthToken() {
-    return httpClient.get("/auth/check-auth-token");
+  async checkAuthToken(): Promise<APIResponse<CheckAuthTokenResponse>> {
+    return httpClient.get<CheckAuthTokenResponse>("/auth/check-auth-token");
   }
 
   async generateAccessToken() {

@@ -12,13 +12,11 @@ import EmptyState from "@/app/components/ui/error/EmptyState";
 import ErrorDisplay from "@/app/components/ui/error/ErrorDisplay";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
 import httpClient from "@/app/lib/http/client";
-import type { GetFriendListItemsResponse } from "@/app/types/friendServiceType";
+import type {
+  GetFriendListItemsResponse,
+  GetFriendListResponse,
+} from "@/app/types/friendServiceType";
 import { FriendType } from "@/app/types/friendServiceType";
-
-// 扩展类型，包含 type_name
-interface FriendItem extends GetFriendListItemsResponse {
-  type_name: string;
-}
 
 // 辅助函数：获取枚举的 name 字符串
 const getFriendTypeName = (type: FriendType): string => {
@@ -32,7 +30,7 @@ const FriendLinkList = ({ friend_id }: { friend_id: number }) => {
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasNext, setHasNext] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [allFriends, setAllFriends] = useState<FriendItem[]>([]);
+  const [allFriends, setAllFriends] = useState<GetFriendListItemsResponse[]>([]);
   const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
 
   // 使用SWR获取初始数据
@@ -80,9 +78,9 @@ const FriendLinkList = ({ friend_id }: { friend_id: number }) => {
     setIsLoadingMore(true);
     try {
       const url = `/friend/get-friend-list/${friend_id}?limit=${limit}&cursor=${cursor}`;
-      const response = await httpClient.get(url);
+      const response = await httpClient.get<GetFriendListResponse>(url);
 
-      if (response && "data" in response) {
+      if (response && "data" in response && response.data) {
         const responseData = response.data;
 
         if (responseData.friend_lists && responseData.pagination) {
@@ -99,7 +97,6 @@ const FriendLinkList = ({ friend_id }: { friend_id: number }) => {
     }
   };
 
-  // 加载状态
   if (isLoading) {
     return <LoadingSpinner message={commonT("loading")} size="md" />;
   }
@@ -152,7 +149,7 @@ const FriendLinkList = ({ friend_id }: { friend_id: number }) => {
     variant,
     index,
   }: {
-    friend: FriendItem;
+    friend: GetFriendListItemsResponse;
     variant: "featured" | "default";
     index: number;
   }) => (

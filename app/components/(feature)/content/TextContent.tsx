@@ -20,7 +20,6 @@ import { Image } from "@/app/lib/extensions/image";
 import { Video } from "@/app/lib/extensions/video";
 import ImagePreview from "./ImagePreview";
 
-// 创建 lowlight 实例
 const lowlight = createLowlight(common);
 
 // 注册额外的语言（补充 common 包中没有的，与 MenuBar 中 supportedLanguages 保持一致）
@@ -231,7 +230,6 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
         codeElement.style.width = "max-content";
         codeElement.style.minWidth = "100%";
 
-        // 创建行号容器
         const lineNumbersContainer = document.createElement("div");
         lineNumbersContainer.className =
           "line-numbers absolute left-0 top-0 h-full w-12 bg-background-200 text-foreground-500 text-xs font-mono select-none pointer-events-none py-4 border-r border-border-200 z-10 flex flex-col";
@@ -246,14 +244,12 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
           lineNumbersContainer.appendChild(lineNumber);
         }
 
-        // 创建复制按钮
         const copyButton = document.createElement("button");
         copyButton.className =
           "copy-button absolute top-2 right-2 px-2 py-1 text-xs bg-background-500 text-foreground-50 rounded hover:bg-background-400 transition-colors duration-200 opacity-100 z-10";
         copyButton.textContent = contentT("copy");
         copyButton.onclick = () => copyCodeBlock(codeElement as HTMLElement, copyButton);
 
-        // 创建折叠按钮（初始隐藏）
         const collapseButton = document.createElement("button");
         collapseButton.className =
           "collapse-button absolute top-2 right-16 px-2 py-1 text-xs bg-background-500 text-foreground-50 rounded hover:bg-background-400 transition-colors duration-200 opacity-100 z-10 hidden";
@@ -295,20 +291,17 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
         preHTMLElement.style.padding = "0";
         preHTMLElement.style.fontFamily =
           'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
-        
+
         // 使用 scrollbar-gutter 避免内容跳动，但只在需要时显示滚动条
         preHTMLElement.style.scrollbarGutter = "stable";
 
         // 检测高度和宽度并应用相应功能
         setTimeout(() => {
           const height = preHTMLElement.scrollHeight;
-          const width = preHTMLElement.scrollWidth;
-          const clientWidth = preHTMLElement.clientWidth;
 
           // 检测高度并应用折叠
           let hasCollapseButton = false;
           if (height > 300) {
-            // 显示折叠按钮
             collapseButton.classList.remove("hidden");
             hasCollapseButton = true;
             // 应用折叠状态
@@ -320,7 +313,6 @@ const TextContent = ({ content }: { content: JSONContent | string }) => {
             collapseButton.classList.add("bg-primary-500");
           }
 
-          // 创建语言标签，根据是否有折叠按钮调整位置
           const languageLabel = document.createElement("div");
           const languagePosition = hasCollapseButton ? "right-32" : "right-16";
           languageLabel.className = `language-label absolute top-2 ${languagePosition} px-2 py-1 text-xs bg-primary-500 text-white rounded-sm font-medium z-10`;

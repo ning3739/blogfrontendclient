@@ -42,6 +42,7 @@ export interface GetFriendListItemsResponse {
   chinese_title: string;
   chinese_description: string;
   type: number;
+  type_name: string;
   site_url: string;
   id: number;
   created_at: string;
@@ -51,4 +52,13 @@ export enum FriendType {
   featured = 1,
   normal = 2,
   hidden = 3,
+}
+
+// Friend List 响应类型
+export interface GetFriendListResponse {
+  friend_lists: GetFriendListItemsResponse[];
+  pagination: {
+    next_cursor: string | null;
+    has_next: boolean;
+  };
 }

@@ -29,7 +29,6 @@ import type {
 export default function AnalyticsPage() {
   const format = useFormatter();
 
-  // 获取所有数据
   const { data: overview } = useSWR<OverviewStatistics>("/analytic/admin/overview");
 
   const { data: userStats } = useSWR<UserStatistics>("/analytic/admin/user-statistics");

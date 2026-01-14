@@ -40,3 +40,12 @@ export interface BoardCommentItem {
   updated_at?: string;
   children?: BoardCommentItem[];
 }
+
+// Board 评论列表响应类型
+export interface GetBoardCommentListsResponse {
+  comments: BoardCommentItem[];
+  pagination: {
+    next_cursor: string | null;
+    has_next: boolean;
+  };
+}
