@@ -29,9 +29,13 @@ import type {
 export default function AnalyticsPage() {
   const format = useFormatter();
 
-  const { data: overview } = useSWR<OverviewStatistics>("/analytic/admin/overview");
+  const { data: overview } = useSWR<OverviewStatistics>(
+    "/analytic/admin/overview"
+  );
 
-  const { data: userStats } = useSWR<UserStatistics>("/analytic/admin/user-statistics");
+  const { data: userStats } = useSWR<UserStatistics>(
+    "/analytic/admin/user-statistics"
+  );
 
   const {
     data: userLocations,
@@ -75,7 +79,9 @@ export default function AnalyticsPage() {
     error: revenueProjectsError,
   } = useSWR<RevenueProject[]>("/analytic/admin/top-ten-revenue-projects");
 
-  const { data: mediaStats } = useSWR<MediaStatistics>("/analytic/admin/media-statistics");
+  const { data: mediaStats } = useSWR<MediaStatistics>(
+    "/analytic/admin/media-statistics"
+  );
 
   const {
     data: growthTrends,
@@ -85,13 +91,15 @@ export default function AnalyticsPage() {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-background-50 via-background-50 to-background-100 w-full overflow-x-hidden">
-      <div className="max-w-[1600px] mx-auto">
+      <div className="max-w-400 mx-auto">
         {/* Header Section */}
         <div className="px-4 sm:px-6 pt-4 sm:pt-6 pb-3 sm:pb-4">
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground-50 mb-1 sm:mb-2">
             数据分析
           </h1>
-          <p className="text-sm sm:text-base text-foreground-300">实时监控网站运营数据</p>
+          <p className="text-sm sm:text-base text-foreground-300">
+            实时监控网站运营数据
+          </p>
         </div>
 
         {/* Stats Overview Cards */}
@@ -138,14 +146,22 @@ export default function AnalyticsPage() {
             />
             <StatsCard
               title="总收入"
-              value={formatCurrency(overview?.payments.total_revenue || 0, format, "NZD")}
+              value={formatCurrency(
+                overview?.payments.total_revenue || 0,
+                format,
+                "NZD"
+              )}
               subtitle={
                 paymentStats
                   ? `本月: ${formatCurrency(
                       paymentStats.monthly_revenue,
                       format,
-                      "NZD",
-                    )} | 本年: ${formatCurrency(paymentStats.yearly_revenue, format, "NZD")}`
+                      "NZD"
+                    )} | 本年: ${formatCurrency(
+                      paymentStats.yearly_revenue,
+                      format,
+                      "NZD"
+                    )}`
                   : undefined
               }
               icon={DollarSign}
@@ -192,12 +208,15 @@ export default function AnalyticsPage() {
             transition={{ delay: 0.7 }}
             className="mb-4"
           >
-            <h2 className="text-xl sm:text-2xl font-semibold text-foreground-50 mb-1">用户分析</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold text-foreground-50 mb-1">
+              用户分析
+            </h2>
             <p className="text-sm text-foreground-300">
               用户地理位置分布
               {userStats && (
                 <span className="ml-2 text-foreground-200">
-                  (总用户: {userStats.total_users} | 活跃用户: {userStats.active_users})
+                  (总用户: {userStats.total_users} | 活跃用户:{" "}
+                  {userStats.active_users})
                 </span>
               )}
             </p>
@@ -223,12 +242,15 @@ export default function AnalyticsPage() {
             transition={{ delay: 0.9 }}
             className="mb-4"
           >
-            <h2 className="text-xl sm:text-2xl font-semibold text-foreground-50 mb-1">博客分析</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold text-foreground-50 mb-1">
+              博客分析
+            </h2>
             <p className="text-sm text-foreground-300">
               博客表现与互动数据
               {blogStats && (
                 <span className="ml-2 text-foreground-200">
-                  (精选: {blogStats.featured_blogs} | 归档: {blogStats.archived_blogs} | 本月更新:{" "}
+                  (精选: {blogStats.featured_blogs} | 归档:{" "}
+                  {blogStats.archived_blogs} | 本月更新:{" "}
                   {blogStats.updated_blogs_this_month})
                 </span>
               )}
@@ -393,7 +415,9 @@ export default function AnalyticsPage() {
             transition={{ delay: 1.4 }}
             className="mb-4"
           >
-            <h2 className="text-xl sm:text-2xl font-semibold text-foreground-50 mb-1">项目分析</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold text-foreground-50 mb-1">
+              项目分析
+            </h2>
             <p className="text-sm text-foreground-300">项目类型与收入数据</p>
           </motion.div>
 
@@ -407,10 +431,12 @@ export default function AnalyticsPage() {
                 title="项目类型分布"
                 data={
                   projectStats
-                    ? Object.entries(projectStats.type_distribution).map(([name, value]) => ({
-                        name,
-                        value,
-                      }))
+                    ? Object.entries(projectStats.type_distribution).map(
+                        ([name, value]) => ({
+                          name,
+                          value,
+                        })
+                      )
                     : undefined
                 }
                 isLoading={projectStatsLoading}
@@ -485,12 +511,12 @@ export default function AnalyticsPage() {
               >
                 <DistributionChart
                   title="支付方式分布"
-                  data={Object.entries(paymentStats.payment_type_distribution).map(
-                    ([name, value]) => ({
-                      name,
-                      value,
-                    }),
-                  )}
+                  data={Object.entries(
+                    paymentStats.payment_type_distribution
+                  ).map(([name, value]) => ({
+                    name,
+                    value,
+                  }))}
                   isLoading={paymentStatsLoading}
                   error={paymentStatsError}
                 />
@@ -502,12 +528,17 @@ export default function AnalyticsPage() {
               >
                 <DistributionChart
                   title="支付状态分布"
-                  data={Object.entries(paymentStats.payment_status_distribution).map(
-                    ([name, value]) => ({
-                      name: name === "success" ? "成功" : name === "failed" ? "失败" : "取消",
-                      value,
-                    }),
-                  )}
+                  data={Object.entries(
+                    paymentStats.payment_status_distribution
+                  ).map(([name, value]) => ({
+                    name:
+                      name === "success"
+                        ? "成功"
+                        : name === "failed"
+                        ? "失败"
+                        : "取消",
+                    value,
+                  }))}
                   colors={["#10B981", "#EF4444", "#F59E0B"]}
                   isLoading={paymentStatsLoading}
                   error={paymentStatsError}

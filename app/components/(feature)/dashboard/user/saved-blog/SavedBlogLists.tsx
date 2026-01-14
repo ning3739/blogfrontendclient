@@ -43,20 +43,26 @@ const SavedBlogLists: React.FC<SavedBlogListsProps> = ({
 
     setRemovingIds((prev) => [...prev, blogId]);
 
+    // 乐观更新：立即从列表中移除
+    setBlogItems((prev) => prev.filter((blog) => blog.blog_id !== blogId));
+
     try {
-      // 调用取消收藏 API
       const response = await BlogService.saveBlogButton({ blog_id: blogId });
 
       if (response.status === 200) {
         toast.success("message" in response ? response.message : "Blog unsaved");
-        // 使用 mutate 重新获取数据
+        // 通知父组件数据已更改
         if (onDataChange) {
           onDataChange();
         }
       } else {
+        // 如果失败，恢复数据
+        setBlogItems(savedBlogItems);
         toast.error("error" in response ? response.error : "Failed to unsave blog");
       }
     } catch (error) {
+      // 如果出错，恢复数据
+      setBlogItems(savedBlogItems);
       console.error("Failed to unsave blog:", error);
       toast.error("Failed to unsave blog");
     } finally {
@@ -142,11 +148,7 @@ const SavedBlogLists: React.FC<SavedBlogListsProps> = ({
                         className="p-1.5 lg:p-2 bg-error-50 text-error-400 rounded-sm hover:bg-error-100 transition-colors disabled:opacity-50"
                         title="取消收藏"
                       >
-                        <Trash2
-                          className={`w-3.5 h-3.5 lg:w-4 lg:h-4 ${
-                            removingIds.includes(blog.blog_id) ? "animate-spin" : ""
-                          }`}
-                        />
+                        <Trash2 className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
                       </motion.button>
                     </div>
                   </td>
@@ -220,11 +222,7 @@ const SavedBlogLists: React.FC<SavedBlogListsProps> = ({
                     className="p-1.5 bg-error-50 text-error-400 rounded-sm hover:bg-error-100 transition-colors disabled:opacity-50"
                     title="取消收藏"
                   >
-                    <Trash2
-                      className={`w-3.5 h-3.5 ${
-                        removingIds.includes(blog.blog_id) ? "animate-spin" : ""
-                      }`}
-                    />
+                    <Trash2 className="w-3.5 h-3.5" />
                   </motion.button>
                 </div>
               </div>
@@ -296,11 +294,7 @@ const SavedBlogLists: React.FC<SavedBlogListsProps> = ({
                     className="p-1.5 bg-error-50 text-error-400 rounded-sm hover:bg-error-100 transition-colors active:bg-error-100 disabled:opacity-50"
                     title="取消收藏"
                   >
-                    <Trash2
-                      className={`w-3.5 h-3.5 ${
-                        removingIds.includes(blog.blog_id) ? "animate-spin" : ""
-                      }`}
-                    />
+                    <Trash2 className="w-3.5 h-3.5" />
                   </motion.button>
                 </div>
               </div>
