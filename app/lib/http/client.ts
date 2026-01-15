@@ -27,10 +27,7 @@ class HttpClient {
     resolve: (value?: unknown) => void;
     reject: (error?: unknown) => void;
   }> = [];
-  // 刷新重试限制
-  private refreshRetryCount = 0;
-  private readonly MAX_REFRESH_RETRIES = 2;
-  // 防止频繁刷新的冷却时间
+  // 防止频繁刷新的冷却时间（防止网络抖动）
   private lastRefreshAttempt = 0;
   private readonly REFRESH_COOLDOWN = 1000; // 1秒冷却时间
   // 事件监听器（用于清理）
@@ -181,11 +178,8 @@ class HttpClient {
           const url = originalRequest.url || "";
 
           // 刷新端点本身返回 401/404 时不重试（防止死循环）
-          const noRetryEndpoints = ["/auth/generate-access-token"];
-
-          if (noRetryEndpoints.some((endpoint) => url.includes(endpoint))) {
-            // 刷新失败，清理状态并登出
-            this.refreshRetryCount = 0;
+          if (url.includes("/auth/generate-access-token")) {
+            // 刷新失败，后端已删除 cookies，直接登出
             this.isRefreshing = false;
             await this.logoutAndClearTokens();
             
@@ -201,15 +195,11 @@ class HttpClient {
             return new Promise((resolve, reject) => {
               this.failedQueue.push({ resolve, reject });
             })
-              .then(() => {
-                return this.axiosInstance(originalRequest);
-              })
-              .catch((err) => {
-                return Promise.reject(err);
-              });
+              .then(() => this.axiosInstance(originalRequest))
+              .catch((err) => Promise.reject(err));
           }
 
-          // 冷却时间检查：防止频繁刷新
+          // 冷却时间检查：防止网络抖动时的频繁刷新
           const now = Date.now();
           if (now - this.lastRefreshAttempt < this.REFRESH_COOLDOWN) {
             const errorResponse: ErrorResponse = {
@@ -223,69 +213,32 @@ class HttpClient {
           }
           this.lastRefreshAttempt = now;
 
-          // 超过重试次数：直接登出
-          if (this.refreshRetryCount >= this.MAX_REFRESH_RETRIES) {
-            this.refreshRetryCount = 0;
-            await this.logoutAndClearTokens();
-            const errorResponse: ErrorResponse = {
-              status: 401,
-              error:
-                this.currentLocale === "zh"
-                  ? "会话已过期，请重新登录"
-                  : "Session expired. Please login again.",
-            };
-            return Promise.reject(errorResponse);
-          }
-
           // 开始刷新
           (originalRequest as unknown as { _retry: boolean })._retry = true;
           this.isRefreshing = true;
-          this.refreshRetryCount++;
 
           try {
             // 刷新 token
             await this.axiosInstance.patch("/auth/generate-access-token");
 
-            // 刷新成功
-            this.refreshRetryCount = 0;
+            // 刷新成功：处理队列并重试原请求
             this.processQueue(null);
             this.isRefreshing = false;
 
-            // 重试原请求
-            return this.axiosInstance(originalRequest).catch((retryError: unknown) => {
-              if ((retryError as AxiosError)?.response?.status === 401) {
-                this.refreshRetryCount = 0;
-                this.logoutAndClearTokens();
-              }
-              return Promise.reject(retryError);
-            });
+            return this.axiosInstance(originalRequest);
           } catch (refreshError: unknown) {
-            // 刷新失败
+            // 刷新失败：处理队列并登出
             this.processQueue(refreshError);
             this.isRefreshing = false;
 
-            const refreshStatus =
-              (refreshError as AxiosError)?.status ||
-              (refreshError as AxiosError)?.response?.status ||
-              ((refreshError as AxiosError)?.request ? 0 : 500);
-
-            const shouldLogout = this.shouldLogoutOnRefreshFailure(refreshStatus);
-
-            if (shouldLogout) {
-              this.refreshRetryCount = 0;
-              await this.logoutAndClearTokens();
-            } else if (refreshStatus === 429) {
-              // 429 错误：请求过于频繁，不登出，但清理重试计数
-              this.refreshRetryCount = 0;
-            }
+            // 后端已删除 cookies，直接登出
+            await this.logoutAndClearTokens();
 
             const errorResponse: ErrorResponse = {
-              status: refreshStatus,
-              error: this.getRefreshErrorMessage(
-                refreshStatus,
-                (refreshError as ErrorResponse)?.error ||
-                  ((refreshError as AxiosError)?.response?.data as ErrorResponse)?.error,
-              ),
+              status: (refreshError as AxiosError)?.response?.status || 401,
+              error:
+                ((refreshError as AxiosError)?.response?.data as ErrorResponse)?.error ||
+                (this.currentLocale === "zh" ? "会话已过期，请重新登录" : "Session expired. Please login again."),
             };
             return Promise.reject(errorResponse);
           }
@@ -328,48 +281,6 @@ class HttpClient {
         return Promise.reject(errorResponse);
       },
     );
-  }
-
-  /**
-   * 判断刷新失败时是否需要登出
-   */
-  private shouldLogoutOnRefreshFailure(status: number): boolean {
-    // 401/403/404: token 无效，需要登出
-    // 0/429/5xx: 网络或服务器错误，允许重试
-    return status === 401 || status === 404 || status === 403;
-  }
-
-  /**
-   * 获取刷新失败的错误消息（本地化）
-   */
-  private getRefreshErrorMessage(status: number, serverMessage?: string): string {
-    if (serverMessage) return serverMessage;
-
-    const isZh = this.currentLocale === "zh";
-
-    switch (status) {
-      case 401:
-        return isZh
-          ? "认证令牌无效，请重新登录"
-          : "Authentication token invalid. Please login again.";
-      case 404:
-        return isZh ? "刷新令牌不存在，请重新登录" : "Refresh token not found. Please login again.";
-      case 403:
-        return isZh ? "权限不足，请重新登录" : "Insufficient permissions. Please login again.";
-      case 429:
-        return isZh ? "请求过于频繁，请稍后重试" : "Too many requests. Please try again later.";
-      case 0:
-        return isZh
-          ? "网络连接失败，请检查网络后重试"
-          : "Network connection failed. Please check your network and try again.";
-      case 500:
-      case 502:
-      case 503:
-      case 504:
-        return isZh ? "服务器错误，请稍后重试" : "Server error. Please try again later.";
-      default:
-        return isZh ? "会话已过期，请重新登录" : "Session expired. Please login again.";
-    }
   }
 
   /**
@@ -592,7 +503,6 @@ class HttpClient {
     this.failedQueue = [];
 
     this.isRefreshing = false;
-    this.refreshRetryCount = 0;
     this.lastRefreshAttempt = 0;
     this.localeChangeListeners.clear();
   }
