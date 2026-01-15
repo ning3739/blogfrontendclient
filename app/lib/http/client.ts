@@ -30,6 +30,9 @@ class HttpClient {
   // 刷新重试限制
   private refreshRetryCount = 0;
   private readonly MAX_REFRESH_RETRIES = 2;
+  // 防止频繁刷新的冷却时间
+  private lastRefreshAttempt = 0;
+  private readonly REFRESH_COOLDOWN = 1000; // 1秒冷却时间
   // 事件监听器（用于清理）
   private localeChangeHandler?: (event: Event) => void;
 
@@ -177,10 +180,15 @@ class HttpClient {
         ) {
           const url = originalRequest.url || "";
 
-          // 刷新端点本身返回 401 时不重试（防止死循环）
+          // 刷新端点本身返回 401/404 时不重试（防止死循环）
           const noRetryEndpoints = ["/auth/generate-access-token"];
 
           if (noRetryEndpoints.some((endpoint) => url.includes(endpoint))) {
+            // 刷新失败，清理状态并登出
+            this.refreshRetryCount = 0;
+            this.isRefreshing = false;
+            await this.logoutAndClearTokens();
+            
             const errorResponse: ErrorResponse = {
               status: error.response?.status || 401,
               error: error.response?.data?.error || "Unauthorized",
@@ -200,6 +208,20 @@ class HttpClient {
                 return Promise.reject(err);
               });
           }
+
+          // 冷却时间检查：防止频繁刷新
+          const now = Date.now();
+          if (now - this.lastRefreshAttempt < this.REFRESH_COOLDOWN) {
+            const errorResponse: ErrorResponse = {
+              status: 429,
+              error:
+                this.currentLocale === "zh"
+                  ? "请求过于频繁，请稍后重试"
+                  : "Too many requests. Please try again later.",
+            };
+            return Promise.reject(errorResponse);
+          }
+          this.lastRefreshAttempt = now;
 
           // 超过重试次数：直接登出
           if (this.refreshRetryCount >= this.MAX_REFRESH_RETRIES) {
@@ -252,6 +274,9 @@ class HttpClient {
             if (shouldLogout) {
               this.refreshRetryCount = 0;
               await this.logoutAndClearTokens();
+            } else if (refreshStatus === 429) {
+              // 429 错误：请求过于频繁，不登出，但清理重试计数
+              this.refreshRetryCount = 0;
             }
 
             const errorResponse: ErrorResponse = {
@@ -568,6 +593,7 @@ class HttpClient {
 
     this.isRefreshing = false;
     this.refreshRetryCount = 0;
+    this.lastRefreshAttempt = 0;
     this.localeChangeListeners.clear();
   }
 }
