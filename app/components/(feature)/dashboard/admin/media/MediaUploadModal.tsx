@@ -80,13 +80,14 @@ const MediaUploadModal = ({ isOpen, onClose, onUploadSuccess }: MediaUploadModal
     return `${parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
   };
 
-  // 最大单文件大小：80MB
-  const MAX_FILE_SIZE = 80 * 1024 * 1024;
+  // 最大单文件大小：100MB
+  const MAX_FILE_SIZE = 100 * 1024 * 1024;
 
   const handleFiles = useCallback((fileList: FileList | File[]) => {
     const newFiles = Array.from(fileList).reduce<UploadFile[]>((acc, file) => {
       if (file.size > MAX_FILE_SIZE) {
-        // 超过 80MB 的文件直接忽略，不加入上传列表
+        // 超过 100MB 的文件，显示提示
+        toast.error(`${file.name} 超过 100MB 限制，已忽略`);
         return acc;
       }
 

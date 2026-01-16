@@ -16,6 +16,7 @@ class MediaService {
 
     return httpClient.upload("/media/admin/upload-media", formData, {
       uploadProgress: onProgress,
+      timeout: 300000, // 5 分钟，适合 80 MB 文件
     });
   }
 
