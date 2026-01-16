@@ -37,7 +37,7 @@ class HttpClient {
     this.axiosInstance = axios.create({
       baseURL:
         baseURL || process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.heyxiaoli.com/api/v1",
-      timeout: 10000,
+      timeout: 30000, // 30秒，适合大多数请求
       withCredentials: true, // 携带 httpOnly cookie
       headers: {
         "Content-Type": "application/json",
@@ -389,6 +389,7 @@ class HttpClient {
     return this.request<T>("POST", url, {
       ...options,
       data: formData,
+      timeout: options?.timeout || 120000, // 上传默认 2 分钟超时
       headers: {
         ...options?.headers,
         "Content-Type": "multipart/form-data",
