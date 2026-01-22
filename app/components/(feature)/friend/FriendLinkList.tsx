@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
 import useSWR from "swr";
-import { Button } from "@/app/components/ui/button/butten";
+import { Button } from "@/app/components/ui/button/Button";
 import EmptyState from "@/app/components/ui/error/EmptyState";
 import ErrorDisplay from "@/app/components/ui/error/ErrorDisplay";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";

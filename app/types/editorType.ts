@@ -21,6 +21,7 @@ export interface UsePostEditorProps {
 export interface UsePostEditorReturn {
   blogMetaData: BlogMetaData;
   isBlogLoading: boolean;
+  isSaving: boolean;
   handleBlogMetaDataSave: (data: BlogMetaData) => void;
   handleBlogSave: () => Promise<void>;
   validateBlogData: () => { isValid: boolean; missingFields: string[] };
@@ -51,6 +52,7 @@ export interface UseProjectEditorProps {
 export interface UseProjectEditorReturn {
   projectMetaData: ProjectMetaData;
   isProjectLoading: boolean;
+  isSaving: boolean;
   handleProjectMetaDataSave: (data: ProjectMetaData) => void;
   handleProjectSave: () => Promise<void>;
   validateProjectData: () => { isValid: boolean; missingFields: string[] };

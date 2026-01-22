@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { motion } from "motion/react";
 import type React from "react";
 
-interface CardProps {
+interface BaseCardProps {
   children: React.ReactNode;
   className?: string;
   hover?: boolean;
@@ -11,7 +11,7 @@ interface CardProps {
   onClick?: () => void;
 }
 
-const Card: React.FC<CardProps> = ({
+const BaseCard: React.FC<BaseCardProps> = ({
   children,
   className,
   hover = true,
@@ -79,4 +79,4 @@ const Card: React.FC<CardProps> = ({
   );
 };
 
-export default Card;
+export default BaseCard;

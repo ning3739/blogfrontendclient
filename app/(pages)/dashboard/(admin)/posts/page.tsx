@@ -6,7 +6,7 @@ import { useLocale } from "next-intl";
 import React from "react";
 import useSWR from "swr";
 import PostLists from "@/app/components/(feature)/dashboard/admin/posts/PostLists";
-import { Button } from "@/app/components/ui/button/butten";
+import { Button } from "@/app/components/ui/button/Button";
 import EmptyState from "@/app/components/ui/error/EmptyState";
 import ErrorDisplay from "@/app/components/ui/error/ErrorDisplay";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";

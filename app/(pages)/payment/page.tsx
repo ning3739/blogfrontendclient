@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useFormatter, useTranslations } from "next-intl";
 import useSWR from "swr";
 import PaymentElement from "@/app/components/(feature)/payment/PaymentElement";
-import { Button } from "@/app/components/ui/button/butten";
+import { Button } from "@/app/components/ui/button/Button";
 import EmptyState from "@/app/components/ui/error/EmptyState";
 import ErrorDisplay from "@/app/components/ui/error/ErrorDisplay";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";

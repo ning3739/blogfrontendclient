@@ -5,8 +5,8 @@ import type React from "react";
 import { useRef, useState } from "react";
 import Cropper from "react-easy-crop";
 import toast from "react-hot-toast";
-import { Button } from "@/app/components/ui/button/butten";
-import Modal from "@/app/components/ui/modal/Modal";
+import { Button } from "@/app/components/ui/button/Button";
+import BaseModal from "@/app/components/ui/modal/BaseModal";
 import userService from "@/app/lib/services/userService";
 
 interface ChangeAvatarModalProps {
@@ -190,7 +190,7 @@ const ChangeAvatarModal: React.FC<ChangeAvatarModalProps> = ({ isOpen, onClose, 
   );
 
   return (
-    <Modal
+    <BaseModal
       isOpen={isOpen}
       onClose={handleClose}
       title={dashboardT("changeAvatar")}
@@ -284,7 +284,7 @@ const ChangeAvatarModal: React.FC<ChangeAvatarModalProps> = ({ isOpen, onClose, 
           </>
         )}
       </div>
-    </Modal>
+    </BaseModal>
   );
 };
 

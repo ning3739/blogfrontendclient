@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Button } from "@/app/components/ui/button/butten";
+import { Button } from "@/app/components/ui/button/Button";
 import InputField from "@/app/components/ui/input/InputField";
-import Modal from "@/app/components/ui/modal/Modal";
+import BaseModal from "@/app/components/ui/modal/BaseModal";
 import seoService from "@/app/lib/services/seoService";
 import type { CreateSeoRequest } from "@/app/types/seoServiceType";
 
@@ -117,7 +117,7 @@ export const CreateSeoModal = ({
   };
 
   return (
-    <Modal
+    <BaseModal
       isOpen={isOpen}
       onClose={onClose}
       title={seoId ? "编辑 SEO 设置" : "创建新的 SEO 设置"}
@@ -198,7 +198,7 @@ export const CreateSeoModal = ({
           </p>
         </div>
       </div>
-    </Modal>
+    </BaseModal>
   );
 };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import TiptapEditorModel from "@/app/components/(feature)/editor/TiptapEditorModel";
+import TiptapEditorModal from "@/app/components/(feature)/editor/TiptapEditorModal";
 import { MediaTypeEnum } from "@/app/types/mediaServiceType";
 
 interface VideoPickerModalProps {
@@ -11,7 +11,7 @@ interface VideoPickerModalProps {
 
 export default function VideoPickerModal({ isOpen, onClose, onSelect }: VideoPickerModalProps) {
   return (
-    <TiptapEditorModel
+    <TiptapEditorModal
       type={MediaTypeEnum.video}
       isOpen={isOpen}
       onClose={onClose}

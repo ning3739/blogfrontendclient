@@ -86,6 +86,12 @@
     "since": "Since 2024"
   },
   "auth": {
+    "sessionExpired": "Session expired, please login again",
+    "loginFailed": "Login failed, please try again",
+    "autoLoginFailed": "Auto login failed, please login manually",
+    "logoutFailed": "Logout failed, please try again",
+    "githubLoginFailed": "GitHub login failed, please try again",
+    "googleLoginFailed": "Google login failed, please try again",
     "placeholder": {
       "email": "m@example.com",
       "username": "Username",

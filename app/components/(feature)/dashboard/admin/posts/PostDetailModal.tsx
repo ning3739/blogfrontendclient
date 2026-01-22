@@ -1,18 +1,24 @@
 import { BarChart3, Bookmark, Eye, Heart, MessageCircle, Tag } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
-import Modal from "@/app/components/ui/modal/Modal";
+import BaseModal from "@/app/components/ui/modal/BaseModal";
 import type { BlogItemDashboardResponse } from "@/app/types/blogServiceType";
 
-interface PostInfoModelProps {
+interface PostDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   blogData: BlogItemDashboardResponse | null;
 }
 
-const PostInfoModel = ({ isOpen, onClose, blogData }: PostInfoModelProps) => {
+const PostDetailModal = ({ isOpen, onClose, blogData }: PostDetailModalProps) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="文章信息" size="md" maxHeight="max-h-[90vh]">
+    <BaseModal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="文章信息"
+      size="md"
+      maxHeight="max-h-[90vh]"
+    >
       {blogData && (
         <div className="space-y-6">
           {/* Post Header */}
@@ -166,8 +172,8 @@ const PostInfoModel = ({ isOpen, onClose, blogData }: PostInfoModelProps) => {
           </div>
         </div>
       )}
-    </Modal>
+    </BaseModal>
   );
 };
 
-export default PostInfoModel;
+export default PostDetailModal;

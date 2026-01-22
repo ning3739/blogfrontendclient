@@ -4,9 +4,9 @@ import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import ErrorDisplay from "@/app/components/ui/error/ErrorDisplay";
-import Modal from "@/app/components/ui/modal/Modal";
+import BaseModal from "@/app/components/ui/modal/BaseModal";
 
-interface BlogSummaryModelProps {
+interface BlogSummaryModalProps {
   isOpen: boolean;
   onClose: () => void;
   summaryData: { summary: string } | undefined;
@@ -18,7 +18,7 @@ interface StreamItem {
   isComplete: boolean;
 }
 
-const BlogSummaryModel = ({ isOpen, onClose, summaryData }: BlogSummaryModelProps) => {
+const BlogSummaryModal = ({ isOpen, onClose, summaryData }: BlogSummaryModalProps) => {
   const commonT = useTranslations("common");
   const [streamItems, setStreamItems] = useState<StreamItem[]>([]);
   const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
@@ -84,7 +84,7 @@ const BlogSummaryModel = ({ isOpen, onClose, summaryData }: BlogSummaryModelProp
   }, [summaryData, isOpen]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={commonT("summary")} round="sm" size="lg">
+    <BaseModal isOpen={isOpen} onClose={onClose} title={commonT("summary")} round="sm" size="lg">
       {!summaryData && (
         <ErrorDisplay
           title={commonT("notFound")}
@@ -118,8 +118,8 @@ const BlogSummaryModel = ({ isOpen, onClose, summaryData }: BlogSummaryModelProp
           ))}
         </div>
       )}
-    </Modal>
+    </BaseModal>
   );
 };
 
-export default BlogSummaryModel;
+export default BlogSummaryModal;

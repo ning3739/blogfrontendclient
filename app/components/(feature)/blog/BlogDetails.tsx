@@ -9,8 +9,8 @@ import type React from "react";
 import useSWR from "swr";
 import CommentList from "@/app/components/(feature)/comment/CommentList";
 import Subscribe from "@/app/components/(feature)/home/Subscribe";
-import { Button } from "@/app/components/ui/button/butten";
-import CopyRight from "@/app/components/ui/copyright/CopyRight";
+import { Button } from "@/app/components/ui/button/Button";
+import Copyright from "@/app/components/ui/copyright/Copyright";
 import EmptyState from "@/app/components/ui/error/EmptyState";
 import ErrorDisplay from "@/app/components/ui/error/ErrorDisplay";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
@@ -235,7 +235,7 @@ const BlogDetails: React.FC<BlogDetailsProps> = ({ blogSlug }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 1.2 }}
             >
-              <CopyRight permalink={canonical} licenseText="CC BY-NC 4.0" />
+              <Copyright permalink={canonical} licenseText="CC BY-NC 4.0" />
             </motion.div>
 
             {/* 分享按钮 */}

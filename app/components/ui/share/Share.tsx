@@ -6,8 +6,8 @@ import { useTranslations } from "next-intl";
 import QRCode from "qrcode";
 import type React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Button } from "@/app/components/ui/button/butten";
-import Modal from "@/app/components/ui/modal/Modal";
+import { Button } from "@/app/components/ui/button/Button";
+import BaseModal from "@/app/components/ui/modal/BaseModal";
 
 interface ShareProps {
   url: string;
@@ -323,7 +323,7 @@ const Share: React.FC<ShareProps> = ({ url, title, createdAtText }) => {
         {commonT("share.shareButton")}
       </Button>
 
-      <Modal
+      <BaseModal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         title={commonT("share.shareDescription")}
@@ -392,7 +392,7 @@ const Share: React.FC<ShareProps> = ({ url, title, createdAtText }) => {
             </div>
           </div>
         </div>
-      </Modal>
+      </BaseModal>
     </div>
   );
 };

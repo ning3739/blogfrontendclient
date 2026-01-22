@@ -5,24 +5,24 @@ import useSWR from "swr";
 import MediaCard from "@/app/components/(feature)/editor/MediaCard";
 import ErrorDisplay from "@/app/components/ui/error/ErrorDisplay";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
-import Modal from "@/app/components/ui/modal/Modal";
+import BaseModal from "@/app/components/ui/modal/BaseModal";
 import OffsetPagination from "@/app/components/ui/pagination/OffsetPagination";
 import type { MediaItem } from "@/app/types/mediaServiceType";
 import { MediaTypeEnum } from "@/app/types/mediaServiceType";
 
-interface TiptapEditorModelProps {
+interface TiptapEditorModalProps {
   type: MediaTypeEnum;
   isOpen: boolean;
   onClose: () => void;
   onSelect?: (mediaId: number, url: string) => void;
 }
 
-export default function TiptapEditorModel({
+export default function TiptapEditorModal({
   type,
   isOpen,
   onClose,
   onSelect,
-}: TiptapEditorModelProps) {
+}: TiptapEditorModalProps) {
   const [currentPage, setCurrentPage] = useState(1);
 
   // 只有当 modal 打开时才发起请求，避免不必要的 404 错误
@@ -42,7 +42,7 @@ export default function TiptapEditorModel({
   };
 
   return (
-    <Modal
+    <BaseModal
       isOpen={isOpen}
       onClose={onClose}
       title={`选择 ${MediaTypeEnum[type].toString()} 文件`}
@@ -95,6 +95,6 @@ export default function TiptapEditorModel({
             );
           })()}
       </div>
-    </Modal>
+    </BaseModal>
   );
 }

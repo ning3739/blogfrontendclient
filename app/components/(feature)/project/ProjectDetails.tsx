@@ -7,8 +7,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import useSWR from "swr";
 import Subscribe from "@/app/components/(feature)/home/Subscribe";
-import { Button } from "@/app/components/ui/button/butten";
-import CopyRight from "@/app/components/ui/copyright/CopyRight";
+import { Button } from "@/app/components/ui/button/Button";
+import Copyright from "@/app/components/ui/copyright/Copyright";
 import EmptyState from "@/app/components/ui/error/EmptyState";
 import ErrorDisplay from "@/app/components/ui/error/ErrorDisplay";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
@@ -187,7 +187,7 @@ function ProjectDetails({ projectSlug }: { projectSlug: string }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 1.2 }}
             >
-              <CopyRight permalink={canonical} licenseText="CC BY-NC 4.0" />
+              <Copyright permalink={canonical} licenseText="CC BY-NC 4.0" />
             </motion.div>
 
             {/* 分享按钮 */}

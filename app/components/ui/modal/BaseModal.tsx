@@ -7,7 +7,7 @@ import type React from "react";
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 
-interface ModalProps {
+interface BaseModalProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
@@ -19,7 +19,7 @@ interface ModalProps {
   maxHeight?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({
+const BaseModal: React.FC<BaseModalProps> = ({
   isOpen,
   onClose,
   children,
@@ -124,4 +124,4 @@ const Modal: React.FC<ModalProps> = ({
   );
 };
 
-export default Modal;
+export default BaseModal;

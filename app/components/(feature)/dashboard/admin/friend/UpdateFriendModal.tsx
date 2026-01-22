@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Button } from "@/app/components/ui/button/butten";
-import Modal from "@/app/components/ui/modal/Modal";
+import { Button } from "@/app/components/ui/button/Button";
+import BaseModal from "@/app/components/ui/modal/BaseModal";
 import FriendService from "@/app/lib/services/friendService";
 import { FriendType } from "@/app/types/friendServiceType";
 
-interface UpdateFriendModelProps {
+interface UpdateFriendModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
@@ -15,13 +15,13 @@ interface UpdateFriendModelProps {
   currentType: number;
 }
 
-function UpdateFriendModel({
+function UpdateFriendModal({
   isOpen,
   onClose,
   onSuccess,
   friendId,
   currentType,
-}: UpdateFriendModelProps) {
+}: UpdateFriendModalProps) {
   const [selectedType, setSelectedType] = useState<number>(currentType);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -115,7 +115,13 @@ function UpdateFriendModel({
   );
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="更新友链类型" size="sm" footer={modalFooter}>
+    <BaseModal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="更新友链类型"
+      size="sm"
+      footer={modalFooter}
+    >
       <div>
         <label
           htmlFor="friend-type-select"
@@ -139,8 +145,8 @@ function UpdateFriendModel({
           <span className="font-medium text-foreground-50">{getFriendTypeLabel(currentType)}</span>
         </p>
       </div>
-    </Modal>
+    </BaseModal>
   );
 }
 
-export default UpdateFriendModel;
+export default UpdateFriendModal;

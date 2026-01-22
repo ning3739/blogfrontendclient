@@ -1,6 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import useSWR from "swr";
@@ -27,16 +28,68 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
+  const pathname = usePathname();
+  const t = useTranslations("auth");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Fetch user profile only when authenticated
-  const { data: user, isValidating } = useSWR(isAuthenticated ? "/user/me/get-my-profile" : null, {
+  const {
+    data: user,
+    isValidating,
+    mutate: mutateUser,
+  } = useSWR(isAuthenticated ? "/user/me/get-my-profile" : null, {
     revalidateOnMount: true,
   });
 
   const userLoading = Boolean(isAuthenticated && (isValidating || !user));
+
+  /**
+   * Clear local auth state
+   */
+  const clearAuthState = useCallback(() => {
+    setIsAuthenticated(false);
+    setError(null);
+    mutateUser(undefined, false);
+    localStorage.removeItem("user");
+    sessionStorage.clear();
+  }, [mutateUser]);
+
+  /**
+   * Handle force logout (token expired, etc.)
+   * Triggered by HTTP Client's auth:logout event
+   */
+  const handleForceLogout = useCallback(
+    (reason?: string) => {
+      clearAuthState();
+
+      // Avoid redirect loop on login page
+      if (!pathname?.includes("/login")) {
+        if (reason === "token_expired") {
+          toast.error(t("sessionExpired"));
+        }
+        // Hard refresh to clear all cached state
+        window.location.href = "/login";
+      }
+    },
+    [clearAuthState, pathname, t],
+  );
+
+  /**
+   * Listen for HTTP Client auth failure events
+   */
+  useEffect(() => {
+    const handleAuthLogout = (event: Event) => {
+      const customEvent = event as CustomEvent<{ reason?: string }>;
+      handleForceLogout(customEvent.detail?.reason);
+    };
+
+    window.addEventListener("auth:logout", handleAuthLogout);
+    return () => {
+      window.removeEventListener("auth:logout", handleAuthLogout);
+    };
+  }, [handleForceLogout]);
 
   const accountLogin = useCallback(
     async (payload: AccountLoginRequest) => {
@@ -54,14 +107,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           toast.error(errorMsg);
         }
       } catch (error: unknown) {
-        const errorMessage = getErrorMessage(error, "登录失败，请重试");
+        const errorMessage = getErrorMessage(error, t("loginFailed"));
         setError(errorMessage);
         toast.error(errorMessage);
       } finally {
         setLoading(false);
       }
     },
-    [router],
+    [router, t],
   );
 
   const silentAccountLogin = useCallback(
@@ -75,13 +128,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           router.push("/");
         }
       } catch (error: unknown) {
-        const errorMessage = getErrorMessage(error, "自动登录失败，请手动登录");
+        const errorMessage = getErrorMessage(error, t("autoLoginFailed"));
         setError(errorMessage);
       } finally {
         setLoading(false);
       }
     },
-    [router],
+    [router, t],
   );
 
   const accountLogout = useCallback(async () => {
@@ -91,8 +144,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await authService.accountLogout();
       if (response.status === 200 && "data" in response) {
         toast.success("message" in response ? response.message : "Logout successful");
-        setIsAuthenticated(false);
-        // 使用硬刷新跳转到登录页，避免 Next.js 路由缓存导致中间件检测到旧的认证状态
+        clearAuthState();
+        // Hard refresh to login page, avoid Next.js router cache detecting old auth state
         window.location.href = "/login";
       } else {
         const errorMsg = "error" in response ? response.error : "Logout failed";
@@ -100,29 +153,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         toast.error(errorMsg);
       }
     } catch (error: unknown) {
-      const errorMessage = getErrorMessage(error, "登出失败，请重试");
+      const errorMessage = getErrorMessage(error, t("logoutFailed"));
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [clearAuthState, t]);
 
-  const oauthLogin = useCallback((provider: "github" | "google") => {
-    setLoading(true);
-    setError(null);
-    try {
-      provider === "github" ? authService.githubLogin() : authService.googleLogin();
-    } catch (error: unknown) {
-      const errorMessage = getErrorMessage(
-        error,
-        `${provider === "github" ? "GitHub" : "Google"} 登录失败，请重试`,
-      );
-      setError(errorMessage);
-      toast.error(errorMessage);
-      setLoading(false);
-    }
-  }, []);
+  const oauthLogin = useCallback(
+    (provider: "github" | "google") => {
+      setLoading(true);
+      setError(null);
+      try {
+        provider === "github" ? authService.githubLogin() : authService.googleLogin();
+      } catch (error: unknown) {
+        const errorMessage = getErrorMessage(
+          error,
+          provider === "github" ? t("githubLoginFailed") : t("googleLoginFailed"),
+        );
+        setError(errorMessage);
+        toast.error(errorMessage);
+        setLoading(false);
+      }
+    },
+    [t],
+  );
 
   const githubLogin = useCallback(() => oauthLogin("github"), [oauthLogin]);
   const googleLogin = useCallback(() => oauthLogin("google"), [oauthLogin]);
@@ -138,34 +194,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       const { access_token, refresh_token } = response.data;
 
-      // Both tokens invalid - user not logged in
-      if (!access_token && !refresh_token) {
-        setIsAuthenticated(false);
-        return;
-      }
-
-      // Has AT but no RT - abnormal state, clear cookies
-      // RT was deleted from database, must re-login when AT expires
+      // Has AT but no RT - abnormal state, force logout
       if (access_token && !refresh_token) {
         try {
           await authService.accountLogout();
-        } catch (_logoutError) {
+        } catch {
           // Silent failure
         }
         setIsAuthenticated(false);
         return;
       }
 
-      // Only RT, no AT - normal state, wait for auto-refresh on API call
-      // AT expired but RT valid, Client.ts will handle refresh
-      if (!access_token && refresh_token) {
-        setIsAuthenticated(true);
-        return;
-      }
-
-      // Both tokens valid - normal state
-      setIsAuthenticated(true);
-    } catch (_error) {
+      // Authenticated if has RT (AT will auto-refresh) or both tokens
+      setIsAuthenticated(Boolean(refresh_token));
+    } catch {
       setIsAuthenticated(false);
     }
   }, []);

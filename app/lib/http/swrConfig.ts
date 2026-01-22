@@ -2,30 +2,37 @@ import type { SWRConfiguration } from "swr";
 import httpClient from "./client";
 import fetcher from "./fetcher";
 
-// SWR 全局配置
+// Error codes that should not trigger retry (deterministic failures)
+const NO_RETRY_STATUS = new Set([401, 403, 404]);
+
 export const swrConfig: SWRConfiguration = {
   fetcher,
+
+  // Revalidation
   revalidateOnFocus: false,
   revalidateOnReconnect: true,
+
+  // Error retry
   errorRetryCount: 3,
   errorRetryInterval: 1000,
-  dedupingInterval: 2000, // 增加去重间隔，减少重复请求
-  focusThrottleInterval: 5000, // 限制 focus 重验证频率
-  shouldRetryOnError: (error) => error?.status !== 401,
+  shouldRetryOnError: (error) => !NO_RETRY_STATUS.has(error?.status),
+
+  // Performance
+  dedupingInterval: 2000,
+  focusThrottleInterval: 5000,
 };
 
-// 添加语言变化监听，自动重新验证所有数据
+// Revalidate all data when locale changes
 if (typeof window !== "undefined") {
-  let revalidatePromise: Promise<Array<undefined>> | null = null;
+  let pending: Promise<unknown> | null = null;
 
   httpClient.addLocaleChangeListener(() => {
-    // 如果已有重验证在进行，等待它完成
-    if (revalidatePromise) return;
+    if (pending) return;
 
-    revalidatePromise = import("swr")
+    pending = import("swr")
       .then(({ mutate }) => mutate(() => true, undefined, { revalidate: true }))
       .finally(() => {
-        revalidatePromise = null;
+        pending = null;
       });
   });
 }

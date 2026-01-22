@@ -12,7 +12,7 @@ import { formatCurrency } from "@/app/lib/utils/handleCurrencyFormat";
 import { handleDateFormat } from "@/app/lib/utils/handleDateFormat";
 import type { OffsetPaginationResponse } from "@/app/types/commonType";
 import type { GetPaymentRecordsItems } from "@/app/types/paymentServiceType";
-import PaymentDetailModel from "./PaymentDetailModel";
+import PaymentDetailModal from "./PaymentDetailModal";
 
 interface PaymentListsProps {
   type: "admin" | "user";
@@ -386,7 +386,7 @@ const PaymentLists: React.FC<PaymentListsProps> = ({
       )}
 
       {/* 支付详情模态框 */}
-      <PaymentDetailModel
+      <PaymentDetailModal
         isOpen={isDetailModalOpen}
         onClose={handleCloseDetailModal}
         paymentRecord={selectedPaymentRecord}

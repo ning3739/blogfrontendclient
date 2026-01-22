@@ -2,9 +2,9 @@ import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import useSWR from "swr";
+import { Button } from "@/app/components/ui/button/Button";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
 import type { GetBlogNavigationResponse } from "@/app/types/blogServiceType";
-import { Button } from "../../ui/button/butten";
 
 interface BlogNavigationProps {
   blogId: number;

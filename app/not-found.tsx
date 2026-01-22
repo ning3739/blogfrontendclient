@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import DefaultBackground from "@/app/components/ui/background/DefaultBackground";
-import { Button } from "@/app/components/ui/button/butten";
+import { Button } from "@/app/components/ui/button/Button";
 
 export default function NotFoundPage() {
   const router = useRouter();

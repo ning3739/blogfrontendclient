@@ -6,8 +6,8 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { mutate } from "swr";
+import { Button } from "@/app/components/ui/button/Button";
 import friendService from "@/app/lib/services/friendService";
-import { Button } from "../../ui/button/butten";
 import InputField from "../../ui/input/InputField";
 
 const FriendTextInput = ({

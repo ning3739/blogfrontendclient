@@ -3,8 +3,8 @@ import { useTranslations } from "next-intl";
 import type React from "react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Button } from "@/app/components/ui/button/butten";
-import Modal from "@/app/components/ui/modal/Modal";
+import { Button } from "@/app/components/ui/button/Button";
+import BaseModal from "@/app/components/ui/modal/BaseModal";
 import userService from "@/app/lib/services/userService";
 
 interface ChangeBioModalProps {
@@ -96,7 +96,7 @@ const ChangeBioModal: React.FC<ChangeBioModalProps> = ({
   );
 
   return (
-    <Modal
+    <BaseModal
       isOpen={isOpen}
       onClose={handleClose}
       title={dashboardT("editBio")}
@@ -146,7 +146,7 @@ const ChangeBioModal: React.FC<ChangeBioModalProps> = ({
           </div>
         </div>
       </div>
-    </Modal>
+    </BaseModal>
   );
 };
 

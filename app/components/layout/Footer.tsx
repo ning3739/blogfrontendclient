@@ -4,9 +4,9 @@ import { Calendar, Heart, MapPin } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import LanguageSwitcher from "../(feature)/langauge/LanguageSwitcher";
-import ThemeSwitcher from "../(feature)/theme/ThemeSwitcher";
 import SiteLogo from "../ui/logo/SiteLogo";
+import LanguageSwitcher from "./LanguageSwitcher";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 const Footer = () => {
   const footerT = useTranslations("footer");

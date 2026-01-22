@@ -1,6 +1,6 @@
 "use client";
 
-import TiptapEditorModel from "@/app/components/(feature)/editor/TiptapEditorModel";
+import TiptapEditorModal from "@/app/components/(feature)/editor/TiptapEditorModal";
 import { MediaTypeEnum } from "@/app/types/mediaServiceType";
 
 interface DocumentPickerModalProps {
@@ -15,7 +15,7 @@ export default function DocumentPickerModal({
   onSelect,
 }: DocumentPickerModalProps) {
   return (
-    <TiptapEditorModel
+    <TiptapEditorModal
       type={MediaTypeEnum.other}
       isOpen={isOpen}
       onClose={onClose}

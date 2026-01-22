@@ -49,6 +49,7 @@ export const useProjectEditor = ({
   setContent,
 }: UseProjectEditorProps): UseProjectEditorReturn => {
   const [projectMetaData, setProjectMetaData] = useState<ProjectMetaData>(initialProjectMetaData);
+  const [isSaving, setIsSaving] = useState(false);
 
   // 在更新模式下获取项目详情
   const shouldFetchProject = type === "update" && !!projectSlug;
@@ -109,6 +110,7 @@ export const useProjectEditor = ({
   };
 
   const handleProjectSave = async (): Promise<void> => {
+    setIsSaving(true);
     try {
       if (type === "project" && !projectSlug) {
         const validation = validateProjectData();
@@ -167,12 +169,15 @@ export const useProjectEditor = ({
       const errorMessage = error instanceof Error ? error.message : "Failed to save project";
       toast.error(errorMessage);
       console.error("Project save failed:", error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
   return {
     projectMetaData,
     isProjectLoading,
+    isSaving,
     handleProjectMetaDataSave,
     handleProjectSave,
     validateProjectData,

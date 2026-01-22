@@ -4,13 +4,13 @@ import { CopyCheckIcon, CopyIcon, LinkIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-type CopyRightProps = {
+type CopyrightProps = {
   className?: string;
   permalink?: string;
   licenseText?: string; // e.g., CC BY-NC 4.0
 };
 
-const CopyRight = ({ className = "", permalink, licenseText = "CC BY-NC 4.0" }: CopyRightProps) => {
+const Copyright = ({ className = "", permalink, licenseText = "CC BY-NC 4.0" }: CopyrightProps) => {
   const currentYear = new Date().getFullYear();
   const canonical = permalink || (typeof window !== "undefined" ? window.location.href : "");
   const [copied, setCopied] = useState(false);
@@ -76,4 +76,4 @@ const CopyRight = ({ className = "", permalink, licenseText = "CC BY-NC 4.0" }: 
   );
 };
 
-export default CopyRight;
+export default Copyright;

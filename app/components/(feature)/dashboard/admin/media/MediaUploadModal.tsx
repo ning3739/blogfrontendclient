@@ -16,8 +16,8 @@ import { motion } from "motion/react";
 import type React from "react";
 import { useCallback, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { Button } from "@/app/components/ui/button/butten";
-import Modal from "@/app/components/ui/modal/Modal";
+import { Button } from "@/app/components/ui/button/Button";
+import BaseModal from "@/app/components/ui/modal/BaseModal";
 import MediaService from "@/app/lib/services/mediaService";
 
 interface MediaUploadModalProps {
@@ -265,7 +265,7 @@ const MediaUploadModal = ({ isOpen, onClose, onUploadSuccess }: MediaUploadModal
   );
 
   return (
-    <Modal
+    <BaseModal
       isOpen={isOpen}
       onClose={handleClose}
       title="上传媒体文件"
@@ -436,7 +436,7 @@ const MediaUploadModal = ({ isOpen, onClose, onUploadSuccess }: MediaUploadModal
           <p className="text-sm text-error-600">部分文件上传失败，请检查文件格式和大小</p>
         </div>
       )}
-    </Modal>
+    </BaseModal>
   );
 };
 

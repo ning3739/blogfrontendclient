@@ -1,6 +1,5 @@
 import { useRouter } from "next/navigation";
-import { Button } from "@/app/components/ui/button/butten";
-import ErrorDisplay from "@/app/components/ui/error/ErrorDisplay";
+import { Button } from "@/app/components/ui/button/Button";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
 import type { TagStatistic } from "@/app/types/analyticServiceType";
 
@@ -13,29 +12,37 @@ interface TagCloudProps {
 export default function TagCloud({ tags, isLoading, error }: TagCloudProps) {
   const router = useRouter();
 
+  // Loading state
   if (isLoading) {
-    return <LoadingSpinner message="加载热门标签..." size="sm" variant="pulse" />;
-  }
-
-  if (error) {
     return (
-      <ErrorDisplay
-        title="标签统计加载失败"
-        message="无法加载标签统计数据"
-        type="warning"
-        className="min-h-0 bg-transparent border-0"
-      />
+      <div className="bg-card-50 border border-border-50 rounded-sm p-6">
+        <h3 className="text-base sm:text-lg font-semibold text-foreground-50 mb-4">热门标签</h3>
+        <div className="flex items-center justify-center py-8">
+          <LoadingSpinner size="sm" variant="pulse" />
+        </div>
+      </div>
     );
   }
 
+  // Error state
+  if (error) {
+    return (
+      <div className="bg-card-50 border border-border-50 rounded-sm p-6">
+        <h3 className="text-base sm:text-lg font-semibold text-foreground-50 mb-4">热门标签</h3>
+        <div className="flex items-center justify-center py-8">
+          <p className="text-sm text-foreground-400">加载失败</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Empty state
   if (!tags || tags.length === 0) {
     return (
-      <ErrorDisplay
-        title="暂无标签数据"
-        message="当前没有可用的标签统计数据"
-        type="warning"
-        className="min-h-0 bg-transparent border-0"
-      />
+      <div className="bg-card-50 border border-border-50 rounded-sm p-6">
+        <h3 className="text-base sm:text-lg font-semibold text-foreground-50 mb-4">热门标签</h3>
+        <div className="py-8" />
+      </div>
     );
   }
 

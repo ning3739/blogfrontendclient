@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useFormatter, useLocale } from "next-intl";
 import useSWR from "swr";
 import TextContent from "@/app/components/(feature)/content/TextContent";
-import { Button } from "@/app/components/ui/button/butten";
+import { Button } from "@/app/components/ui/button/Button";
 import ErrorDisplay from "@/app/components/ui/error/ErrorDisplay";
 import LoadingSpinner from "@/app/components/ui/loading/LoadingSpinner";
 import { formatCurrency } from "@/app/lib/utils/handleCurrencyFormat";

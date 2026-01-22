@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import type React from "react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Button } from "@/app/components/ui/button/butten";
+import { Button } from "@/app/components/ui/button/Button";
 import InputField from "@/app/components/ui/input/InputField";
 import { useAuth } from "@/app/hooks/useAuth";
 import { authService } from "@/app/lib/services/authService";

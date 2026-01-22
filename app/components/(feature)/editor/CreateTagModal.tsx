@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "@/app/components/ui/button/butten";
+import { Button } from "@/app/components/ui/button/Button";
 import InputField from "@/app/components/ui/input/InputField";
-import Modal from "@/app/components/ui/modal/Modal";
+import BaseModal from "@/app/components/ui/modal/BaseModal";
 import tagService from "@/app/lib/services/tagService";
 
 interface CreateTagModalProps {
@@ -127,7 +127,7 @@ const CreateTagModal = ({
   );
 
   return (
-    <Modal
+    <BaseModal
       isOpen={isOpen}
       onClose={onClose}
       title={tagId ? "编辑标签" : "创建新标签"}
@@ -150,7 +150,7 @@ const CreateTagModal = ({
           required
         />
       </div>
-    </Modal>
+    </BaseModal>
   );
 };
 

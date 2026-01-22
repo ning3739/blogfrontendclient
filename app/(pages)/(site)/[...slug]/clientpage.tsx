@@ -42,15 +42,6 @@ const TagPage = dynamic(() => import("@/app/components/(feature)/tag/TagPage"), 
 const UserPage = dynamic(() => import("@/app/components/(feature)/user/UserPage"), {
   loading: Loading,
 });
-const CopyrightPage = dynamic(() => import("@/app/components/(feature)/copyright/CopyrightPage"), {
-  loading: Loading,
-});
-const PrivacyPolicyPage = dynamic(
-  () => import("@/app/components/(feature)/privacy/PrivacyPolicyPage"),
-  {
-    loading: Loading,
-  },
-);
 
 export default function ClientPage({ params }: { params: { slug: string[] } }) {
   const { slug } = params;
@@ -75,8 +66,6 @@ export default function ClientPage({ params }: { params: { slug: string[] } }) {
       "blogroll",
       "about",
       "user",
-      "copyright",
-      "privacy-policy",
     ];
 
     if (!levelOneRoutes.includes(pageSlug)) {
@@ -94,14 +83,6 @@ export default function ClientPage({ params }: { params: { slug: string[] } }) {
 
     if (pageSlug === "user") {
       return <UserPage />;
-    }
-
-    if (pageSlug === "copyright") {
-      return <CopyrightPage />;
-    }
-
-    if (pageSlug === "privacy-policy") {
-      return <PrivacyPolicyPage />;
     }
 
     return (

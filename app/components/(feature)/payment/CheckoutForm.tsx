@@ -4,7 +4,7 @@ import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js"
 import { AlertTriangle, CreditCard, Lock, XCircle } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
-import { Button } from "@/app/components/ui/button/butten";
+import { Button } from "@/app/components/ui/button/Button";
 
 export default function CheckoutForm() {
   const stripe = useStripe();

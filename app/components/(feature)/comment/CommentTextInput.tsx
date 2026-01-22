@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { mutate } from "swr";
-import { Button } from "@/app/components/ui/button/butten";
+import { Button } from "@/app/components/ui/button/Button";
 import InputField from "@/app/components/ui/input/InputField";
 import { useAuth } from "@/app/hooks/useAuth";
 import blogService from "@/app/lib/services/blogService";

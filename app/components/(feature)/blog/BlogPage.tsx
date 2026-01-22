@@ -150,7 +150,6 @@ const BlogPage: React.FC<BlogPageProps> = ({ sectionData }) => {
                       created_at: blog.created_at,
                     }}
                     onClick={() => {
-                      // TODO: 跳转到博客详情页
                       router.push(`${pathname}/${blog.blog_slug}`);
                     }}
                   />

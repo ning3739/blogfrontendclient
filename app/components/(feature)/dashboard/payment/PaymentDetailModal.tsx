@@ -12,19 +12,19 @@ import {
 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import type React from "react";
-import Modal from "@/app/components/ui/modal/Modal";
+import BaseModal from "@/app/components/ui/modal/BaseModal";
 import { formatCurrency } from "@/app/lib/utils/handleCurrencyFormat";
 import { handleDateFormat } from "@/app/lib/utils/handleDateFormat";
 import type { GetPaymentRecordsItems } from "@/app/types/paymentServiceType";
 
-interface PaymentDetailModelProps {
+interface PaymentDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   paymentRecord: GetPaymentRecordsItems | null;
   type: "admin" | "user";
 }
 
-const PaymentDetailModel: React.FC<PaymentDetailModelProps> = ({
+const PaymentDetailModal: React.FC<PaymentDetailModalProps> = ({
   isOpen,
   onClose,
   paymentRecord,
@@ -72,7 +72,7 @@ const PaymentDetailModel: React.FC<PaymentDetailModelProps> = ({
   const StatusIcon = statusInfo.icon;
 
   return (
-    <Modal
+    <BaseModal
       isOpen={isOpen}
       onClose={onClose}
       title={dashboardT("paymentDetails")}
@@ -217,8 +217,8 @@ const PaymentDetailModel: React.FC<PaymentDetailModelProps> = ({
           </div>
         </div>
       </div>
-    </Modal>
+    </BaseModal>
   );
 };
 
-export default PaymentDetailModel;
+export default PaymentDetailModal;

@@ -87,6 +87,12 @@
     "since": "始于 2024"
   },
   "auth": {
+    "sessionExpired": "会话已过期，请重新登录",
+    "loginFailed": "登录失败，请重试",
+    "autoLoginFailed": "自动登录失败，请手动登录",
+    "logoutFailed": "登出失败，请重试",
+    "githubLoginFailed": "GitHub 登录失败，请重试",
+    "googleLoginFailed": "Google 登录失败，请重试",
     "placeholder": {
       "email": "m@example.com",
       "username": "用户名",

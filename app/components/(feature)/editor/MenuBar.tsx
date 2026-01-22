@@ -29,23 +29,15 @@ import {
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 
-// 懒加载模态框组件，只在需要时才加载
-const VideoPickerModal = dynamic(() => import("./VideoPickerModal"), {
-  ssr: false,
-});
-const ImagePickerModal = dynamic(() => import("./ImagePickerModal"), {
-  ssr: false,
-});
-const AudioPickerModal = dynamic(() => import("./AudioPickerModal"), {
-  ssr: false,
-});
+const VideoPickerModal = dynamic(() => import("./VideoPickerModal"), { ssr: false });
+const ImagePickerModal = dynamic(() => import("./ImagePickerModal"), { ssr: false });
+const AudioPickerModal = dynamic(() => import("./AudioPickerModal"), { ssr: false });
 
 interface MenuBarProps {
   editor: Editor;
 }
 
-// 支持的语言列表
-const supportedLanguages = [
+const SUPPORTED_LANGUAGES = [
   { value: "plaintext", label: "纯文本" },
   { value: "javascript", label: "JavaScript" },
   { value: "typescript", label: "TypeScript" },
@@ -71,6 +63,43 @@ const supportedLanguages = [
   { value: "csharp", label: "C#" },
 ];
 
+// Toolbar button component
+const ToolbarButton = ({
+  onClick,
+  isActive = false,
+  disabled = false,
+  children,
+  title,
+}: {
+  onClick: () => void;
+  isActive?: boolean;
+  disabled?: boolean;
+  children: React.ReactNode;
+  title: string;
+}) => (
+  <button
+    type="button"
+    onMouseDown={(e) => e.preventDefault()}
+    onClick={onClick}
+    disabled={disabled}
+    className={`p-2 rounded-sm transition-colors ${
+      disabled
+        ? "text-foreground-400 opacity-50 cursor-not-allowed"
+        : isActive
+          ? "bg-primary-50 text-primary-600"
+          : "text-foreground-300 hover:bg-background-100 hover:text-foreground-50"
+    }`}
+    title={title}
+  >
+    {children}
+  </button>
+);
+
+// Button group wrapper
+const ButtonGroup = ({ children }: { children: React.ReactNode }) => (
+  <div className="flex gap-1 border-r border-border-50 pr-3 mr-2">{children}</div>
+);
+
 export default function MenuBar({ editor }: MenuBarProps) {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
@@ -93,164 +122,82 @@ export default function MenuBar({ editor }: MenuBarProps) {
         setShowLanguageSelector(false);
       }
     };
-
-    if (isLanguageDropdownOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    if (isLanguageDropdownOpen) document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isLanguageDropdownOpen]);
 
-  if (!editor) {
-    return null;
-  }
+  if (!editor) return null;
 
-  const handleVideoSelect = (_mediaId: number, url: string) => {
-    editor
-      .chain()
-      .focus()
-      .setVideo({
-        src: url,
-        controls: true,
-        width: "100%",
-        height: "auto",
-        autoplay: false,
-      })
-      .run();
-
-    // 插入后延迟选中视频节点，确保可以进行对齐操作
+  // Media handlers
+  const insertMedia = (type: "video" | "image" | "audio", url: string) => {
+    const chain = editor.chain().focus();
+    if (type === "video") {
+      chain
+        .setVideo({ src: url, controls: true, width: "100%", height: "auto", autoplay: false })
+        .run();
+    } else if (type === "image") {
+      chain.setImage({ src: url, alt: "Image", title: "Image" }).run();
+    } else {
+      chain.setAudio({ src: url, controls: true, autoplay: false }).run();
+    }
+    // Select inserted node
     setTimeout(() => {
-      const { state } = editor;
-      const { doc, selection } = state;
-      const { from } = selection;
-
-      // 查找刚插入的视频节点
-      const videoPos = from - 1;
-      if (videoPos >= 0) {
-        const node = doc.nodeAt(videoPos);
-        if (node && node.type.name === "video") {
-          // 选中视频节点
-          editor.chain().setNodeSelection(videoPos).run();
-        }
+      const { doc, selection } = editor.state;
+      const pos = selection.from - 1;
+      if (pos >= 0 && doc.nodeAt(pos)?.type.name === type) {
+        editor.chain().setNodeSelection(pos).run();
       }
     }, 50);
   };
 
-  const handleImageSelect = (_mediaId: number, url: string) => {
-    editor
-      .chain()
-      .focus()
-      .setImage({
-        src: url,
-        alt: "Image",
-        title: "Image",
-      })
-      .run();
-
-    // 插入后延迟选中图片节点，确保可以进行对齐操作
-    setTimeout(() => {
-      const { state } = editor;
-      const { doc, selection } = state;
-      const { from } = selection;
-
-      // 查找刚插入的图片节点
-      const imagePos = from - 1;
-      if (imagePos >= 0) {
-        const node = doc.nodeAt(imagePos);
-        if (node && node.type.name === "image") {
-          // 选中图片节点
-          editor.chain().setNodeSelection(imagePos).run();
-        }
-      }
-    }, 50);
-  };
-
-  const handleAudioSelect = (_mediaId: number, url: string) => {
-    editor
-      .chain()
-      .focus()
-      .setAudio({
-        src: url,
-        controls: true,
-        autoplay: false,
-      })
-      .run();
-
-    // 插入后延迟选中音频节点，确保可以进行对齐操作
-    setTimeout(() => {
-      const { state } = editor;
-      const { doc, selection } = state;
-      const { from } = selection;
-
-      // 查找刚插入的音频节点
-      const audioPos = from - 1;
-      if (audioPos >= 0) {
-        const node = doc.nodeAt(audioPos);
-        if (node && node.type.name === "audio") {
-          // 选中音频节点
-          editor.chain().setNodeSelection(audioPos).run();
-        }
-      }
-    }, 50);
-  };
-
-  // 获取当前代码块的语言
+  // Code block helpers
   const getCurrentCodeBlockLanguage = () => {
-    const { state } = editor;
-    const { selection } = state;
-    const { $from } = selection;
-
-    // 查找当前代码块节点
+    const { $from } = editor.state.selection;
     let node = $from.node();
     let depth = $from.depth;
-
     while (depth >= 0) {
-      if (node.type.name === "codeBlock") {
-        return node.attrs.language || "plaintext";
-      }
+      if (node.type.name === "codeBlock") return node.attrs.language || "plaintext";
       depth--;
       node = $from.node(depth);
     }
-
     return "plaintext";
-  };
-
-  // 设置代码块语言
-  const setCodeBlockLanguage = (language: string) => {
-    editor.chain().focus().updateAttributes("codeBlock", { language }).run();
-    setIsLanguageDropdownOpen(false);
-  };
-
-  const createCodeBlockWithLanguage = (language: string) => {
-    editor.chain().focus().toggleCodeBlock().updateAttributes("codeBlock", { language }).run();
-    setIsLanguageDropdownOpen(false);
-    setShowLanguageSelector(false);
   };
 
   const handleCodeBlockClick = () => {
     if (editor.isActive("codeBlock")) {
-      // 如果已经在代码块内，则退出代码块
       editor.chain().focus().toggleCodeBlock().run();
       setShowLanguageSelector(false);
     } else {
-      // 如果不在代码块内，显示语言选择器
       setShowLanguageSelector(true);
       setIsLanguageDropdownOpen(true);
     }
   };
 
-  // 处理媒体 caption（image, video, audio）
-  const handleCaptionClick = (type: "image" | "video" | "audio") => {
-    if (editor.isActive(type)) {
-      const currentCaption = editor.getAttributes(type).caption || "";
-      setCaptionText(currentCaption);
+  const setCodeBlockLanguage = (language: string) => {
+    if (editor.isActive("codeBlock")) {
+      editor.chain().focus().updateAttributes("codeBlock", { language }).run();
+    } else {
+      editor.chain().focus().toggleCodeBlock().updateAttributes("codeBlock", { language }).run();
+    }
+    setIsLanguageDropdownOpen(false);
+    setShowLanguageSelector(false);
+  };
+
+  // Caption handlers
+  const getActiveMediaType = (): "image" | "video" | "audio" | null => {
+    if (editor.isActive("image")) return "image";
+    if (editor.isActive("video")) return "video";
+    if (editor.isActive("audio")) return "audio";
+    return null;
+  };
+
+  const handleCaptionClick = () => {
+    const type = getActiveMediaType();
+    if (type) {
+      setCaptionText(editor.getAttributes(type).caption || "");
       setCaptionType(type);
       setShowCaptionInput(true);
-      setTimeout(() => {
-        captionInputRef.current?.focus();
-      }, 0);
+      setTimeout(() => captionInputRef.current?.focus(), 0);
     }
   };
 
@@ -261,419 +208,333 @@ export default function MenuBar({ editor }: MenuBarProps) {
         .focus()
         .updateAttributes(captionType, { caption: captionText || null })
         .run();
-      setShowCaptionInput(false);
-      setCaptionText("");
-      setCaptionType(null);
     }
+    setShowCaptionInput(false);
+    setCaptionText("");
+    setCaptionType(null);
   };
 
-  const handleCaptionKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleCaptionSubmit();
-    } else if (e.key === "Escape") {
-      setShowCaptionInput(false);
-      setCaptionText("");
-      setCaptionType(null);
-    }
-  };
-
-  // 处理链接
+  // Link handlers
   const handleLinkClick = () => {
-    if (editor.isActive("link")) {
-      // 如果已经是链接，显示输入框以编辑或删除
-      const currentUrl = editor.getAttributes("link").href || "";
-      setLinkUrl(currentUrl);
-      setShowLinkInput(true);
-      setTimeout(() => {
-        linkInputRef.current?.focus();
-        linkInputRef.current?.select();
-      }, 0);
-    } else {
-      // 如果不是链接，显示输入框以添加
-      setLinkUrl("");
-      setShowLinkInput(true);
-      setTimeout(() => {
-        linkInputRef.current?.focus();
-      }, 0);
-    }
+    setLinkUrl(editor.isActive("link") ? editor.getAttributes("link").href || "" : "");
+    setShowLinkInput(true);
+    setTimeout(() => {
+      linkInputRef.current?.focus();
+      linkInputRef.current?.select();
+    }, 0);
   };
 
   const handleLinkSubmit = () => {
     if (linkUrl.trim()) {
-      // 添加或更新链接
       editor.chain().focus().extendMarkRange("link").setLink({ href: linkUrl.trim() }).run();
     } else {
-      // 如果 URL 为空，删除链接
       editor.chain().focus().unsetLink().run();
     }
     setShowLinkInput(false);
     setLinkUrl("");
   };
 
-  const handleLinkKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent, onSubmit: () => void, onCancel: () => void) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      handleLinkSubmit();
-    } else if (e.key === "Escape") {
-      setShowLinkInput(false);
-      setLinkUrl("");
-    }
+      onSubmit();
+    } else if (e.key === "Escape") onCancel();
   };
 
-  const handleUnlink = () => {
-    editor.chain().focus().unsetLink().run();
-  };
-
-  const Button = ({
-    onClick,
-    isActive = false,
-    disabled = false,
-    children,
-    title,
-  }: {
-    onClick: () => void;
-    isActive?: boolean;
-    disabled?: boolean;
-    children: React.ReactNode;
-    title: string;
-  }) => (
-    <button
-      type="button"
-      onMouseDown={(e) => {
-        e.preventDefault(); // 防止编辑器失去焦点和选区
-      }}
-      onClick={onClick}
-      disabled={disabled}
-      className={`p-2 rounded-sm transition-colors ${
-        disabled
-          ? "text-foreground-400 opacity-50 cursor-not-allowed"
-          : isActive
-            ? "bg-primary-50 text-primary-600"
-            : "text-foreground-300 hover:bg-background-100 hover:text-foreground-50"
-      }`}
-      title={title}
-    >
-      {children}
-    </button>
-  );
+  const activeMediaType = getActiveMediaType();
+  const hasCaption = activeMediaType && editor.getAttributes(activeMediaType).caption;
 
   return (
     <div className="border-b border-border-50 p-3 sm:p-4 flex flex-wrap gap-2 bg-card-50">
-      {/* 文本格式 */}
-      <div className="flex gap-1 border-r border-border-50 pr-3 mr-2">
-        <Button
+      {/* Text formatting */}
+      <ButtonGroup>
+        <ToolbarButton
           onClick={() => editor.chain().focus().toggleBold().run()}
           isActive={editor.isActive("bold")}
           title="粗体"
         >
           <Bold size={18} />
-        </Button>
-        <Button
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => editor.chain().focus().toggleItalic().run()}
           isActive={editor.isActive("italic")}
           title="斜体"
         >
           <Italic size={18} />
-        </Button>
-        <Button
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           isActive={editor.isActive("underline")}
           title="下划线"
         >
           <Underline size={18} />
-        </Button>
-        <Button
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => editor.chain().focus().toggleStrike().run()}
           isActive={editor.isActive("strike")}
           title="删除线"
         >
           <Strikethrough size={18} />
-        </Button>
-        <Button
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => editor.chain().focus().toggleCode().run()}
           isActive={editor.isActive("code")}
           title="行内代码"
         >
           <Code size={18} />
-        </Button>
-        <Button
+        </ToolbarButton>
+        <ToolbarButton
           onClick={handleCodeBlockClick}
           isActive={editor.isActive("codeBlock")}
           title="代码块"
         >
           <Code2 size={18} />
-        </Button>
+        </ToolbarButton>
 
-        {/* 语言选择下拉菜单 */}
+        {/* Language selector */}
         {(editor.isActive("codeBlock") || showLanguageSelector) && (
           <div className="relative" ref={dropdownRef}>
             <button
               type="button"
-              onMouseDown={(e) => {
-                e.preventDefault();
-              }}
+              onMouseDown={(e) => e.preventDefault()}
               onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
               className="p-2 rounded-sm transition-colors text-foreground-300 hover:bg-background-100 hover:text-foreground-50 flex items-center gap-1"
               title="选择语言"
             >
               <span className="text-sm font-mono">
                 {editor.isActive("codeBlock")
-                  ? supportedLanguages.find((lang) => lang.value === getCurrentCodeBlockLanguage())
+                  ? SUPPORTED_LANGUAGES.find((l) => l.value === getCurrentCodeBlockLanguage())
                       ?.label || "纯文本"
                   : "选择语言"}
               </span>
               <ChevronDown size={14} />
             </button>
-
             {isLanguageDropdownOpen && (
               <div className="absolute top-full left-0 mt-1 bg-card-50 border border-border-100 rounded-sm shadow-lg z-50 max-h-60 overflow-y-auto min-w-[120px]">
-                {supportedLanguages.map((language) => (
+                {SUPPORTED_LANGUAGES.map((lang) => (
                   <button
                     type="button"
-                    key={language.value}
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                    }}
-                    onClick={() =>
-                      editor.isActive("codeBlock")
-                        ? setCodeBlockLanguage(language.value)
-                        : createCodeBlockWithLanguage(language.value)
-                    }
+                    key={lang.value}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => setCodeBlockLanguage(lang.value)}
                     className={`w-full text-left px-3 py-2 text-sm hover:bg-background-100 transition-colors ${
-                      editor.isActive("codeBlock") &&
-                      getCurrentCodeBlockLanguage() === language.value
+                      editor.isActive("codeBlock") && getCurrentCodeBlockLanguage() === lang.value
                         ? "bg-primary-50 text-primary-600"
                         : "text-foreground-200"
                     }`}
                   >
-                    {language.label}
+                    {lang.label}
                   </button>
                 ))}
               </div>
             )}
           </div>
         )}
-      </div>
+      </ButtonGroup>
 
-      {/* 标题 */}
-      <div className="flex gap-1 border-r border-border-50 pr-3 mr-2">
-        <Button
+      {/* Headings */}
+      <ButtonGroup>
+        <ToolbarButton
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
           isActive={editor.isActive("heading", { level: 1 })}
           title="标题 1"
         >
           <Heading1 size={18} />
-        </Button>
-        <Button
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           isActive={editor.isActive("heading", { level: 2 })}
           title="标题 2"
         >
           <Heading2 size={18} />
-        </Button>
-        <Button
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
           isActive={editor.isActive("heading", { level: 3 })}
           title="标题 3"
         >
           <Heading3 size={18} />
-        </Button>
-      </div>
+        </ToolbarButton>
+      </ButtonGroup>
 
-      {/* 列表 */}
-      <div className="flex gap-1 border-r border-border-50 pr-3 mr-2">
-        <Button
+      {/* Lists */}
+      <ButtonGroup>
+        <ToolbarButton
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           isActive={editor.isActive("bulletList")}
           title="无序列表"
         >
           <List size={18} />
-        </Button>
-        <Button
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           isActive={editor.isActive("orderedList")}
           title="有序列表"
         >
           <ListOrdered size={18} />
-        </Button>
-        <Button
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           isActive={editor.isActive("blockquote")}
           title="引用"
         >
           <Quote size={18} />
-        </Button>
-      </div>
+        </ToolbarButton>
+      </ButtonGroup>
 
-      {/* 链接 */}
-      <div className="flex gap-1 items-center border-r border-border-50 pr-3 mr-2">
+      {/* Links */}
+      <ButtonGroup>
         {showLinkInput ? (
-          <div className="flex items-center gap-2">
-            <input
-              ref={linkInputRef}
-              type="text"
-              value={linkUrl}
-              onChange={(e) => setLinkUrl(e.target.value)}
-              onKeyDown={handleLinkKeyDown}
-              onBlur={handleLinkSubmit}
-              placeholder="输入链接 URL..."
-              className="px-2 py-1 text-sm border border-border-100 rounded-sm bg-card-50 text-foreground-200 focus:outline-none focus:border-primary-500 min-w-[200px]"
-            />
-          </div>
+          <input
+            ref={linkInputRef}
+            type="text"
+            value={linkUrl}
+            onChange={(e) => setLinkUrl(e.target.value)}
+            onKeyDown={(e) =>
+              handleKeyDown(e, handleLinkSubmit, () => {
+                setShowLinkInput(false);
+                setLinkUrl("");
+              })
+            }
+            onBlur={handleLinkSubmit}
+            placeholder="输入链接 URL..."
+            className="px-2 py-1 text-sm border border-border-100 rounded-sm bg-card-50 text-foreground-200 focus:outline-none focus:border-primary-500 min-w-[200px]"
+          />
         ) : (
           <>
-            <Button onClick={handleLinkClick} isActive={editor.isActive("link")} title="添加链接">
+            <ToolbarButton
+              onClick={handleLinkClick}
+              isActive={editor.isActive("link")}
+              title="添加链接"
+            >
               <Link size={18} />
-            </Button>
+            </ToolbarButton>
             {editor.isActive("link") && (
-              <Button onClick={handleUnlink} title="移除链接">
+              <ToolbarButton
+                onClick={() => editor.chain().focus().unsetLink().run()}
+                title="移除链接"
+              >
                 <Unlink size={18} />
-              </Button>
+              </ToolbarButton>
             )}
           </>
         )}
-      </div>
+      </ButtonGroup>
 
-      {/* 对齐 */}
-      <div className="flex gap-1 border-r border-border-50 pr-3 mr-2">
-        <Button
+      {/* Alignment */}
+      <ButtonGroup>
+        <ToolbarButton
           onClick={() => editor.chain().focus().setTextAlign("left").run()}
           isActive={editor.isActive({ textAlign: "left" })}
           title="左对齐"
         >
           <AlignLeft size={18} />
-        </Button>
-        <Button
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => editor.chain().focus().setTextAlign("center").run()}
           isActive={editor.isActive({ textAlign: "center" })}
           title="居中"
         >
           <AlignCenter size={18} />
-        </Button>
-        <Button
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => editor.chain().focus().setTextAlign("right").run()}
           isActive={editor.isActive({ textAlign: "right" })}
           title="右对齐"
         >
           <AlignRight size={18} />
-        </Button>
-        <Button
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => editor.chain().focus().setTextAlign("justify").run()}
           isActive={editor.isActive({ textAlign: "justify" })}
           title="两端对齐"
         >
           <AlignJustify size={18} />
-        </Button>
-      </div>
+        </ToolbarButton>
+      </ButtonGroup>
 
-      {/* 媒体说明 (图片/视频/音频) */}
-      {(editor.isActive("image") || editor.isActive("video") || editor.isActive("audio")) && (
-        <div className="flex gap-1 items-center border-r border-border-50 pr-3 mr-2">
-          {!showCaptionInput ||
-          captionType !==
-            (editor.isActive("image") ? "image" : editor.isActive("video") ? "video" : "audio") ? (
-            <Button
-              onClick={() =>
-                handleCaptionClick(
-                  editor.isActive("image") ? "image" : editor.isActive("video") ? "video" : "audio",
-                )
+      {/* Media caption */}
+      {activeMediaType && (
+        <ButtonGroup>
+          {showCaptionInput && captionType === activeMediaType ? (
+            <input
+              ref={captionInputRef}
+              type="text"
+              value={captionText}
+              onChange={(e) => setCaptionText(e.target.value)}
+              onKeyDown={(e) =>
+                handleKeyDown(e, handleCaptionSubmit, () => {
+                  setShowCaptionInput(false);
+                  setCaptionText("");
+                  setCaptionType(null);
+                })
               }
-              isActive={
-                !!(
-                  (editor.isActive("image") && editor.getAttributes("image").caption) ||
-                  (editor.isActive("video") && editor.getAttributes("video").caption) ||
-                  (editor.isActive("audio") && editor.getAttributes("audio").caption)
-                )
-              }
-              title={
-                editor.isActive("image")
-                  ? "添加图片说明"
-                  : editor.isActive("video")
-                    ? "添加视频说明"
-                    : "添加音频说明"
-              }
+              onBlur={handleCaptionSubmit}
+              placeholder={`输入${activeMediaType === "image" ? "图片" : activeMediaType === "video" ? "视频" : "音频"}说明...`}
+              className="px-2 py-1 text-sm border border-border-100 rounded-sm bg-card-50 text-foreground-200 focus:outline-none focus:border-primary-500 min-w-[200px]"
+            />
+          ) : (
+            <ToolbarButton
+              onClick={handleCaptionClick}
+              isActive={!!hasCaption}
+              title={`添加${activeMediaType === "image" ? "图片" : activeMediaType === "video" ? "视频" : "音频"}说明`}
             >
               <FileText size={18} />
-            </Button>
-          ) : (
-            <div className="flex items-center gap-2">
-              <input
-                ref={captionInputRef}
-                type="text"
-                value={captionText}
-                onChange={(e) => setCaptionText(e.target.value)}
-                onKeyDown={handleCaptionKeyDown}
-                onBlur={handleCaptionSubmit}
-                placeholder={
-                  captionType === "image"
-                    ? "输入图片说明..."
-                    : captionType === "video"
-                      ? "输入视频说明..."
-                      : "输入音频说明..."
-                }
-                className="px-2 py-1 text-sm border border-border-100 rounded-sm bg-card-50 text-foreground-200 focus:outline-none focus:border-primary-500 min-w-[200px]"
-              />
-            </div>
+            </ToolbarButton>
           )}
-        </div>
+        </ButtonGroup>
       )}
 
-      {/* 视频 */}
-      <div className="flex gap-1 border-r border-border-50 pr-3 mr-2">
-        <Button
+      {/* Media */}
+      <ButtonGroup>
+        <ToolbarButton
           onClick={() => setIsVideoModalOpen(true)}
           isActive={editor.isActive("video")}
           title="视频"
         >
           <Video size={18} />
-        </Button>
-
-        <Button
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => setIsImageModalOpen(true)}
           isActive={editor.isActive("image")}
           title="图片"
         >
           <Image size={18} />
-        </Button>
-        <Button
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => setIsAudioModalOpen(true)}
           isActive={editor.isActive("audio")}
           title="音频"
         >
           <FileAudio size={18} />
-        </Button>
-      </div>
+        </ToolbarButton>
+      </ButtonGroup>
 
-      {/* 撤销/重做 */}
+      {/* Undo/Redo */}
       <div className="flex gap-1">
-        <Button onClick={() => editor.chain().focus().undo().run()} title="撤销">
+        <ToolbarButton onClick={() => editor.chain().focus().undo().run()} title="撤销">
           <Undo size={18} />
-        </Button>
-        <Button onClick={() => editor.chain().focus().redo().run()} title="重做">
+        </ToolbarButton>
+        <ToolbarButton onClick={() => editor.chain().focus().redo().run()} title="重做">
           <Redo size={18} />
-        </Button>
+        </ToolbarButton>
       </div>
 
-      {/* 视频选择模态框 */}
+      {/* Modals */}
       <VideoPickerModal
         isOpen={isVideoModalOpen}
         onClose={() => setIsVideoModalOpen(false)}
-        onSelect={handleVideoSelect}
+        onSelect={(_, url) => insertMedia("video", url)}
       />
-
-      {/* 图片选择模态框 */}
       <ImagePickerModal
         isOpen={isImageModalOpen}
         onClose={() => setIsImageModalOpen(false)}
-        onSelect={handleImageSelect}
+        onSelect={(_, url) => insertMedia("image", url)}
       />
-
-      {/* 音频选择模态框 */}
       <AudioPickerModal
         isOpen={isAudioModalOpen}
         onClose={() => setIsAudioModalOpen(false)}
-        onSelect={handleAudioSelect}
+        onSelect={(_, url) => insertMedia("audio", url)}
       />
     </div>
   );

@@ -7,7 +7,7 @@ import type React from "react";
 import { useState } from "react";
 import useSWR from "swr";
 import BlogAudio from "./BlogAudio";
-import BlogSummaryModel from "./BlogSummaryModel";
+import BlogSummaryModal from "./BlogSummaryModal";
 
 interface BlogActionProps {
   blogId: number;
@@ -182,7 +182,7 @@ const BlogAction: React.FC<BlogActionProps> = ({ blogId }) => {
       )}
 
       {hasSummary && (
-        <BlogSummaryModel
+        <BlogSummaryModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           summaryData={summaryData}

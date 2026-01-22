@@ -135,7 +135,6 @@ const ProjectPage: React.FC<ProjectPageProps> = ({ sectionData }) => {
                       created_at: project.created_at,
                     }}
                     onClick={() => {
-                      // TODO: 跳转到项目详情页
                       router.push(`${pathname}/${project.project_slug}`);
                     }}
                   />

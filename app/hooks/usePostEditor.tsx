@@ -28,6 +28,7 @@ export const usePostEditor = ({
   setContent,
 }: UsePostEditorProps): UsePostEditorReturn => {
   const [blogMetaData, setBlogMetaData] = useState<BlogMetaData>(initialBlogMetaData);
+  const [isSaving, setIsSaving] = useState(false);
 
   // 在更新模式下获取博客详情
   const shouldFetchBlog = type === "update" && !!blogSlug;
@@ -88,6 +89,7 @@ export const usePostEditor = ({
       return;
     }
 
+    setIsSaving(true);
     try {
       if (type === "blog" && !blogSlug) {
         const response = await blogService.createBlog({
@@ -125,12 +127,15 @@ export const usePostEditor = ({
       const errorMessage = error instanceof Error ? error.message : "Failed to save blog";
       toast.error(errorMessage);
       console.error("Blog save failed:", error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
   return {
     blogMetaData,
     isBlogLoading,
+    isSaving,
     handleBlogMetaDataSave,
     handleBlogSave,
     validateBlogData,

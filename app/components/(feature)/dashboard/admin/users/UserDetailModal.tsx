@@ -1,17 +1,23 @@
 import { CheckCircle, Clock, MapPin, Shield, User, XCircle } from "lucide-react";
 import Image from "next/image";
-import Modal from "@/app/components/ui/modal/Modal";
+import BaseModal from "@/app/components/ui/modal/BaseModal";
 import type { UserResponse } from "@/app/types/userServiceType";
 
-interface UserListModelProps {
+interface UserDetailModalProps {
   user: UserResponse;
   isOpen: boolean;
   onClose: () => void;
 }
 
-const UserListModel = ({ user, isOpen, onClose }: UserListModelProps) => {
+const UserDetailModal = ({ user, isOpen, onClose }: UserDetailModalProps) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="用户详情" size="lg" maxHeight="max-h-[90vh]">
+    <BaseModal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="用户详情"
+      size="lg"
+      maxHeight="max-h-[90vh]"
+    >
       {/* User Info */}
       <div className="space-y-6">
         {/* Profile Header */}
@@ -197,8 +203,8 @@ const UserListModel = ({ user, isOpen, onClose }: UserListModelProps) => {
           </div>
         </div>
       </div>
-    </Modal>
+    </BaseModal>
   );
 };
 
-export default UserListModel;
+export default UserDetailModal;

@@ -12,7 +12,7 @@ export function isApiError(error: unknown): error is ApiError {
   );
 }
 
-export function getErrorMessage(error: unknown, defaultMessage = "操作失败"): string {
+export function getErrorMessage(error: unknown, defaultMessage = "Operation failed"): string {
   if (isApiError(error)) {
     return error.error;
   }

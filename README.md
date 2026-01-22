@@ -160,21 +160,59 @@ frontend-client/
 ├── app/                          # Next.js App Router
 │   ├── (pages)/                  # Page route groups
 │   │   ├── (auth)/              # Authentication pages (login/register/reset-password)
-│   │   ├── (site)/              # Public site pages (blog/project details)
-│   │   └── dashboard/           # Dashboard pages (admin/user)
+│   │   ├── (site)/              # Public site pages (blog/project/copyright/privacy)
+│   │   │   ├── [...slug]/       # Dynamic routes (blog/project details)
+│   │   │   ├── copyright/       # Copyright page
+│   │   │   └── privacy-policy/  # Privacy policy page
+│   │   ├── dashboard/           # Dashboard pages (admin/user)
+│   │   ├── payment/             # Payment pages
+│   │   └── user/                # User profile pages
 │   ├── components/               # React components
-│   │   ├── (feature)/           # Feature components (blog/comment/forum, etc.)
-│   │   ├── layout/              # Layout components (Header/Footer/SideBar)
-│   │   ├── providers/           # Context providers
-│   │   └── ui/                  # Basic UI components
+│   │   ├── (feature)/           # Feature components
+│   │   │   ├── archive/         # Archive page
+│   │   │   ├── blog/            # Blog components (details, list, audio, etc.)
+│   │   │   ├── comment/         # Comment system
+│   │   │   ├── content/         # Content display (TOC, TextContent, ImagePreview)
+│   │   │   ├── dashboard/       # Dashboard components (admin/user)
+│   │   │   ├── editor/          # Rich text editor components
+│   │   │   ├── forum/           # Forum page
+│   │   │   ├── friend/          # Friend links
+│   │   │   ├── home/            # Home page components
+│   │   │   ├── payment/         # Payment components
+│   │   │   ├── project/         # Project components
+│   │   │   ├── tag/             # Tag components
+│   │   │   └── user/            # User page
+│   │   ├── layout/              # Layout components
+│   │   │   ├── Header.tsx       # Site header
+│   │   │   ├── Footer.tsx       # Site footer
+│   │   │   ├── SideBar.tsx      # Dashboard sidebar
+│   │   │   ├── ThemeSwitcher.tsx    # Theme toggle
+│   │   │   └── LanguageSwitcher.tsx # Language toggle
+│   │   └── ui/                  # Reusable UI components
+│   │       ├── avatar/          # User avatar
+│   │       ├── background/      # Background components
+│   │       ├── badge/           # Status badges
+│   │       ├── button/          # Button, ActionButton
+│   │       ├── card/            # BaseCard, BlogCard, ContentCard
+│   │       ├── copyright/       # Copyright notice component
+│   │       ├── dropdown/        # Dropdown components
+│   │       ├── error/           # Error display, EmptyState
+│   │       ├── icon/            # Icon components
+│   │       ├── input/           # Input fields
+│   │       ├── loading/         # Loading spinners
+│   │       ├── logo/            # Site logo
+│   │       ├── modal/           # BaseModal, DeleteConfirmModal
+│   │       ├── pagination/      # Pagination
+│   │       ├── share/           # Share component
+│   │       └── stats/           # Stats card
 │   ├── contexts/                 # React Context
-│   │   ├── authContext.tsx      # Authentication context
-│   │   └── hooks/               # Custom hooks
+│   ├── hooks/                    # Custom hooks
 │   ├── lib/                      # Utility libraries
 │   │   ├── extensions/          # TipTap extensions
 │   │   ├── http/                # HTTP client
 │   │   ├── services/            # API service layer
 │   │   └── utils/               # Utility functions
+│   ├── providers/                # Context providers
 │   ├── types/                    # TypeScript type definitions
 │   ├── globals.css              # Global styles
 │   ├── layout.tsx               # Root layout
@@ -187,10 +225,18 @@ frontend-client/
 ├── public/                       # Static assets
 ├── certificates/                 # SSL certificates (for development)
 ├── next.config.ts               # Next.js config
-├── tailwind.config.ts           # Tailwind CSS config
 ├── tsconfig.json                # TypeScript config
 └── package.json                 # Project dependencies
 ```
+
+### Component Naming Conventions
+
+| Directory | Purpose | Naming |
+|-----------|---------|--------|
+| `ui/` | Reusable base components | `BaseCard.tsx`, `BaseModal.tsx`, `Button.tsx` |
+| `layout/` | Layout & global components | `Header.tsx`, `Footer.tsx`, `ThemeSwitcher.tsx` |
+| `(feature)/` | Feature-specific components | `BlogDetails.tsx`, `CommentList.tsx` |
+| `(pages)/` | Page components | `page.tsx` (Next.js convention) |
 
 ## Environment Variables
 

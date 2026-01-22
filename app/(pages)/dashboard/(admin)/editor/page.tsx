@@ -65,22 +65,35 @@ export default function EditorPage() {
     }
   }, [seoLists, currentSeoPage]);
 
-  const { projectMetaData, isProjectLoading, handleProjectMetaDataSave, handleProjectSave } =
-    useProjectEditor({
-      type,
-      projectSlug,
-      sectionId,
-      projectSectionId,
-      content,
-      setContent,
-    });
+  const {
+    projectMetaData,
+    isProjectLoading,
+    isSaving: isProjectSaving,
+    handleProjectMetaDataSave,
+    handleProjectSave,
+  } = useProjectEditor({
+    type,
+    projectSlug,
+    sectionId,
+    projectSectionId,
+    content,
+    setContent,
+  });
 
-  const { blogMetaData, isBlogLoading, handleBlogMetaDataSave, handleBlogSave } = usePostEditor({
+  const {
+    blogMetaData,
+    isBlogLoading,
+    isSaving: isBlogSaving,
+    handleBlogMetaDataSave,
+    handleBlogSave,
+  } = usePostEditor({
     type,
     blogSlug,
     content,
     setContent,
   });
+
+  const isSaving = isBlogSaving || isProjectSaving;
 
   const items = allSeoItems;
 
@@ -134,10 +147,20 @@ export default function EditorPage() {
             <button
               type="button"
               onClick={handleSave}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-primary-500 text-white rounded-sm hover:bg-primary-600 transition-colors text-sm sm:text-base"
+              disabled={isSaving}
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-primary-500 text-white rounded-sm hover:bg-primary-600 transition-colors text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Save size={16} className="sm:w-[18px] sm:h-[18px]" />
-              <span className="sm:inline">保存</span>
+              {isSaving ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                  <span className="sm:inline">保存中...</span>
+                </>
+              ) : (
+                <>
+                  <Save size={16} className="sm:w-[18px] sm:h-[18px]" />
+                  <span className="sm:inline">保存</span>
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -156,6 +179,7 @@ export default function EditorPage() {
             onSeoListRefresh={refreshSeoLists}
             initialData={blogMetaData}
             type="blog"
+            isSaving={isBlogSaving}
           />
         </div>
       )}
@@ -169,6 +193,7 @@ export default function EditorPage() {
             onLoadMore={handleLoadMoreSeo}
             onSave={handleProjectMetaDataSave}
             onSeoListRefresh={refreshSeoLists}
+            isSaving={isProjectSaving}
           />
         </div>
       )}
@@ -184,6 +209,7 @@ export default function EditorPage() {
             onSeoListRefresh={refreshSeoLists}
             initialData={blogMetaData}
             type="update"
+            isSaving={isBlogSaving}
           />
         </div>
       )}
@@ -198,6 +224,7 @@ export default function EditorPage() {
             onSave={handleProjectMetaDataSave}
             onSeoListRefresh={refreshSeoLists}
             initialData={projectMetaData}
+            isSaving={isProjectSaving}
           />
         </div>
       )}
