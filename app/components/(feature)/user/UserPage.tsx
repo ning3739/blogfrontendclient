@@ -361,7 +361,7 @@ export default function UserPage() {
                         className="border-b border-border-50 hover:bg-background-100 transition-colors bg-background-50"
                       >
                         <td className="py-4 px-4">
-                          <BlogListItem blog={blog} format={format} />
+                          <BlogListItem blog={blog} />
                         </td>
                         <td className="py-4 px-4">
                           <p className="text-sm text-foreground-300">
