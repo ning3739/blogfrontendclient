@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Crimson_Pro, JetBrains_Mono, Noto_Sans_SC, Noto_Serif_SC } from "next/font/google";
+import Script from "next/script";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { ThemeProvider } from "next-themes";
@@ -7,6 +8,7 @@ import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./contexts/authContext";
 import SWRProvider from "./providers/SWRProvider";
 import "./globals.css";
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 // 英文字体：Crimson Pro - 优雅的衬线字体，粗细适中，温暖人文
 const crimsonPro = Crimson_Pro({
@@ -76,6 +78,21 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
+      <head>
+        {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-GR989EJSN5"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-GR989EJSN5');
+          `}
+        </Script>
+      </head>
       <body
         className={`${crimsonPro.variable} ${jetBrainsMono.variable} ${notoSansSC.variable} ${notoSerifSC.variable} antialiased`}
         data-locale={locale}
@@ -89,7 +106,7 @@ export default async function RootLayout({
           <NextIntlClientProvider locale={locale} messages={messages}>
             <SWRProvider>
               <Toaster position="top-center" reverseOrder={false} />
-              <AuthProvider>{children}</AuthProvider>
+              <AuthProvider>{children}<SpeedInsights /></AuthProvider>
             </SWRProvider>
           </NextIntlClientProvider>
         </ThemeProvider>
