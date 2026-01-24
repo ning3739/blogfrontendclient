@@ -279,7 +279,7 @@ const PostLists = ({ postItems, pagination, setCurrentPage, onDataChange }: Post
                   {handleDateFormat(post.created_at, format)}
                 </span>
               </div>
-              <div className="flex items-center justify-center space-x-1 flex-wrap gap-1">
+              <div className="grid grid-cols-4 gap-1.5">
                 <PostActionButtons
                   blogSlug={post.blog_slug}
                   isPublished={post.is_published}

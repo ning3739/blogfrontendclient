@@ -40,7 +40,6 @@ const PostActionButtons = ({
 }: PostActionButtonsProps) => {
   const iconSize = size === "sm" ? "w-3.5 h-3.5" : "w-4 h-4";
   const buttonPadding = size === "sm" ? "p-1.5" : "p-2";
-  const labelButtonClass = "px-3 py-1.5 rounded-sm transition-colors text-xs font-medium";
 
   const ActionButton = ({
     onClick,
@@ -61,19 +60,13 @@ const PostActionButtons = ({
       onClick={onClick}
       className={
         showLabels
-          ? `${labelButtonClass} ${className}`
+          ? `flex items-center justify-center gap-1 px-2 py-1.5 rounded-sm transition-colors text-xs font-medium min-w-fit ${className}`
           : `${buttonPadding} ${className} rounded-sm transition-colors`
       }
       title={title}
     >
-      {showLabels ? (
-        <>
-          <span className="inline mr-1">{icon}</span>
-          {label}
-        </>
-      ) : (
-        icon
-      )}
+      <span className="shrink-0">{icon}</span>
+      {showLabels && label && <span className="whitespace-nowrap">{label}</span>}
     </motion.button>
   );
 
@@ -85,6 +78,7 @@ const PostActionButtons = ({
         className="bg-background-50 text-foreground-100 hover:bg-background-100"
         title="文章信息"
         icon={<Info className={iconSize} />}
+        label="信息"
       />
 
       {/* View Button */}
@@ -93,6 +87,7 @@ const PostActionButtons = ({
         className="bg-background-50 text-foreground-100 hover:bg-background-100"
         title="查看详情"
         icon={<Eye className={iconSize} />}
+        label="查看"
       />
 
       {/* Edit Button */}
@@ -101,6 +96,7 @@ const PostActionButtons = ({
         className="bg-primary-50 text-primary-500 hover:bg-primary-100"
         title="编辑文章"
         icon={<Edit className={iconSize} />}
+        label="编辑"
       />
 
       {/* Publish Button */}
@@ -113,7 +109,7 @@ const PostActionButtons = ({
         }
         title={isPublished ? "取消发布" : "发布"}
         icon={isPublished ? <Globe className={iconSize} /> : <Globe2 className={iconSize} />}
-        label={isPublished ? "取消发布" : "发布"}
+        label={isPublished ? "下线" : "发布"}
       />
 
       {/* Archive Button */}
@@ -128,7 +124,7 @@ const PostActionButtons = ({
         icon={
           isArchived ? <Archive className={iconSize} /> : <ArchiveRestore className={iconSize} />
         }
-        label={isArchived ? "取消归档" : "归档"}
+        label={isArchived ? "恢复" : "归档"}
       />
 
       {/* Feature Button */}
@@ -141,7 +137,7 @@ const PostActionButtons = ({
         }
         title={isFeatured ? "取消精选" : "设为精选"}
         icon={isFeatured ? <Star className={iconSize} /> : <StarOff className={iconSize} />}
-        label={isFeatured ? "取消精选" : "设为精选"}
+        label={isFeatured ? "取消" : "精选"}
       />
 
       {/* Delete Button */}
