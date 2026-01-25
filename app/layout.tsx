@@ -8,7 +8,7 @@ import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./contexts/authContext";
 import SWRProvider from "./providers/SWRProvider";
 import "./globals.css";
-import { SpeedInsights } from '@vercel/speed-insights/next';
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 // 英文字体：Crimson Pro - 优雅的衬线字体，粗细适中，温暖人文
 const crimsonPro = Crimson_Pro({
@@ -106,7 +106,10 @@ export default async function RootLayout({
           <NextIntlClientProvider locale={locale} messages={messages}>
             <SWRProvider>
               <Toaster position="top-center" reverseOrder={false} />
-              <AuthProvider>{children}<SpeedInsights /></AuthProvider>
+              <AuthProvider>
+                {children}
+                <SpeedInsights />
+              </AuthProvider>
             </SWRProvider>
           </NextIntlClientProvider>
         </ThemeProvider>
