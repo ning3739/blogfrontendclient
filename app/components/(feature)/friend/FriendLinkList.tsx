@@ -181,7 +181,7 @@ const FriendLinkList = ({ friend_id }: { friend_id: number }) => {
                 {friend.logo_url && !imageErrors.has(friend.id) ? (
                   <Image
                     src={friend.logo_url}
-                    alt={friend.chinese_title}
+                    alt={friend.title}
                     width={48}
                     height={48}
                     className="object-cover w-full h-full"
@@ -196,7 +196,7 @@ const FriendLinkList = ({ friend_id }: { friend_id: number }) => {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center space-x-2">
                   <h3 className="text-lg font-semibold text-foreground-50 truncate">
-                    {friend.chinese_title}
+                    {friend.title}
                   </h3>
                   {variant === "featured" && (
                     <Star className="w-4 h-4 text-yellow-500 fill-current shrink-0" />
@@ -207,9 +207,9 @@ const FriendLinkList = ({ friend_id }: { friend_id: number }) => {
             </div>
 
             {/* 描述区域 */}
-            {friend.chinese_description && (
+            {friend.description && (
               <p className="text-foreground-300 text-sm mb-4 line-clamp-3 flex-1">
-                {friend.chinese_description}
+                {friend.description}
               </p>
             )}
 

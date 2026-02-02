@@ -36,16 +36,14 @@ export interface DeleteSingleFriendRequest extends FriendListID {}
 export interface UpdateFriendListTypeRequest extends FriendListID, NumberType {}
 
 export interface GetFriendListItemsResponse {
-  friend_id: number;
-  user_id: number;
-  logo_url: string;
-  chinese_title: string;
-  chinese_description: string;
-  type: number;
-  type_name: string;
-  site_url: string;
   id: number;
+  type_name: string;
+  logo_url: string;
+  site_url: string;
+  title: string;
+  description: string;
   created_at: string;
+  updated_at?: string;
 }
 
 export enum FriendType {
