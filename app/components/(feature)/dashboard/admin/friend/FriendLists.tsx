@@ -13,11 +13,11 @@ import OffsetPagination from "@/app/components/ui/pagination/OffsetPagination";
 import FriendService from "@/app/lib/services/friendService";
 import { handleDateFormat } from "@/app/lib/utils/handleDateFormat";
 import type { OffsetPaginationResponse } from "@/app/types/commonType";
-import type { GetFriendListItemsResponse } from "@/app/types/friendServiceType";
-import { FriendType, getFriendTypeFromName } from "@/app/types/friendServiceType";
+import type { GetFriendListItemsAdminResponse } from "@/app/types/friendServiceType";
+import { FriendType } from "@/app/types/friendServiceType";
 
 interface FriendListsProps {
-  friendItems: GetFriendListItemsResponse[];
+  friendItems: GetFriendListItemsAdminResponse[];
   pagination: OffsetPaginationResponse;
   setCurrentPage: (page: number) => void;
   onDataChange?: () => void;
@@ -35,7 +35,7 @@ const FriendLogo = ({
   friend,
   size = "md",
 }: {
-  friend: GetFriendListItemsResponse;
+  friend: GetFriendListItemsAdminResponse;
   size?: "sm" | "md" | "lg";
 }) => {
   const sizeClasses = { sm: "w-12 h-12", md: "w-14 h-14", lg: "w-16 h-16" };
@@ -48,7 +48,7 @@ const FriendLogo = ({
       {friend.logo_url ? (
         <Image
           src={friend.logo_url}
-          alt={friend.title}
+          alt={friend.chinese_title}
           width={64}
           height={64}
           className="w-full h-full object-cover"
@@ -65,7 +65,7 @@ const FriendInfo = ({
   friend,
   showDescription = true,
 }: {
-  friend: GetFriendListItemsResponse;
+  friend: GetFriendListItemsAdminResponse;
   showDescription?: boolean;
 }) => (
   <a
@@ -77,10 +77,10 @@ const FriendInfo = ({
     <FriendLogo friend={friend} />
     <div className="flex-1 min-w-0">
       <p className="text-sm font-medium text-foreground-50 truncate cursor-pointer hover:text-primary-400 transition-colors">
-        {friend.title}
+        {friend.chinese_title}
       </p>
-      {showDescription && friend.description && (
-        <p className="text-xs text-foreground-300 truncate mt-0.5">{friend.description}</p>
+      {showDescription && friend.chinese_description && (
+        <p className="text-xs text-foreground-300 truncate mt-0.5">{friend.chinese_description}</p>
       )}
     </div>
   </a>
@@ -120,10 +120,10 @@ const FriendLists = ({
 }: FriendListsProps) => {
   const format = useFormatter();
   const [optimisticFriends, setOptimisticFriends] =
-    useState<GetFriendListItemsResponse[]>(friendItems);
+    useState<GetFriendListItemsAdminResponse[]>(friendItems);
   const [deletingIds, setDeletingIds] = useState<number[]>([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editingFriend, setEditingFriend] = useState<GetFriendListItemsResponse | null>(null);
+  const [editingFriend, setEditingFriend] = useState<GetFriendListItemsAdminResponse | null>(null);
 
   useEffect(() => {
     setOptimisticFriends(friendItems);
@@ -132,7 +132,7 @@ const FriendLists = ({
   const getFriendTypeConfig = (type: number) =>
     FRIEND_TYPE_CONFIG[type] || { label: "未知", variant: "default" as const };
 
-  const handleEdit = (friend: GetFriendListItemsResponse) => {
+  const handleEdit = (friend: GetFriendListItemsAdminResponse) => {
     setEditingFriend(friend);
     setIsEditModalOpen(true);
   };
@@ -189,7 +189,7 @@ const FriendLists = ({
           </thead>
           <tbody>
             {optimisticFriends.map((friend, index) => {
-              const typeConfig = getFriendTypeConfig(getFriendTypeFromName(friend.type_name));
+              const typeConfig = getFriendTypeConfig(friend.type);
               return (
                 <motion.tr
                   key={friend.id}
@@ -228,7 +228,7 @@ const FriendLists = ({
       {/* Tablet View */}
       <div className="hidden md:block lg:hidden space-y-3">
         {optimisticFriends.map((friend, index) => {
-          const typeConfig = getFriendTypeConfig(getFriendTypeFromName(friend.type_name));
+          const typeConfig = getFriendTypeConfig(friend.type);
           return (
             <motion.div
               key={friend.id}
@@ -262,7 +262,7 @@ const FriendLists = ({
       {/* Mobile Card View */}
       <div className="md:hidden space-y-3">
         {optimisticFriends.map((friend, index) => {
-          const typeConfig = getFriendTypeConfig(getFriendTypeFromName(friend.type_name));
+          const typeConfig = getFriendTypeConfig(friend.type);
           return (
             <motion.div
               key={friend.id}
@@ -316,7 +316,7 @@ const FriendLists = ({
           }}
           onSuccess={handleUpdateSuccess}
           friendId={editingFriend.id}
-          currentType={getFriendTypeFromName(editingFriend.type_name)}
+          currentType={editingFriend.type}
         />
       )}
     </div>

@@ -35,6 +35,7 @@ export interface DeleteSingleFriendRequest extends FriendListID {}
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface UpdateFriendListTypeRequest extends FriendListID, NumberType {}
 
+// 公开友链列表的响应类型（简化版）
 export interface GetFriendListItemsResponse {
   id: number;
   type_name: string;
@@ -44,6 +45,22 @@ export interface GetFriendListItemsResponse {
   description: string;
   created_at: string;
   updated_at?: string;
+}
+
+// Dashboard 管理页面的友链列表响应类型（完整版）
+export interface GetFriendListItemsAdminResponse {
+  id: number;
+  user_id: number;
+  friend_id: number;
+  logo_url: string;
+  site_url: string;
+  chinese_title: string;
+  chinese_description: string;
+  english_title: string;
+  english_description: string;
+  type: number;
+  created_at: string;
+  updated_at: string;
 }
 
 // 辅助函数：从 type_name 获取 FriendType 枚举值
