@@ -46,6 +46,20 @@ export interface GetFriendListItemsResponse {
   updated_at?: string;
 }
 
+// 辅助函数：从 type_name 获取 FriendType 枚举值
+export const getFriendTypeFromName = (typeName: string): FriendType => {
+  switch (typeName) {
+    case "featured":
+      return FriendType.featured;
+    case "normal":
+      return FriendType.normal;
+    case "hidden":
+      return FriendType.hidden;
+    default:
+      return FriendType.normal;
+  }
+};
+
 export enum FriendType {
   featured = 1,
   normal = 2,
